@@ -1,17 +1,5 @@
-#include "../includes/minishell.h"
+#include "get_next_line.h"
 
-int ft_strlen(char *str)
-{
-	int i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-
-}
-
-#include <stdio.h>
 enum e_token{
  TOK_ERROR,
  TOK_WORD,
@@ -67,76 +55,6 @@ unsigned int g_token_rules[TOK_SP + 1][CHR_SP + 1] = {
 //  return (0);
 // }
 
-
-char	*ft_strdup(char *str)
-{
-	char 	*dup;
-	int		i;
-
-	if (str == NULL)
-		return (calloc(1,1));
-	if(!(dup = (char*)malloc(ft_strlen(str) + 1)))
-		return (NULL);
-	i = 0;
-	while (str[i])
-		dup[i] = str[i++];
-	dup[i] = 0;
-	return (dup);	
-
-}
-
-char *ft_strjoinfree(char *s1, char *s2)
-{
-	int		size;
-	char	*str;
-	int		i;
-
-	if (s1 == NULL || s2 == NULL)
-		return ((s1 == NULL) ? s2 : s1);
-	if (!*s1)
-	{
-		free(s1);
-		return (s2);
-	}
-	if (!*s2)
-	{
-		free(s2);
-		return (s1);
-
-	}
-	size = ft_strlen(s1) + ft_strlen(s2);
-	if(!(str = malloc(sizeof(char) * (size + 1))))
-		return (NULL);
-	i = 0;
-	while (*s1)
-		str[i++] = *(s1++);
-	free(s1 - i);
-	size = size - i;
-	while (*s2)
-		str[i++] = *(s2++);
-	free(s2 - size);
-	str[i] = 0;
-	return (str);
-}
-
-char	*put_char_end_str(char *str, char c)
-{
-	char	*copy;
-	int		i;
-
-	i = 0;
-	copy = (char*)malloc(sizeof(char) * (ft_strlen(str) + 2));
-	while (str[i])
-	{
-		copy[i] = str[i];
-		i++;
-	}
-	copy[i] = c;
-	i++;
-	copy[i] = 0;
-	free(str);
-	return (copy);
-}
 
 int		index_command(char *str)
 {
@@ -205,51 +123,22 @@ int		exec_script(char **tab)
 
 }
 
-char ft_getchar()
+void    ft_exec(char *line)
 {
-	char c;
-
-	read(0, &c, 1);
-	return (c);
+    system(line);
 }
-
-char *ft_read_stdin()
-{
-	char *str;
-	char c;
-	
-	c = 0;
-	str = calloc(1,1);
-	while(c != '\n') 
-	{
-		c = ft_getchar();
-		str = put_char_end_str(str, c);
-	}
-	return (str);
-}
-
-void	ft_putchar(char c)
-{
-	write(1, &c, 1);
-}
-
-void	ft_putstr(char *str)
-{
-	write(1, str, ft_strlen(str));
-}
-
-#include <fcntl.h>
-
 
 int main(int ac, char **av, char ** envp)
 {
-	int fd = open("test", O_CREAT | O_RDWR);
-	int pipefd[2];
-	pipefd[0] = 1;
-	pipefd[1] = fd;
-	write(1, "abc", 3);
-	pipe(pipefd);
-	close(fd);
+    char *line;
+
+    while (1)
+    {
+        write(1, "$>", 2);
+        get_next_line(0, &line);
+        //ft_parse(line);
+        ft_exec(line);
+    }
 	return (0);
 }
 

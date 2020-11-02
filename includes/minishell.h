@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include "libft.h"
+
 
 typedef struct	s_btree
 {
@@ -14,7 +16,4 @@ typedef struct	s_btree
 	void			*item;
 }				t_btree;
 
-char **ft_split_whitespaces(char *str);
-void	ft_putstr(char *str);
-void	ft_putchar(char c);
 #endif
