@@ -1,4 +1,4 @@
-#include "get_next_line.h"
+#include "libft.h"
 
 enum e_token{
  TOK_ERROR,
