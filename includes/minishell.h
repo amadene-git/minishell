@@ -44,13 +44,19 @@ int		built_in_pwd(int ac, char **av, t_dlist *envlist, int fd);
 
 //built_in_export.c
 t_dlist *dlist_create_elem(void *data);
+t_var	*create_var(const char *str);
 t_dlist	*dlist_create_from_tab(const char **tab);
 void	dlist_print(t_dlist *begin, int fd);
-char	**tab_copy(char **tab);
 t_dlist *dlist_strchr_first(t_dlist *begin);
 t_dlist	*dlist_chr_alpha_next(t_dlist *begin);
-int		built_in_env(int ac, char **av, t_dlist *envlist, int fd);
+void	print_export(t_dlist *envlist, int fd);
+void	insert_var(t_dlist *envlist, t_var *variable);
 int     built_in_export(int ac, char **av, t_dlist *envlist, int fd);
+t_dlist	*dlist_chr(t_dlist *begin, const char *name);
+void    free_var(t_var *variable);
+void	free_elem(t_dlist *envlist, const char *name);
+int		built_in_unset(int ac, char **av, t_dlist *envlist, int fd);
+int		built_in_env(int ac, char **av, t_dlist *envlist, int fd);
 
 //libft a verifier
 char	*insert_string(char *str, char *to_insert, int start, int end);

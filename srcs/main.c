@@ -47,7 +47,7 @@ int main(int ac, const char **av, const char **env)
 				ft_putstr_fd("Command not found\n", 1);
 			else if (!is_builtin(tab[0]))
 			{
-				exec_cmd(tab, env);
+				exec_cmd(tab, (char**)env);
 			}
 			else
 				exec_built_in(k, tab, envlist, 1);

@@ -199,9 +199,37 @@ void	insert_var(t_dlist *envlist, t_var *variable)
 	envlist->prev = elem;
 }
 
+t_dlist	*dlist_chr(t_dlist *begin, const char *name)
+{
+	t_dlist *elem;
+
+	if (!begin)
+		return (NULL);
+	if (!ft_strcmp(name, begin->data->name))
+		return (begin);
+	elem = begin->next;
+	while (elem && elem != begin)
+	{
+		if (!ft_strcmp(name, elem->data->name))
+			return (elem);
+		elem = elem->next;
+	}
+	return (NULL);
+}
+
+void	free_var(t_var *variable)
+{
+	if (variable->value)
+		free(variable->value);
+	free(variable->name);
+	free(variable);
+}
+
 int		built_in_export(int ac, char **av, t_dlist *envlist, int fd)
 {
-	int	i;
+	int		i;
+	t_dlist	*elem;
+	t_var	*var;
 
 	if (ac == 1)
 	{
@@ -212,11 +240,50 @@ int		built_in_export(int ac, char **av, t_dlist *envlist, int fd)
 	if (ac > 1)
 	{
 		while (++i < ac)
-			insert_var(envlist, create_var(av[i]));
+		{
+			var = create_var(av[i]);
+			if (!(elem = dlist_chr(envlist, var->name)))
+				insert_var(envlist, var);
+			else if (var->value)
+			{
+				free_var(elem->data);
+				elem->data = var;
+			}
+			else
+				free_var(var);
+		}
 		return (0);
 	}
 	else
 		return (-1);
+}
+
+
+
+
+void	free_elem(t_dlist *envlist, const char *name)
+{
+	t_dlist *elem;
+	t_dlist	*rm;
+
+	if (!(elem = dlist_chr(envlist, name)))
+		return;
+	rm = elem;
+	elem->prev->next = rm->next;
+	elem->next->prev = rm->prev;
+	free_var(rm->data);
+	free(rm);
+}
+
+int		built_in_unset(int ac, char **av, t_dlist *envlist, int fd)
+{
+	int i;
+
+	i = 0;
+	while (++i < ac)
+		free_elem(envlist, av[i]);
+	return (0);
+
 }
 
 int		built_in_env(int ac, char **av, t_dlist *envlist, int fd)
