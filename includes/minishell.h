@@ -36,6 +36,7 @@ char	**tab_copy(char **tab);
 t_dlist *dlist_strchr_first(t_dlist *begin);
 t_dlist	*dlist_chr_alpha_next(t_dlist *begin);
 int		built_in_env(int ac, char **av, t_dlist *envlist, int fd);
+int     built_in_export(int ac, char **av, t_dlist *envlist, int fd);
 
 //libft a verifier
 char	*insert_string(char *str, char *to_insert, int start, int end);

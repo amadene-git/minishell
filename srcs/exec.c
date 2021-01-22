@@ -87,8 +87,8 @@ int		is_builtin(char	*cmd)
 	if (!ft_strcmp("echo", cmd) ||\
 			!ft_strcmp("pwd", cmd) ||\
 			!ft_strcmp("cd", cmd) ||\
-			!ft_strcmp("env", cmd))
-			//!ft_strcmp("export", cmd))
+			!ft_strcmp("env", cmd) ||\
+			!ft_strcmp("export", cmd))
 			//!ft_strcmp("unset", cmd))
 			//!ft_strcmp("exit", cmd))
 		return (1);
@@ -118,10 +118,10 @@ void	exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd)
 		printf("env:\n");
 		built_in_env(ac , cmd, envlist, fd);
 	}
-/*	else if (!ft_strcmp("export", cmd[0]))
+	else if (!ft_strcmp("export", cmd[0]))
 	{
-		built_in_export(env);
-	}*/
+		built_in_export(ac, cmd, envlist, fd);
+	}
 }
 
 void	exec_cmd(char **cmd, char **env)

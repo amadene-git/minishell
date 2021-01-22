@@ -32,7 +32,8 @@ int main(int ac, char **av, char **env)
 	int		k = -1;
 	char	**tab;
 	
-	t_dlist *envlist = dlist_create_from_tab(env);	
+	char	**envtab = tab_copy(env);
+	t_dlist *envlist = dlist_create_from_tab(envtab);	
 
 	while(i)
 	{

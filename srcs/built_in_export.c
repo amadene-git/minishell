@@ -95,7 +95,7 @@ t_dlist *dlist_strchr_first(t_dlist *begin)
 		return (NULL);
 	elem = begin->next;
 	ret = begin;
-	while (elem != begin)
+	while (elem && elem != begin)
 	{
 		if (ft_strcmp((char*)ret->data, (char*)elem->data) >= 0)
 			ret = elem;
@@ -114,13 +114,13 @@ t_dlist	*dlist_chr_alpha_next(t_dlist *begin)
 		return (NULL);
 	elem = begin->next;
 	ret = begin;
-	while (elem != begin && ret == begin)
+	while (elem && elem != begin && ret == begin)
 	{
 		if (ft_strcmp(begin->data, elem->data) < 0)
 			ret = elem;
 		elem = elem->next;
 	}		
-	while (elem != begin)
+	while (elem && elem != begin)
 	{
 		
 		if (ft_strcmp(begin->data, elem->data) < 0 && ft_strcmp(elem->data, ret->data) < 0)
@@ -132,11 +132,34 @@ t_dlist	*dlist_chr_alpha_next(t_dlist *begin)
 	return (ret);
 }
 
+int		built_in_export(int ac, char **av, t_dlist *envlist, int fd)
+{
+	t_dlist	*elem;
+
+
+	if (ac == 1)
+	{
+		elem = dlist_strchr_first(envlist);
+		if (elem)
+			ft_putendl_fd(elem->data, fd);
+		while (elem)
+		{
+			elem = dlist_chr_alpha_next(elem);
+			if (elem)
+				ft_putendl_fd(elem->data, fd);
+		}
+		return (0);
+	}
+	else
+		return (-1);
+}
+
 int		built_in_env(int ac, char **av, t_dlist *envlist, int fd)
 {
-	if (ac > 1)
+	if (ac != 1)
 		return (-1);
 	dlist_print(envlist, fd);
+	return (0);
 }
 
 
