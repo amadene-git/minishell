@@ -7,6 +7,20 @@
 # include <errno.h>
 # include <sys/wait.h>
 
+typedef struct  s_var
+{
+    char    *name;
+    char    *value;
+}               t_var;
+
+typedef struct  s_dlist
+{
+    struct s_dlist  *next;
+    struct s_dlist  *prev;
+    t_var           *data;
+    
+}               t_dlist;
+
 //exec.c
 char		**split(char *raw_cmd, char *limiti);
 void		free_array(char **array);
@@ -30,7 +44,7 @@ int		built_in_pwd(int ac, char **av, t_dlist *envlist, int fd);
 
 //built_in_export.c
 t_dlist *dlist_create_elem(void *data);
-t_dlist	*dlist_create_from_tab(char **tab);
+t_dlist	*dlist_create_from_tab(const char **tab);
 void	dlist_print(t_dlist *begin, int fd);
 char	**tab_copy(char **tab);
 t_dlist *dlist_strchr_first(t_dlist *begin);
@@ -40,8 +54,8 @@ int     built_in_export(int ac, char **av, t_dlist *envlist, int fd);
 
 //libft a verifier
 char	*insert_string(char *str, char *to_insert, int start, int end);
-int		ft_strcmp(char *s1, char *s2);
-char	*ft_strndup(char *str, int n);
+int		ft_strcmp(const char *s1, const char *s2);
+char	*ft_strndup(const char *str, int n);
 
 
 

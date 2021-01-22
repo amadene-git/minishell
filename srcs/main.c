@@ -7,19 +7,8 @@ void handle_signal()
 	ft_putstr_fd("\n[minishell]>", 1);
 }
 
-/*
-int	main(int ac, char **av, char **env)
-{
-	char    **envcopy = tab_copy(env);
- 	t_dlist *envlist = dlist_create_from_tab(envcopy);
-    t_dlist *elem; 
 
-	built_in_env(envlist, 1);
-	return (0);
-}
-*/
-
-int main(int ac, char **av, char **env)
+int main(int ac, const char **av, const char **env)
 {
 	char	*line;
 	int		i = 1;
@@ -32,8 +21,7 @@ int main(int ac, char **av, char **env)
 	int		k = -1;
 	char	**tab;
 	
-	char	**envtab = tab_copy(env);
-	t_dlist *envlist = dlist_create_from_tab(envtab);	
+	t_dlist *envlist = dlist_create_from_tab(env);	
 
 	while(i)
 	{
@@ -69,6 +57,7 @@ int main(int ac, char **av, char **env)
 				free(tab[j]);
 			free(tab);	
 		}
+		//free envlist
 		free(line);
 	}
 	write(1, "\n", 1);

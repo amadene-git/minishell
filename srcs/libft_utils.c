@@ -27,12 +27,12 @@ char	*insert_string(char *str, char *to_insert, int start, int end)
 	return (ret);
 }
 
-int		ft_strcmp(char *s1, char *s2)
+int		ft_strcmp(const char *s1, const char *s2)
 {
 	if (!s1 && !s2)
 		return (0);
 	if (!s1)
-		return ((int)(*s2 *= -1));
+		return ((int)(-*s2));
 	if (!s2)
 		return ((int)*s1);
 	while (*s1 && *s2 && !(*s1 - *s2))
@@ -43,7 +43,7 @@ int		ft_strcmp(char *s1, char *s2)
 	return ((int)(*s1 - *s2));
 }
 
-char	*ft_strndup(char *str, int n)
+char	*ft_strndup(const char *str, int n)
 {
 	int		len;
 	int		i;
