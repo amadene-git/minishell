@@ -31,8 +31,28 @@ int		built_in_echo(int ac, char **av, t_dlist *envlist, int fd)
 	return (0);
 }
 
+void	refresh_pwd(const char *pwd, const char *old, t_dlist *envlist, int fd)
+{
+	char	**tab;
+
+	if (!(tab = (char**)malloc(sizeof(char*) * 3)))
+		return;
+
+	tab[0] = ft_strdup("export");
+	tab[1] = ft_strjoin("PWD=", pwd);
+	tab[2] = ft_strjoin("OLDPWD=", old);
+	built_in_export(3, tab, envlist, fd);
+
+	free(tab[0]);
+	free(tab[1]);
+	free(tab[2]);
+	free(tab);
+}
+
 int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
 {
+	char	buff[3200];
+
 	if (ac != 2)
 		return(-1);
 	//if (!path)
@@ -42,12 +62,18 @@ int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
 		ft_putendl_fd(strerror(errno), 2);
 		return (-1);
 	}
+	if (!getcwd(&buff[0], 31999))
+	{
+		ft_putendl_fd(strerror(errno), 2);
+		return (-1);
+	}
+	refresh_pwd(&buff[0], dlist_chr(envlist, "PWD")->data->value, envlist, fd);
 	return (0);
 }
 
 int		built_in_pwd(int ac, char **av, t_dlist *envlist, int fd)
 {
-	char buf[3200];
+	char	buf[3200];
 
 	if (ac != 1)
 		return (-1);

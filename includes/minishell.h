@@ -27,15 +27,15 @@ void		free_array(char **array);
 void		get_absolute_path(char **cmd);
 int			is_builtin(char	*cmd);
 void		exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd);
-void		exec_cmd(char **cmd, char **env);
+int 		exec_bin(char **cmd, char **env);
 
 //parser.c
 char	*get_quotes(const char *str, int *i);
-char	*get_dquotes(const char *str, int *i);
+char	*get_dquotes(const char *str, int *i, t_dlist *envlist);
 int		is_sep_expr(char c);
-char	*get_expr(const char *str, int *i);
-char	*get_next_word(const char *str, int *i);
-char	**split_cmdline(const char *str, int *i, int n);
+char	*get_expr(const char *str, int *i, t_dlist *envlist);
+char	*get_next_word(const char *str, int *i, t_dlist *envlist);
+char	**split_cmdline(const char *str, int *i, int n, t_dlist *envlist);
 
 //built_in.c
 int		built_in_echo(int ac, char **av, t_dlist *envlist, int fd);
@@ -55,6 +55,7 @@ int     built_in_export(int ac, char **av, t_dlist *envlist, int fd);
 t_dlist	*dlist_chr(t_dlist *begin, const char *name);
 void    free_var(t_var *variable);
 void	free_elem(t_dlist *envlist, const char *name);
+void    free_envlist(t_dlist *envlist);
 int		built_in_unset(int ac, char **av, t_dlist *envlist, int fd);
 int		built_in_env(int ac, char **av, t_dlist *envlist, int fd);
 

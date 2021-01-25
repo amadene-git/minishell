@@ -275,6 +275,21 @@ void	free_elem(t_dlist *envlist, const char *name)
 	free(rm);
 }
 
+void	free_envlist(t_dlist *envlist)
+{
+	t_dlist	*elem;
+
+	elem = envlist->next;
+	while (elem != envlist)
+	{
+		elem = elem->next;
+		free_var(elem->prev->data);
+		free(elem->prev);
+	}
+	free_var(envlist->data);
+	free(envlist);
+}
+
 int		built_in_unset(int ac, char **av, t_dlist *envlist, int fd)
 {
 	int i;

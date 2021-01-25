@@ -8,6 +8,22 @@ void handle_signal()
 }
 
 
+int exec_cmd(int ac, char **cmd, const char **env, t_dlist *envlist, int fd)
+{
+	if (!ft_strcmp("exit", cmd[0]))
+	{
+		return (0);
+	}
+	else if (cmd[0] && !is_builtin(cmd[0]) && exec_bin(cmd, (char**)env))
+	{
+		return (-1);
+	}
+	else
+		exec_built_in(ac, cmd, envlist, 1);
+	return (0);
+
+}
+
 int main(int ac, const char **av, const char **env)
 {
 	char	*line;
@@ -15,52 +31,46 @@ int main(int ac, const char **av, const char **env)
 	signal(SIGINT, SIG_IGN);
 	signal(SIGINT, handle_signal);
 
-	(void)ac;
-	(void)av;	
 	int		j = 0;
 	int		k = -1;
 	char	**tab;
-	
+	char	**cmd;
+
 	t_dlist *envlist = dlist_create_from_tab(env);	
 
 	while(i)
 	{
-		ft_putstr_fd("[minishell]", 1);
-		ft_putchar_fd('>', 1);
-		i = get_next_line(0, &line);
-		
-
-		if (i && *line)
+//		
+		if (ac == 1)
 		{
-			j = 0;
-			printf ("******************PARSING************\n");//
-             
+			ft_putstr_fd("[minishell]", 1);
+			ft_putchar_fd('>', 1);
+			i = get_next_line(0, &line);
+		}
+		else 
+			line = ft_strdup(av[2]);
+
+		if (i)
+		{
+			j = 0;             
 			
 
-			tab = split_cmdline(line, &j, 0);
-			printf ("tab->%p\n", tab);//
+			tab = split_cmdline(line, &j, 0, envlist);
 			k = -1;
-			while (tab[++k])
-				printf("%d.%s->%p\n", k, tab[k], tab[k]);//
-			printf("***********************EXEC***************\n");//
-			if (!tab[0])
-				ft_putstr_fd("Command not found\n", 1);
-			else if (!is_builtin(tab[0]))
-			{
-				exec_cmd(tab, (char**)env);
-			}
-			else
-				exec_built_in(k, tab, envlist, 1);
-
+			cmd = tab;
+			while (cmd[++k]);
+			if (exec_cmd(k, cmd, env, envlist, 1) && ac != 1)
+				return (127);
 			j = -1;
 			while (++j < k)
 				free(tab[j]);
 			free(tab);	
 		}
-		//free envlist
+		if (ac != 1)
+			i = 0;
 		free(line);
 	}
-	write(1, "\n", 1);
+	free_envlist(envlist);
 	return 0;
 }
 

@@ -13,7 +13,66 @@ char	*get_quotes(const char *str, int *i)
 	return (NULL);
 }
 
-char	*get_dquotes(const char *str, int *i)// echo "\ " -> \     echo "\\" -> \     echo "\\\\" -> "\\"
+char	*put_var_env(char *str, t_dlist *envlist)
+{
+	int		i;
+	int 	j;
+	char	*name;
+	char	*var;
+	t_dlist *elem;
+
+	i = 0;
+	while (str[i])
+	{
+		j = i;
+		if (str[i] == '\\' && str[i + 1])
+			i += 2;
+		else if (str[j++] == '$')
+		{
+			while (ft_isalpha(str[j]))
+				j++;
+			name = ft_strndup(str + i + 1, j - i);
+			if (elem = dlist_chr(envlist, name))
+				var = elem->data->value;
+			str = insert_string(str, ft_strdup(dlist_chr(envlist, name)->data->value), i, j );
+			i += ft_strlen(name);
+			free(name);
+		}
+		else
+			i++;
+	}
+	return (str);
+
+}
+
+char	*get_backslash(char *str)
+{
+	int 	i;
+	char	c[2];
+
+	c[1] = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\\')
+		{
+			i++;
+			if (str[i] == 't')
+				c[0] = '\t';
+			else if (str[i] == 'n')
+				c[0] = '\n';
+			else
+				c[0] = str[i];
+			str = insert_string(str, ft_strdup(&c[0]), i - 1, i--);
+		}
+		else
+			i++;
+	}
+	return (str);
+
+}
+
+char	*get_dquotes(const char *str, int *i, t_dlist *envlist)// echo "\ " -> \     echo "\\" -> \     echo "\\\\" -> "\\"
 {
 	int j;
 
@@ -26,7 +85,7 @@ char	*get_dquotes(const char *str, int *i)// echo "\ " -> \     echo "\\" -> \  
 	}
 	//traduire en expression régulière
 	if (str[*i] == '"')
-		return (ft_strndup((char*)&str[j + 1], (*i)++ - j - 1));
+		return (put_var_env(ft_strndup((char*)&str[j + 1], (*i)++ - j - 1), envlist));
 	printf("||||||||||||||||||error dquote||||||||||||||||||||||||\n");
 	return (NULL);
 	
@@ -43,7 +102,7 @@ int		is_sep_expr(char c)
 	return (0);
 }
 
-char	*get_expr(const char *str, int *i)//echo \ ('\' + ' ')   ->        ; echo \\ ->  "\\"
+char	*get_expr(const char *str, int *i, t_dlist *envlist)//echo \ ('\' + ' ')   ->        ; echo \\ ->  "\\"
 {
 	int j;
 
@@ -56,11 +115,11 @@ char	*get_expr(const char *str, int *i)//echo \ ('\' + ' ')   ->        ; echo \
 			(*i) += 2;
 		(*i)++;
 	}
-	// traduire regex
-	return (ft_strndup((char*)&str[j], *i - j));
+	
+	return (put_var_env(ft_strndup((char*)&str[j], *i - j), envlist));
 }
 
-char	*get_next_word(const char *str, int *i)//bug concatenation "abc""def"
+char	*get_next_word(const char *str, int *i, t_dlist *envlist)//bug concatenation "abc""def"
 {
 	char	*s1 = NULL;
 	char	*s2 = NULL;
@@ -87,25 +146,25 @@ char	*get_next_word(const char *str, int *i)//bug concatenation "abc""def"
 			}
 			else if (str[*i] == '\"')//rentre dans des doubles quotes no fait
 			{
-				s2 = get_dquotes(str, i);
+				s2 = get_dquotes(str, i, envlist);
 			}
 			else if (str[*i])//tout le reste
 			{
-				s2 = get_expr(str, i);
+				s2 = get_expr(str, i, envlist);
 			}
 			s1 = ft_strjoindoublefree(s1, s2);
 		}	
 	return (s1); 
 }
 
-char	**split_cmdline(const char *str, int *i, int n)
+char	**split_cmdline(const char *str, int *i, int n, t_dlist *envlist)
 {
 	char	*s;
 	char	**tab = NULL;
 
-	s = get_next_word(str, i);
+	s = get_next_word(str, i, envlist);
 	if (s)
-		tab = split_cmdline(str, i, n + 1);
+		tab = split_cmdline(str, i, n + 1, envlist);
 	if (!s)
 		tab = (char**)malloc(sizeof(char*) * (n + 1));
 	

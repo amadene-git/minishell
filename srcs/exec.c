@@ -36,6 +36,7 @@ void	get_absolute_path(char **cmd)
 	char	*path = strdup(getenv("PATH"));
 	char	*bin = NULL;
 	char	**path_split = NULL;
+	char	*str = ft_strdup(cmd[0]);
 
 	if (path == NULL) // si le path est null, on cree un path
 		path = strdup("/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin");
@@ -75,11 +76,12 @@ void	get_absolute_path(char **cmd)
 		// On remplace le binaire par le path absolue ou NULL si le binaire
 		// n'existe pas
 		free(cmd[0]);
-		cmd[0] = bin;
+		cmd[0] = (bin) ? bin : ft_strdup(str);
 	} else {
 		free(path);
 		path = NULL;
 	}
+	free(str);
 }
 
 int		is_builtin(char	*cmd)
@@ -100,37 +102,31 @@ void	exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd)
 	
 	if (!ft_strcmp("echo", cmd[0]))
 	{
-		printf ("echo:\n");
 		built_in_echo(ac, cmd, envlist, fd);
 	}
 	else if (!ft_strcmp("cd", cmd[0]))
 	{
-		printf ("cd:\n");
 		built_in_cd(ac, cmd, envlist, fd);
 	}
 	else if (!ft_strcmp("pwd", cmd[0]))
 	{
-		printf("pwd:\n");
 		built_in_pwd(ac, cmd, envlist, fd);
 	}
 	else if (!ft_strcmp("env", cmd[0]))
 	{
-		printf("env:\n");
 		built_in_env(ac , cmd, envlist, fd);
 	}
 	else if (!ft_strcmp("export", cmd[0]))
 	{
-		printf("export:\n");
 		built_in_export(ac, cmd, envlist, fd);
 	}
 	else if (!ft_strcmp("unset", cmd[0]))
 	{
-		printf("unset:\n");
 		built_in_unset(ac, cmd, envlist, fd);
 	}
 }
 
-void	exec_cmd(char **cmd, char **env)
+int	exec_bin(char **cmd, char **env)
 {
 	pid_t	pid = 0;
 	int		status = 0;
@@ -145,11 +141,14 @@ void	exec_cmd(char **cmd, char **env)
 	}
 	else 
 	{
-		ft_putstr_fd("UNIX->\n", 1);
 		get_absolute_path(cmd);
 		if (execve(cmd[0], cmd, env) == -1)
-			ft_putstr_fd(strerror(errno), 2);
-		exit(EXIT_FAILURE);
+		{
+			dprintf(2, "minishell: %s: command not found\n", cmd[0]);
+			return (-1);
+		}
+		else
+			return (0);
 	}
 }
 
