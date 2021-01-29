@@ -7,70 +7,87 @@ void handle_signal()
 	ft_putstr_fd("\n[minishell]>", 1);
 }
 
-
-int exec_cmd(int ac, char **cmd, const char **env, t_dlist *envlist, int fd)
+int exec_cmd(t_cmd *cmd)//copier envlist dans env
 {
-	if (!ft_strcmp("exit", cmd[0]))
+	if (!ft_strcmp("exit", cmd->av[0]))
 	{
 		return (0);
 	}
-	else if (cmd[0] && !is_builtin(cmd[0]) && exec_bin(cmd, (char**)env))
+	else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env))// copier envlist
 	{
 		return (-1);
 	}
 	else
-		exec_built_in(ac, cmd, envlist, 1);
+		exec_built_in(cmd->ac, cmd->av, cmd->envlist, 1);
 	return (0);
 
 }
 
-int main(int ac, const char **av, const char **env)
+
+
+int main(int ac,const char **av, const char	**env)
 {
-	char	*line;
-	int		i = 1;
-	signal(SIGINT, SIG_IGN);
+
+	signal(SIGINT, SIG_IGN);//gestion du crtl+C
 	signal(SIGINT, handle_signal);
 
-	int		j = 0;
-	int		k = -1;
-	char	**tab;
-	char	**cmd;
+	char	*line;
+	int		gnl = 1;
+	int k;
+	t_tok	**tok_lex;
+	t_dlist	*envlist = dlist_create_from_tab(env);
+	t_cmd *cmd;
 
-	t_dlist *envlist = dlist_create_from_tab(env);	
 
-	while(i)
+	 k = -1;
+	
+
+	
+	while(gnl)
 	{
-//		
 		if (ac == 1)
 		{
 			ft_putstr_fd("[minishell]", 1);
 			ft_putchar_fd('>', 1);
-			i = get_next_line(0, &line);
+			gnl = get_next_line(0, &line);
 		}
 		else 
 			line = ft_strdup(av[2]);
 
-		if (i)
+		if (gnl && *line)
 		{
-			j = 0;             
-			
+			k = 0;
+			tok_lex = lexer(line, &k, 0);
+			// k = -1;
+			// while (tok_lex[++k]->type != CHR_END)
+			// 	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			// printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			while ((*tok_lex)->type < CHR_END)
+			{
+				while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP)
+					tok_lex++;
+				// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 
-			tab = split_cmdline(line, &j, 0, envlist);
-			k = -1;
-			cmd = tab;
-			while (cmd[++k]);
-			if (exec_cmd(k, cmd, env, envlist, 1) && ac != 1)
-				return (127);
-			j = -1;
-			while (++j < k)
-				free(tab[j]);
-			free(tab);	
+				cmd = (t_cmd*)malloc(sizeof(t_cmd));
+				cmd->envlist = envlist;
+				cmd->env = env;
+				tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
+				// printf ("ac :%d\n", cmd->ac);
+				// for (int k = 0; cmd->av[k]; k++)
+				// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
+				// printf("stdout:\n");
+				exec_cmd(cmd);
+				// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
+			}
+			
+			
 		}
 		if (ac != 1)
-			i = 0;
+			gnl = 0;
 		free(line);
 	}
-	free_envlist(envlist);
-	return 0;
+	
+
+	return (0);
 }
 

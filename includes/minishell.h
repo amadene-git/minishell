@@ -21,6 +21,43 @@ typedef struct  s_dlist
     
 }               t_dlist;
 
+typedef struct  s_cmd
+{
+    int     ac;
+    char    **av;
+    const char    **env;
+    t_dlist *envlist;
+    int     fd;
+}               t_cmd;
+
+enum e_chr{
+	CHR_ERROR,
+	CHR_WORD,
+	CHR_STR,
+	CHR_ST,
+	CHR_SP,
+	CHR_OP,
+	CHR_END
+};
+
+
+
+typedef struct s_tok
+{
+    void    *value;
+    int     type;
+}               t_tok;
+
+
+
+
+typedef struct  s_minishell
+{
+    char    *line;
+    int     index;
+}               t_minishell;
+
+
 //exec.c
 char		**split(char *raw_cmd, char *limiti);
 void		free_array(char **array);
@@ -30,12 +67,11 @@ void		exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd);
 int 		exec_bin(char **cmd, char **env);
 
 //parser.c
-char	*get_quotes(const char *str, int *i);
-char	*get_dquotes(const char *str, int *i, t_dlist *envlist);
-int		is_sep_expr(char c);
-char	*get_expr(const char *str, int *i, t_dlist *envlist);
-char	*get_next_word(const char *str, int *i, t_dlist *envlist);
-char	**split_cmdline(const char *str, int *i, int n, t_dlist *envlist);
+t_tok	**lexer(char *str, int *i, int lvl);
+char	*put_var_env(char *str, t_dlist *envlist);
+char	*get_st(const char *str);
+char	*get_str(const char *str);
+t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl);
 
 //built_in.c
 int		built_in_echo(int ac, char **av, t_dlist *envlist, int fd);

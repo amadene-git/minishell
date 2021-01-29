@@ -47,6 +47,9 @@ void	refresh_pwd(const char *pwd, const char *old, t_dlist *envlist, int fd)
 	free(tab[1]);
 	free(tab[2]);
 	free(tab);
+	t_dlist *elem = dlist_chr(envlist, "PWD");
+
+	//printf("$PWD=%s\n", elem->data->value);
 }
 
 int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
@@ -59,12 +62,12 @@ int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
 	//	printf("path -> $HOME");
 	if (chdir(av[1]) == -1)
 	{
-		ft_putendl_fd(strerror(errno), 2);
+		dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
 		return (-1);
 	}
 	if (!getcwd(&buff[0], 31999))
 	{
-		ft_putendl_fd(strerror(errno), 2);
+		dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
 		return (-1);
 	}
 	refresh_pwd(&buff[0], dlist_chr(envlist, "PWD")->data->value, envlist, fd);
