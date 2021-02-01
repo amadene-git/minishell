@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 typedef void (*sighandler_t)(int);
 
@@ -22,8 +22,6 @@ int exec_cmd(t_cmd *cmd)//copier envlist dans env
 	return (0);
 
 }
-
-
 
 int main(int ac,const char **av, const char	**env)
 {
@@ -58,15 +56,15 @@ int main(int ac,const char **av, const char	**env)
 		{
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			// k = -1;
-			// while (tok_lex[++k]->type != CHR_END)
-			// 	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
-			// printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			 //k = -1;
+			 //while (tok_lex[++k]->type != CHR_END)
+			 	//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			 //printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			while ((*tok_lex)->type < CHR_END)
 			{
 				while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP)
 					tok_lex++;
-				// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
+				 //printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 
 				cmd = (t_cmd*)malloc(sizeof(t_cmd));
 				cmd->envlist = envlist;
@@ -79,8 +77,6 @@ int main(int ac,const char **av, const char	**env)
 				exec_cmd(cmd);
 				// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 			}
-			
-			
 		}
 		if (ac != 1)
 			gnl = 0;

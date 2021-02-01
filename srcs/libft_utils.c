@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 char	*insert_string(char *str, char *to_insert, int start, int end)
 {
@@ -58,4 +58,34 @@ char	*ft_strndup(const char *str, int n)
 		dup[i] = str[i];
 	dup[i] = 0;
 	return (dup);
+}
+
+void	ft_putstr_fd(char const *s, int fd)
+{
+	int len;
+
+	if (s)
+	{
+		len = ft_strlen(s);
+		write(fd, s, len);
+	}
+}
+
+void	ft_putchar_fd(char c, int fd)
+{
+	if (fd < 0)
+		return ;
+	write(fd, &c, 1);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	int i;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		i++;
+	}
+	return (i);
 }

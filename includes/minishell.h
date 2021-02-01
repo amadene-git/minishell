@@ -1,11 +1,23 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "libft.h"
+# include <stdlib.h>
 # include <signal.h>
 # include <stdio.h>
 # include <errno.h>
+# include <unistd.h>
+# include <string.h>
+#include <stdlib.h>
 # include <sys/wait.h>
+
+//get_next_line defines
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 7
+# endif
+
+# ifndef OPEN_MAX
+#  define OPEN_MAX 256
+# endif
 
 typedef struct  s_var
 {
@@ -97,8 +109,20 @@ int		built_in_env(int ac, char **av, t_dlist *envlist, int fd);
 
 //libft a verifier
 char	*insert_string(char *str, char *to_insert, int start, int end);
+char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoindoublefree(char *s1, char *s2);
 int		ft_strcmp(const char *s1, const char *s2);
 char	*ft_strndup(const char *str, int n);
+void	ft_putstr_fd(char const *s, int fd);
+void	ft_putchar_fd(char c, int fd);
+char	*ft_strdup(const char *s1);
+int		ft_isalpha(int c);
+int		get_next_line(int const fd, char **line);
+size_t	ft_strlen(const char *s);
+void	ft_putendl_fd(char const *s, int fd);
+char	*ft_strchr(const char *s, int c);
+void	*ft_calloc(size_t count, size_t size);
+
 
 
 

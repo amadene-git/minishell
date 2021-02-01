@@ -7,6 +7,8 @@ SRCS	=	srcs/main.c\
 			srcs/built_in_export.c\
 			srcs/exec.c\
 			srcs/libft_utils.c\
+			srcs/get_next_line.c\
+			srcs/libft_utils_suite.c\
 
 
 OBJS	=	${SRCS:.c=.o }
@@ -17,19 +19,16 @@ CC		=	gcc
 
 RM		=	rm -rf
 
-LIBFT	=	~/Documents/42-cursus/Libft/libft.a 
-
-
 INC		=	includes/
 
 .c.o 	:
-			${CC} -I ~/Documents/42-cursus/Libft -I includes -c $< -o ${<:.c=.o}
+			${CC} -I includes -c $< -o ${<:.c=.o}
 
 
 all		:	${NAME}
 
 $(NAME)	: 	${OBJS}
-			${CC} -o ${NAME} ${OBJS} -g ${LIBFT}
+			${CC} -o ${NAME} ${OBJS} -g
 
 clean	:
 			${RM} ${OBJS}

@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 unsigned int g_get_chr[255] = {
 	['!'...'%'] = CHR_WORD,
@@ -165,7 +165,7 @@ t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl)
 			}
 			else if (tok_lex[i]->type == CHR_WORD)
 			{
-				s2 = strdup(tok_lex[i]->value);
+				s2 = ft_strdup(tok_lex[i]->value);
 				s2 = put_var_env(s2, cmd->envlist);
 			}
 			s1 = ft_strjoindoublefree(s1, s2);
