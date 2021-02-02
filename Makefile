@@ -9,6 +9,7 @@ SRCS	=	srcs/main.c\
 			srcs/libft_utils.c\
 			srcs/get_next_line.c\
 			srcs/libft_utils_suite.c\
+			srcs/ft_split.c\
 
 
 OBJS	=	${SRCS:.c=.o }

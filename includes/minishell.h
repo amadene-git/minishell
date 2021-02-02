@@ -49,6 +49,7 @@ enum e_chr{
 	CHR_ST,
 	CHR_SP,
 	CHR_OP,
+    CHR_PI,
 	CHR_END
 };
 
@@ -76,7 +77,7 @@ void		free_array(char **array);
 void		get_absolute_path(char **cmd);
 int			is_builtin(char	*cmd);
 void		exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd);
-int 		exec_bin(char **cmd, char **env);
+int 		exec_bin(char **cmd, char **env, int pipe, int fd[2]);
 
 //parser.c
 t_tok	**lexer(char *str, int *i, int lvl);
@@ -122,6 +123,7 @@ size_t	ft_strlen(const char *s);
 void	ft_putendl_fd(char const *s, int fd);
 char	*ft_strchr(const char *s, int c);
 void	*ft_calloc(size_t count, size_t size);
+char	**ft_split(char const *s, char c);
 
 
 

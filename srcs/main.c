@@ -7,19 +7,27 @@ void handle_signal()
 	ft_putstr_fd("\n[minishell]>", 1);
 }
 
-int exec_cmd(t_cmd *cmd)//copier envlist dans env
+int exec_cmd(t_cmd *cmd, int fd[2])//copier envlist dans env
 {
 	if (!ft_strcmp("exit", cmd->av[0]))
 	{
 		return (0);
 	}
-	else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env))// copier envlist
+	else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env, 0, fd))// copier envlist
 	{
 		return (-1);
 	}
 	else
 		exec_built_in(cmd->ac, cmd->av, cmd->envlist, 1);
 	return (0);
+
+}
+
+int	has_pipe(t_tok *tok_lex)
+{
+	int	i;
+
+	while (t_lex[])
 
 }
 
@@ -31,16 +39,14 @@ int main(int ac,const char **av, const char	**env)
 
 	char	*line;
 	int		gnl = 1;
-	int k;
+	int		k;
 	t_tok	**tok_lex;
 	t_dlist	*envlist = dlist_create_from_tab(env);
-	t_cmd *cmd;
+	t_cmd 	*cmd;
+	int		fd[2];
 
-
-	 k = -1;
-	
-
-	
+	fd[0] = 0;
+	fd[1] = 0;
 	while(gnl)
 	{
 		if (ac == 1)
@@ -51,7 +57,6 @@ int main(int ac,const char **av, const char	**env)
 		}
 		else 
 			line = ft_strdup(av[2]);
-
 		if (gnl && *line)
 		{
 			k = 0;
@@ -62,7 +67,8 @@ int main(int ac,const char **av, const char	**env)
 			 //printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			while ((*tok_lex)->type < CHR_END)
 			{
-				while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP)
+				while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
+				|| (*tok_lex)->type == CHR_PI)
 					tok_lex++;
 				 //printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 
@@ -74,7 +80,7 @@ int main(int ac,const char **av, const char	**env)
 				// for (int k = 0; cmd->av[k]; k++)
 				// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
 				// printf("stdout:\n");
-				exec_cmd(cmd);
+				exec_cmd(cmd, fd);
 				// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 			}
 		}
@@ -82,8 +88,6 @@ int main(int ac,const char **av, const char	**env)
 			gnl = 0;
 		free(line);
 	}
-	
-
 	return (0);
 }
 

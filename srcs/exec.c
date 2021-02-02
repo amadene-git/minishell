@@ -1,26 +1,5 @@
 #include "../includes/minishell.h"
 
-char	**split(char *raw_cmd, char *limit)
-{
-	char	*ptr = NULL;
-	char	**cmd = NULL;
-	size_t	idx = 0;
-
-	// split sur les espaces
-	ptr = strtok(raw_cmd, limit);
-
-	while (ptr) {
-		cmd = (char **)realloc(cmd, ((idx + 1) * sizeof(char *)));
-		cmd[idx] = strdup(ptr);
-		ptr = strtok(NULL, limit);
-		++idx;
-	}
-	// On alloue un element qu'on met a NULL a la fin du tableau
-	cmd = (char **)realloc(cmd, ((idx + 1) * sizeof(char *)));
-	cmd[idx] = NULL;
-	return (cmd);
-}
-
 void	free_array(char **array)
 {
 	for (int i = 0; array[i]; i++) {
@@ -33,20 +12,20 @@ void	free_array(char **array)
 
 void	get_absolute_path(char **cmd)
 {
-	char	*path = strdup(getenv("PATH"));
+	char	*path = ft_strdup(getenv("PATH"));
 	char	*bin = NULL;
 	char	**path_split = NULL;
 	char	*str = ft_strdup(cmd[0]);
 
 	if (path == NULL) // si le path est null, on cree un path
-		path = strdup("/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin");
+		path = ft_strdup("/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin");
 
 	// si cmd n'est pas le chemin absolue, on cherche le chemin absolue du
 	// binaire grace a la variable d'environment PATH
 	if (cmd[0][0] != '/' && strncmp(cmd[0], "./", 2) != 0) {
 
 		// On split le path pour verifier ou ce trouve le binaire
-		path_split = split(path, ":");
+		path_split = ft_split(path, ':');
 		free(path);
 		path = NULL;
 
@@ -126,22 +105,39 @@ void	exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd)
 	}
 }
 
-int	exec_bin(char **cmd, char **env)
+int	exec_bin(char **cmd, char **env, int flag, int fd[2])
 {
 	pid_t	pid = 0;
 	int		status = 0;
 
+	if (flag == 1)
+		if (pipe(fd) == -1)
+			return (-1);
 	pid = fork();
 	if (pid == -1)
 		ft_putstr_fd(strerror(errno), 2);
 	else if (pid > 0) 
 	{
+		if (flag > 0)
+		{
+			close(fd[0]);
+			close(fd[1]);
+		}
 		waitpid(pid, &status, 0);
 		kill(pid, SIGTERM);
 	}
 	else 
 	{
 		get_absolute_path(cmd);
+		if (flag > 0)
+		{
+			if (flag == 1)
+				dup2(fd[1], STDOUT_FILENO);
+			else if (flag == 2)
+				dup2(fd[0], STDIN_FILENO);
+			close(fd[0]);
+			close(fd[1]);
+		}
 		if (execve(cmd[0], cmd, env) == -1)
 		{
 			dprintf(2, "minishell: %s: command not found\n", cmd[0]);
@@ -150,5 +146,5 @@ int	exec_bin(char **cmd, char **env)
 		else
 			return (0);
 	}
+	return (0);
 }
-
