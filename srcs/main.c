@@ -7,33 +7,37 @@ void handle_signal()
 	ft_putstr_fd("\n[minishell]>", 1);
 }
 
-int exec_cmd(t_cmd *cmd, int fd[2])//copier envlist dans env
+int exec_cmd(t_cmd *cmd, int fd[2], int flag)//copier envlist dans env
 {
 	if (!ft_strcmp("exit", cmd->av[0]))
 	{
 		return (0);
 	}
-	else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env, 0, fd))// copier envlist
+	else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env, flag, fd))// copier envlist
 	{
 		return (-1);
 	}
 	else
 		exec_built_in(cmd->ac, cmd->av, cmd->envlist, 1);
 	return (0);
-
 }
 
-int	has_pipe(t_tok *tok_lex)
+int	has_pipe(t_tok **tok_lex)
 {
 	int	i;
 
-	while (t_lex[])
-
+	i = 0;
+	while (tok_lex[i]->type < CHR_END)
+	{
+		if (tok_lex[i]->type == CHR_PI)
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 int main(int ac,const char **av, const char	**env)
 {
-
 	signal(SIGINT, SIG_IGN);//gestion du crtl+C
 	signal(SIGINT, handle_signal);
 
@@ -44,9 +48,11 @@ int main(int ac,const char **av, const char	**env)
 	t_dlist	*envlist = dlist_create_from_tab(env);
 	t_cmd 	*cmd;
 	int		fd[2];
+	int		pipe_flag;
 
 	fd[0] = 0;
 	fd[1] = 0;
+	pipe_flag = 0;
 	while(gnl)
 	{
 		if (ac == 1)
@@ -65,13 +71,18 @@ int main(int ac,const char **av, const char	**env)
 			 //while (tok_lex[++k]->type != CHR_END)
 			 	//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			 //printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			if (has_pipe(tok_lex))
+				pipe_flag++;
 			while ((*tok_lex)->type < CHR_END)
 			{
 				while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
 				|| (*tok_lex)->type == CHR_PI)
+				{
+					if ((*tok_lex)->type == CHR_PI)
+						pipe_flag++;
 					tok_lex++;
-				 //printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
-
+				}
+				//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 				cmd = (t_cmd*)malloc(sizeof(t_cmd));
 				cmd->envlist = envlist;
 				cmd->env = env;
@@ -80,7 +91,7 @@ int main(int ac,const char **av, const char	**env)
 				// for (int k = 0; cmd->av[k]; k++)
 				// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
 				// printf("stdout:\n");
-				exec_cmd(cmd, fd);
+				exec_cmd(cmd, fd, 0);
 				// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 			}
 		}
@@ -90,4 +101,3 @@ int main(int ac,const char **av, const char	**env)
 	}
 	return (0);
 }
-
