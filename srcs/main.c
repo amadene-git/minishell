@@ -73,6 +73,9 @@ int main(int ac,const char **av, const char	**env)
 			 //printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			if (has_pipe(tok_lex))
 				pipe_flag++;
+			if (pipe_flag == 1)
+				if (pipe(fd) == -1)
+					return (-1);
 			while ((*tok_lex)->type < CHR_END)
 			{
 				while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
@@ -91,7 +94,7 @@ int main(int ac,const char **av, const char	**env)
 				// for (int k = 0; cmd->av[k]; k++)
 				// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
 				// printf("stdout:\n");
-				exec_cmd(cmd, fd, 0);
+				exec_cmd(cmd, fd, pipe_flag);
 				// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 			}
 		}

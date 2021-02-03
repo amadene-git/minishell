@@ -110,23 +110,10 @@ int	exec_bin(char **cmd, char **env, int flag, int fd[2])
 	pid_t	pid = 0;
 	int		status = 0;
 
-	if (flag == 1)
-		if (pipe(fd) == -1)
-			return (-1);
 	pid = fork();
 	if (pid == -1)
 		ft_putstr_fd(strerror(errno), 2);
-	else if (pid > 0) 
-	{
-		if (flag > 0)
-		{
-			close(fd[0]);
-			close(fd[1]);
-		}
-		waitpid(pid, &status, 0);
-		kill(pid, SIGTERM);
-	}
-	else 
+	else if (pid == 0)
 	{
 		get_absolute_path(cmd);
 		if (flag > 0)
@@ -143,8 +130,13 @@ int	exec_bin(char **cmd, char **env, int flag, int fd[2])
 			dprintf(2, "minishell: %s: command not found\n", cmd[0]);
 			return (-1);
 		}
-		else
-			return (0);
 	}
+	if (flag == 2)
+	{
+		close(fd[0]);
+		close(fd[1]);
+	}
+	waitpid(pid, NULL, 0);
+	//kill(pid, SIGTERM);
 	return (0);
 }
