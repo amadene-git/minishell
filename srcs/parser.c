@@ -5,6 +5,7 @@ unsigned int g_get_chr[255] = {
 	['*'...':'] = CHR_WORD,
 	['?'...'{'] = CHR_WORD,
 	['}'...'~']	= CHR_WORD,
+	['='] = CHR_WORD,
 	['"'] = CHR_STR,
 	['\''] = CHR_ST,
 	['\t'] = CHR_SP,

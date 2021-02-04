@@ -19,6 +19,10 @@
 #  define OPEN_MAX 256
 # endif
 
+# ifndef PATHSIZE
+#  define PATHMAX 32000
+# endif
+
 typedef struct  s_var
 {
     char    *name;

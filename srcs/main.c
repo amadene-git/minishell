@@ -36,6 +36,88 @@ int	has_pipe(t_tok **tok_lex)
 	return (0);
 }
 
+char	*str_inc(char *nbr)
+{
+	int		i;
+	int		a;
+	char	*str = ft_strdup(nbr);
+
+	i = -1;
+	a = 0;
+	free(nbr);
+	while (str[++i])
+		a += (str[i] == '9') ? 0 : 1;
+	if (a == 0)
+	{
+		free(str);
+		i += 2;
+		str = (char*)malloc(sizeof(char) * (i));
+		str[i--] = 0;
+		while (--i)
+			str[i] = '0';
+		str[i] = '1';
+		return (str);
+	}
+	i--;
+	while (i >= 0)
+	{
+		if (str[i] >= '0' && str[i] <= '8')
+		{
+			str[i] += 1;
+			return (str);
+		}
+		if (str[i] < '0' || str[i] > '9')
+			return(NULL);
+		i--;
+	}
+	return (str);
+}
+
+t_dlist *init_env(const char **env)
+{
+	t_dlist *envlist;
+	t_dlist *elem;
+	char **tab;
+	char buf[PATHMAX + 1];
+
+	tab = (char**)malloc(sizeof(char*) * 2);
+	tab[0] = ft_strdup("export");
+	envlist = dlist_create_from_tab(env);
+	if (!(elem = dlist_chr(envlist, "PWD")) && getcwd(&buf[0], PATHMAX))
+	{
+		if(!getcwd(&buf[0], PATHMAX))
+		{
+			dprintf(2, "minishell: : getcwd: %s\n", strerror(errno));
+			return (NULL);
+		}
+		else
+		{
+			tab[1] = ft_strjoindoublefree(ft_strdup("PWD="), ft_strdup(&buf[0]));
+			built_in_export(2, tab, envlist, 1);
+			free(tab[1]);
+		}
+	}
+	if (!(elem = dlist_chr(envlist, "OLDPWD")))
+	{
+		tab[1] = ft_strdup("OLDPWD");
+		built_in_export(2, tab, envlist, 1);
+		free(tab[1]);
+
+	}
+	if (!(elem = dlist_chr(envlist, "SHLVL")))
+	{
+		tab[1] = ft_strjoindoublefree(ft_strdup("SHLVL="), ft_strdup("1"));
+		built_in_export(2, tab, envlist, 1);
+		free(tab[1]);
+
+	}
+	else
+		dlist_chr(envlist, "SHLVL")->data->value = str_inc(dlist_chr(envlist, "SHLVL")->data->value);
+	free(tab[0]);
+	free(tab);
+	return (envlist);
+}
+
 int main(int ac,const char **av, const char	**env)
 {
 	signal(SIGINT, SIG_IGN);//gestion du crtl+C
@@ -45,7 +127,7 @@ int main(int ac,const char **av, const char	**env)
 	int		gnl = 1;
 	int		k;
 	t_tok	**tok_lex;
-	t_dlist	*envlist = dlist_create_from_tab(env);
+	t_dlist	*envlist = init_env(env);
 	t_cmd 	*cmd;
 	int		fd[2];
 	int		pipe_flag;
