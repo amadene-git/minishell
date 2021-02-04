@@ -1,66 +1,42 @@
 #include "../includes/minishell.h"
 
-void	free_array(char **array)
+void	get_absolute_path(char **cmd, t_dlist *envlist)
 {
-	for (int i = 0; array[i]; i++) {
-		free(array[i]);
-		array[i] = NULL;
-	}
-	free(array);
-	array = NULL;
-}
+	char			*path = NULL;
+	char			*strdir = NULL;
+	DIR				*dir;
+	struct dirent	*sd;
 
-void	get_absolute_path(char **cmd)
-{
-	char	*path = ft_strdup(getenv("PATH"));
-	char	*bin = NULL;
-	char	**path_split = NULL;
-	char	*str = ft_strdup(cmd[0]);
-
-	if (path == NULL) // si le path est null, on cree un path
-		path = ft_strdup("/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin");
-
-	// si cmd n'est pas le chemin absolue, on cherche le chemin absolue du
-	// binaire grace a la variable d'environment PATH
-	if (cmd[0][0] != '/' && strncmp(cmd[0], "./", 2) != 0) {
-
-		// On split le path pour verifier ou ce trouve le binaire
-		path_split = ft_split(path, ':');
-		free(path);
-		path = NULL;
-
-		// On boucle sur chaque dossier du path pour trouver l'emplacement du binaire
-		for (int i = 0; path_split[i]; i++) {
-			// alloc len du path + '/' + len du binaire + 1 pour le '\0'
-			bin = (char *)calloc(sizeof(char), (strlen(path_split[i]) + 1 + strlen(cmd[0]) + 1));
-			if (bin == NULL)
-				break ;
-
-			// On concat le path , le '/' et le nom du binaire
-			strcat(bin, path_split[i]);
-			strcat(bin, "/");
-			strcat(bin, cmd[0]);
-
-			// On verfie l'existence du fichier et on quitte la boucle si access
-			// renvoi 0
-			if (access(bin, F_OK) == 0)
-				break ;
-
-			// Nous sommes des gens propre :D
-			free(bin);
-			bin = NULL;
+	if (dlist_chr(envlist, "PATH"))
+		path = dlist_chr(envlist, "PATH")->data->value;
+	else
+		return;
+	if (cmd[0][0] != '/' && strncmp(cmd[0], "./", 2) != 0)
+		while (path)
+		{
+			if (ft_strchr(path, ':'))
+			{
+				strdir = ft_strndup(path, ft_strchr(path, ':') - path);
+				path = ft_strchr(path, ':') + 1;
+			}
+			else
+			{
+				strdir = ft_strdup(path);
+				path = NULL;
+			}
+			if ((dir = opendir(strdir)) == NULL)
+				continue;
+			while ((sd = readdir(dir)) != NULL)
+				if (!ft_strcmp(sd->d_name, cmd[0]))
+				{
+					free(cmd[0]);
+					strdir = ft_strjoindoublefree(strdir, ft_strdup("/"));
+					cmd[0] = ft_strjoindoublefree(strdir, ft_strdup(sd->d_name));
+					return;
+				}
+			closedir(dir);
+			free(strdir);
 		}
-		free_array(path_split);
-
-		// On remplace le binaire par le path absolue ou NULL si le binaire
-		// n'existe pas
-		free(cmd[0]);
-		cmd[0] = (bin) ? bin : ft_strdup(str);
-	} else {
-		free(path);
-		path = NULL;
-	}
-	free(str);
 }
 
 int		is_builtin(char	*cmd)
@@ -105,7 +81,7 @@ void	exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd)
 	}
 }
 
-int	exec_bin(char **cmd, char **env, int flag, int fd[2])
+int	exec_bin(char **cmd, char **env, int flag, int fd[2], t_dlist *envlist)
 {
 	pid_t	pid = 0;
 	int		status = 0;
@@ -115,7 +91,7 @@ int	exec_bin(char **cmd, char **env, int flag, int fd[2])
 		ft_putstr_fd(strerror(errno), 2);
 	else if (pid == 0)
 	{
-		get_absolute_path(cmd);
+		get_absolute_path(cmd, envlist);
 		if (flag > 0)
 		{
 			if (flag == 1)

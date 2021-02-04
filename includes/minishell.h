@@ -7,8 +7,10 @@
 # include <errno.h>
 # include <unistd.h>
 # include <string.h>
-#include <stdlib.h>
+# include <stdlib.h>
 # include <sys/wait.h>
+# include <sys/types.h>
+# include <dirent.h>
 
 //get_next_line defines
 # ifndef BUFFER_SIZE
@@ -78,10 +80,10 @@ typedef struct  s_minishell
 //exec.c
 char		**split(char *raw_cmd, char *limiti);
 void		free_array(char **array);
-void		get_absolute_path(char **cmd);
+void		get_absolute_path(char **cmd, t_dlist *envlist);
 int			is_builtin(char	*cmd);
 void		exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd);
-int 		exec_bin(char **cmd, char **env, int pipe, int fd[2]);
+int 		exec_bin(char **cmd, char **env, int pipe, int fd[2], t_dlist *envlist);
 
 //parser.c
 t_tok	**lexer(char *str, int *i, int lvl);

@@ -7,13 +7,13 @@ void handle_signal()
 	ft_putstr_fd("\n[minishell]>", 1);
 }
 
-int exec_cmd(t_cmd *cmd, int fd[2], int flag)//copier envlist dans env
+int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist dans env
 {
 	if (!ft_strcmp("exit", cmd->av[0]))
 	{
 		return (0);
 	}
-	else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env, flag, fd))// copier envlist
+	else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env, flag, fd, envlist))// copier envlist
 	{
 		return (-1);
 	}
@@ -176,7 +176,7 @@ int main(int ac,const char **av, const char	**env)
 				// for (int k = 0; cmd->av[k]; k++)
 				// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
 				// printf("stdout:\n");
-				exec_cmd(cmd, fd, pipe_flag);
+				exec_cmd(cmd, fd, pipe_flag, envlist);
 				// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 			}
 		}
