@@ -118,6 +118,16 @@ t_dlist *init_env(const char **env)
 	return (envlist);
 }
 
+int	has_errors(t_tok **tok_lex)
+{
+	if (tok_lex[0]->type == CHR_PI || tok_lex[0]->type == CHR_OP)
+	{
+		dprintf(1, "minishell: syntax error near unexpected token `%s'\n", tok_lex[0]->value);
+		return (1);
+	}
+	return (0);
+}
+
 int main(int ac,const char **av, const char	**env)
 {
 	signal(SIGINT, SIG_IGN);//gestion du crtl+C
@@ -149,36 +159,39 @@ int main(int ac,const char **av, const char	**env)
 		{
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			 //k = -1;
-			 //while (tok_lex[++k]->type != CHR_END)
-			 	//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
-			 //printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			 k = -1;
+			//while (tok_lex[++k]->type != CHR_END)
+			//	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			// printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			if (has_pipe(tok_lex))
 				pipe_flag++;
 			if (pipe_flag == 1)
 				if (pipe(fd) == -1)
 					return (-1);
-			while ((*tok_lex)->type < CHR_END)
-			{
-				while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
-				|| (*tok_lex)->type == CHR_PI)
+			if (!has_errors(tok_lex))
+				while ((*tok_lex)->type < CHR_END)
 				{
-					if ((*tok_lex)->type == CHR_PI)
-						pipe_flag++;
-					tok_lex++;
+					while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
+					|| (*tok_lex)->type == CHR_PI)
+					{
+						if ((*tok_lex)->type == CHR_PI)
+							pipe_flag++;
+						tok_lex++;
+					}
+					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
+					cmd = (t_cmd*)malloc(sizeof(t_cmd));
+					cmd->envlist = envlist;
+					cmd->env = env;
+					tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
+					// printf ("ac :%d\n", cmd->ac);
+					// for (int k = 0; cmd->av[k]; k++)
+					// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
+					// printf("stdout:\n");
+					exec_cmd(cmd, fd, pipe_flag, envlist);
+					// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 				}
-				//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
-				cmd = (t_cmd*)malloc(sizeof(t_cmd));
-				cmd->envlist = envlist;
-				cmd->env = env;
-				tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
-				// printf ("ac :%d\n", cmd->ac);
-				// for (int k = 0; cmd->av[k]; k++)
-				// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
-				// printf("stdout:\n");
-				exec_cmd(cmd, fd, pipe_flag, envlist);
-				// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
-			}
+			else
+				return (2);
 		}
 		if (ac != 1)
 			gnl = 0;

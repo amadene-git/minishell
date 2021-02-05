@@ -76,7 +76,6 @@ typedef struct  s_minishell
     int     index;
 }               t_minishell;
 
-
 //exec.c
 char		**split(char *raw_cmd, char *limiti);
 void		free_array(char **array);
