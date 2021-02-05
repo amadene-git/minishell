@@ -120,9 +120,14 @@ t_dlist *init_env(const char **env)
 
 int	has_errors(t_tok **tok_lex)
 {
-	if (tok_lex[0]->type == CHR_PI || tok_lex[0]->type == CHR_OP)
+	int		i;
+
+	i = 0;
+	while (tok_lex[i]->type == CHR_SP)
+		i++;
+	if (tok_lex[i]->type == CHR_PI || tok_lex[i]->type == CHR_OP)
 	{
-		dprintf(1, "minishell: syntax error near unexpected token `%s'\n", tok_lex[0]->value);
+		dprintf(2, "minishell: syntax error near unexpected token `%s'\n", tok_lex[i]->value);
 		return (1);
 	}
 	return (0);
@@ -190,7 +195,7 @@ int main(int ac,const char **av, const char	**env)
 					exec_cmd(cmd, fd, pipe_flag, envlist);
 					// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 				}
-			else
+			else if (ac != 1)
 				return (2);
 		}
 		if (ac != 1)
