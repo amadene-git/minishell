@@ -9,17 +9,46 @@ void handle_signal()
 
 int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist dans env
 {
-	if (!ft_strcmp("exit", cmd->av[0]))
+	int		i;
+	int		status;
+	pid_t	pid = 0;
+
+	i = -1;
+	status = 0;
+	while (cmd->av[0][++i])
+		cmd->av[0][i] = ft_tolower(cmd->av[0][i]);
+	pid = fork();
+	if (pid == -1)
+		ft_putstr_fd(strerror(errno), 2);
+	else if (pid == 0)
 	{
-		return (0);
+		if (flag > 0)
+		{
+			if (flag == 1)
+				dup2(fd[1], STDOUT_FILENO);
+			else if (flag == 2)
+				dup2(fd[0], STDIN_FILENO);
+			close(fd[0]);
+			close(fd[1]);
+		}
+		if (!ft_strcmp("exit", cmd->av[0]))
+		{
+			status = 0;
+		}
+		else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env, envlist))// copier envlist
+		{
+			status = -1;
+		}
+		else
+			exec_built_in(cmd->ac, cmd->av, cmd->envlist, 1);
 	}
-	else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env, flag, fd, envlist))// copier envlist
+	if (flag == 2)
 	{
-		return (-1);
+		close(fd[0]);
+		close(fd[1]);
 	}
-	else
-		exec_built_in(cmd->ac, cmd->av, cmd->envlist, 1);
-	return (0);
+	waitpid(pid, NULL, 0);
+	return (status);
 }
 
 int	has_pipe(t_tok **tok_lex)
@@ -147,9 +176,6 @@ int main(int ac,const char **av, const char	**env)
 	int		fd[2];
 	int		pipe_flag;
 
-	fd[0] = 0;
-	fd[1] = 0;
-	pipe_flag = 0;
 	while(gnl)
 	{
 		if (ac == 1)
@@ -162,9 +188,12 @@ int main(int ac,const char **av, const char	**env)
 			line = ft_strdup(av[2]);
 		if (gnl && *line)
 		{
+			fd[0] = 0;
+			fd[1] = 0;
+			pipe_flag = 0;
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			 k = -1;
+			//k = -1;
 			//while (tok_lex[++k]->type != CHR_END)
 			//	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			// printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));

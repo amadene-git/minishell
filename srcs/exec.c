@@ -54,7 +54,6 @@ int		is_builtin(char	*cmd)
 
 void	exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd)
 {
-	
 	if (!ft_strcmp("echo", cmd[0]))
 	{
 		built_in_echo(ac, cmd, envlist, fd);
@@ -81,38 +80,13 @@ void	exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd)
 	}
 }
 
-int	exec_bin(char **cmd, char **env, int flag, int fd[2], t_dlist *envlist)
+int	exec_bin(char **cmd, char **env, t_dlist *envlist)
 {
-	pid_t	pid = 0;
-	int		status = 0;
-
-	pid = fork();
-	if (pid == -1)
-		ft_putstr_fd(strerror(errno), 2);
-	else if (pid == 0)
+	get_absolute_path(cmd, envlist);
+	if (execve(cmd[0], cmd, env) == -1)
 	{
-		get_absolute_path(cmd, envlist);
-		if (flag > 0)
-		{
-			if (flag == 1)
-				dup2(fd[1], STDOUT_FILENO);
-			else if (flag == 2)
-				dup2(fd[0], STDIN_FILENO);
-			close(fd[0]);
-			close(fd[1]);
-		}
-		if (execve(cmd[0], cmd, env) == -1)
-		{
-			dprintf(2, "minishell: %s: command not found\n", cmd[0]);
-			return (-1);
-		}
+		dprintf(2, "minishell: %s: command not found\n", cmd[0]);
+		return (-1);
 	}
-	if (flag == 2)
-	{
-		close(fd[0]);
-		close(fd[1]);
-	}
-	waitpid(pid, NULL, 0);
-	//kill(pid, SIGTERM);
 	return (0);
 }

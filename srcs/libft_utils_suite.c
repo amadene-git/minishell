@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/30 19:27:05 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/01/30 20:33:16 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/07 21:36:08 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,13 @@ int		ft_isalpha(int c)
 	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
 		return (1);
 	return (0);
+}
+
+int		ft_tolower(int c)
+{
+	if (c >= 'A' && c <= 'Z')
+		return (c + 32);
+	return (c);
 }
 
 char	*ft_strjoindoublefree(char *s1, char *s2)

@@ -107,9 +107,9 @@ char	*put_var_env(char *str, t_dlist *envlist)
 	//		printf("2\n");
 			name = ft_strndup(str + i + 1, j - i - 1);
 			if (dlist_chr(envlist, name))
-				str = insert_string(str, ft_strdup(dlist_chr(envlist, name)->data->value), i, j );
+				str = insert_string(str, ft_strdup(dlist_chr(envlist, name)->data->value), i, j);
 			else
-				str = insert_string(str, ft_strdup(""), i, j );
+				str = insert_string(str, ft_strdup(""), i, j);
 			free(name);
 		}
 		else
@@ -186,4 +186,3 @@ t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl)
 	return (tok_lex);
 
 }
-

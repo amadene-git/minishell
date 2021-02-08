@@ -82,7 +82,7 @@ void		free_array(char **array);
 void		get_absolute_path(char **cmd, t_dlist *envlist);
 int			is_builtin(char	*cmd);
 void		exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd);
-int 		exec_bin(char **cmd, char **env, int pipe, int fd[2], t_dlist *envlist);
+int 		exec_bin(char **cmd, char **env, t_dlist *envlist);
 
 //parser.c
 t_tok	**lexer(char *str, int *i, int lvl);
@@ -129,8 +129,5 @@ void	ft_putendl_fd(char const *s, int fd);
 char	*ft_strchr(const char *s, int c);
 void	*ft_calloc(size_t count, size_t size);
 char	**ft_split(char const *s, char c);
-
-
-
-
+int		ft_tolower(int c);
 #endif

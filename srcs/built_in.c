@@ -42,7 +42,6 @@ void	refresh_pwd(const char *pwd, const char *old, t_dlist *envlist, int fd)
 	tab[1] = ft_strjoin("PWD=", pwd);
 	tab[2] = ft_strjoin("OLDPWD=", old);
 	built_in_export(3, tab, envlist, fd);
-
 	free(tab[0]);
 	free(tab[1]);
 	free(tab[2]);
