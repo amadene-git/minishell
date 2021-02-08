@@ -76,6 +76,22 @@ typedef struct  s_minishell
     int     index;
 }               t_minishell;
 
+//built_in_echo.c
+int		built_in_echo(int ac, char **av, t_dlist *envlist, int fd);
+
+//built_in_cd.c
+void	refresh_pwd(const char *pwd, const char *old, t_dlist *envlist, int fd);
+int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd);
+
+//built_in_pwd.c
+int		built_in_pwd(int ac, char **av, t_dlist *envlist, int fd);
+
+//built_in_export.c
+void	print_export(t_dlist *envlist, int fd);
+int     built_in_export(int ac, char **av, t_dlist *envlist, int fd);
+
+
+
 //exec.c
 char		**split(char *raw_cmd, char *limiti);
 void		free_array(char **array);
@@ -87,14 +103,9 @@ int 		exec_bin(char **cmd, char **env, int pipe, int fd[2], t_dlist *envlist);
 //parser.c
 t_tok	**lexer(char *str, int *i, int lvl);
 char	*put_var_env(char *str, t_dlist *envlist);
-char	*get_st(const char *str);
-char	*get_str(const char *str);
+char	*get_st(char *str);
+char	*get_str(char *str, t_dlist *envlist);
 t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl);
-
-//built_in.c
-int		built_in_echo(int ac, char **av, t_dlist *envlist, int fd);
-int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd);
-int		built_in_pwd(int ac, char **av, t_dlist *envlist, int fd);
 
 //built_in_export.c
 t_dlist *dlist_create_elem(void *data);
@@ -103,9 +114,7 @@ t_dlist	*dlist_create_from_tab(const char **tab);
 void	dlist_print(t_dlist *begin, int fd);
 t_dlist *dlist_strchr_first(t_dlist *begin);
 t_dlist	*dlist_chr_alpha_next(t_dlist *begin);
-void	print_export(t_dlist *envlist, int fd);
 void	insert_var(t_dlist *envlist, t_var *variable);
-int     built_in_export(int ac, char **av, t_dlist *envlist, int fd);
 t_dlist	*dlist_chr(t_dlist *begin, const char *name);
 void    free_var(t_var *variable);
 void	free_elem(t_dlist *envlist, const char *name);
@@ -129,6 +138,7 @@ void	ft_putendl_fd(char const *s, int fd);
 char	*ft_strchr(const char *s, int c);
 void	*ft_calloc(size_t count, size_t size);
 char	**ft_split(char const *s, char c);
+int     ft_is_alpha(int c);
 
 
 

@@ -119,7 +119,7 @@ char	*put_var_env(char *str, t_dlist *envlist)
 
 }
 
-char	*get_st(const char *str)
+char	*get_st(char *str)
 {
 	int	i;
 
@@ -130,15 +130,73 @@ char	*get_st(const char *str)
 	return (ft_strndup(str + 1, i - 2));
 }
 
-char	*get_str(const char *str)
+char	*get_str(char *str, t_dlist *envlist)
 {
-	int	i;
+	int		i;
+	int 	j;
+	char	*ptr;
+	t_dlist	*elem;
 
-	if (*str != '"')
-		return (NULL);
-	i = 0;
-	while (str[++i]);
-	return (ft_strndup(str + 1, i - 2));
+	i = -1;
+	while (str[++i])
+    {
+        if (str[i] == '\\')
+        {
+			if (str[i + 1] == '"' || str[i + 1] == '$' || str[i + 1] == '\\')
+            	str = insert_string(str, strdup(""), i, i + 1);
+            i++;
+        }
+        else if (str[i] == '$')
+        {
+            j = i + 1;
+            while (ft_is_alpha(str[j]) || str[j] == '_')
+                j++;
+            ptr = ft_strndup(str + i + 1, j - (i + 1));
+			printf("ptr=%s\n", ptr);
+			if (dlist_chr(envlist, ptr))
+			{
+            	str = insert_string(str, ft_strdup(dlist_chr(envlist, ptr)->data->value), i, j);
+				i += ft_strlen(dlist_chr(envlist, ptr)->data->value);
+			}
+			else
+            	str = insert_string(str, strdup(""), i, j);
+
+        }
+    }
+	return (str);
+}
+
+char	*get_word(char *str, t_dlist *envlist)
+{
+	int		i;
+	int 	j;
+	char	*ptr;
+	t_dlist	*elem;
+
+	i = -1;
+	while (str[++i])
+    {
+        if (str[i] == '\\')
+        {
+            str = insert_string(str, strdup(""), i, i + 1);
+            i++;
+        }
+        else if (str[i] == '$')
+        {
+            j = i + 1;
+            while (ft_is_alpha(str[j]) || str[j] == '_')
+                j++;
+            ptr = ft_strndup(str + i + 1, j - (i + 1));
+			if (dlist_chr(envlist, ptr))
+			{
+            	str = insert_string(str, ft_strdup(dlist_chr(envlist, ptr)->data->value), i, j);
+				i += ft_strlen(dlist_chr(envlist, ptr)->data->value) - 1;
+			}
+			else
+            	str = insert_string(str, strdup(""), i, j);
+        }
+    }
+	return (str);
 }
 
 t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl)
@@ -157,17 +215,15 @@ t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl)
 		{
 			if (tok_lex[i]->type == CHR_ST)
 			{
-				s2 = get_st(tok_lex[i]->value);
+				s2 = ft_strndup(tok_lex[i]->value + 1, ft_strlen(tok_lex[i]->value) - 2);
 			}
 			else if (tok_lex[i]->type == CHR_STR)
 			{
-				s2 = get_str(tok_lex[i]->value);
-				s2 = put_var_env(s2, cmd->envlist);
+				s2 = get_str(ft_strndup(tok_lex[i]->value + 1, ft_strlen(tok_lex[i]->value) - 2), cmd->envlist);
 			}
 			else if (tok_lex[i]->type == CHR_WORD)
 			{
-				s2 = ft_strdup(tok_lex[i]->value);
-				s2 = put_var_env(s2, cmd->envlist);
+				s2 = get_word(ft_strdup(tok_lex[i]->value), cmd->envlist);
 			}
 			s1 = ft_strjoindoublefree(s1, s2);
 			i++;
