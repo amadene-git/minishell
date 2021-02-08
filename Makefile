@@ -3,8 +3,11 @@ NAME	=	minishell
 
 SRCS	=	srcs/main.c\
 			srcs/parser.c\
-			srcs/built_in.c\
+			srcs/built_in_echo.c\
+			srcs/built_in_cd.c\
+			srcs/built_in_pwd.c\
 			srcs/built_in_export.c\
+			srcs/dlist.c\
 			srcs/exec.c\
 			srcs/libft_utils.c\
 			srcs/get_next_line.c\
