@@ -11,10 +11,11 @@
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <dirent.h>
+#include <fcntl.h>
 
 //get_next_line defines
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 7
+#  define BUFFER_SIZE 128
 # endif
 
 # ifndef OPEN_MAX
@@ -41,11 +42,12 @@ typedef struct  s_dlist
 
 typedef struct  s_cmd
 {
-    int     ac;
-    char    **av;
-    const char    **env;
-    t_dlist *envlist;
-    int     fd;
+    int				ac;
+    char			**av;
+    const char		**env;
+    t_dlist			*envlist;
+    int				fdin;
+	int				fdout;
 }               t_cmd;
 
 enum e_chr{
@@ -121,6 +123,10 @@ void	free_elem(t_dlist *envlist, const char *name);
 void    free_envlist(t_dlist *envlist);
 int		built_in_unset(int ac, char **av, t_dlist *envlist, int fd);
 int		built_in_env(int ac, char **av, t_dlist *envlist, int fd);
+
+//redirect.c
+
+void	enable_redirect(t_tok **tok_lex);
 
 //libft a verifier
 char	*insert_string(char *str, char *to_insert, int start, int end);

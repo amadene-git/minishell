@@ -28,11 +28,13 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 			{
 				close(fd[0]);
 				dup2(fd[1], STDOUT_FILENO);
+				close(fd[1]);
 			}
 			else if (flag == 2)
 			{
 				close(fd[1]);
 				dup2(fd[0], STDIN_FILENO);
+				close(fd[0]);
 			}
 			/*close(fd[0]);
 			close(fd[1]);*/
@@ -216,6 +218,8 @@ int main(int ac,const char **av, const char	**env)
 					{
 						if ((*tok_lex)->type == CHR_PI)
 							pipe_flag++;
+						if (!ft_strcmp((*tok_lex)->value, "<") || !ft_strcmp((*tok_lex)->value, ">"))
+							enable_redirect(tok_lex);
 						tok_lex++;
 					}
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
