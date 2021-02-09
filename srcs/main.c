@@ -25,11 +25,17 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 		if (flag > 0)
 		{
 			if (flag == 1)
+			{
+				close(fd[0]);
 				dup2(fd[1], STDOUT_FILENO);
+			}
 			else if (flag == 2)
+			{
+				close(fd[1]);
 				dup2(fd[0], STDIN_FILENO);
-			close(fd[0]);
-			close(fd[1]);
+			}
+			/*close(fd[0]);
+			close(fd[1]);*/
 		}
 		if (!ft_strcmp("exit", cmd->av[0]))
 		{
@@ -193,10 +199,10 @@ int main(int ac,const char **av, const char	**env)
 			pipe_flag = 0;
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			//k = -1;
+			k = -1;
 			//while (tok_lex[++k]->type != CHR_END)
 			//	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
-			// printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			if (has_pipe(tok_lex))
 				pipe_flag++;
 			if (pipe_flag == 1)

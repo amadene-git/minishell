@@ -149,7 +149,7 @@ char	*get_str(char *str, t_dlist *envlist)
         else if (str[i] == '$')
         {
             j = i + 1;
-            while (ft_is_alpha(str[j]) || str[j] == '_')
+            while (ft_isalpha(str[j]) || str[j] == '_')
                 j++;
             ptr = ft_strndup(str + i + 1, j - (i + 1));
 			printf("ptr=%s\n", ptr);
@@ -184,7 +184,7 @@ char	*get_word(char *str, t_dlist *envlist)
         else if (str[i] == '$')
         {
             j = i + 1;
-            while (ft_is_alpha(str[j]) || str[j] == '_')
+            while (ft_isalpha(str[j]) || str[j] == '_')
                 j++;
             ptr = ft_strndup(str + i + 1, j - (i + 1));
 			if (dlist_chr(envlist, ptr))
