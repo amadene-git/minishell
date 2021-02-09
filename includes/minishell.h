@@ -138,13 +138,5 @@ void	ft_putendl_fd(char const *s, int fd);
 char	*ft_strchr(const char *s, int c);
 void	*ft_calloc(size_t count, size_t size);
 char	**ft_split(char const *s, char c);
-<<<<<<< HEAD
 int		ft_tolower(int c);
-=======
-int     ft_is_alpha(int c);
-
-
-
-
->>>>>>> 18274e201652b88b622267e09bf5baa6bfe320b1
 #endif
