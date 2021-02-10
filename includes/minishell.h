@@ -58,6 +58,7 @@ enum e_chr{
 	CHR_SP,
 	CHR_OP,
     CHR_PI,
+    CHR_RE,
 	CHR_END
 };
 
@@ -126,7 +127,7 @@ int		built_in_env(int ac, char **av, t_dlist *envlist, int fd);
 
 //redirect.c
 
-void	enable_redirect(t_tok **tok_lex);
+t_tok	**enable_redirect(t_tok **tok_lex);
 
 //libft a verifier
 char	*insert_string(char *str, char *to_insert, int start, int end);

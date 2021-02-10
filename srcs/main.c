@@ -218,21 +218,24 @@ int main(int ac,const char **av, const char	**env)
 					{
 						if ((*tok_lex)->type == CHR_PI)
 							pipe_flag++;
-						if (!ft_strcmp((*tok_lex)->value, "<") || !ft_strcmp((*tok_lex)->value, ">"))
-							enable_redirect(tok_lex);
 						tok_lex++;
 					}
-					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
-					cmd = (t_cmd*)malloc(sizeof(t_cmd));
-					cmd->envlist = envlist;
-					cmd->env = env;
-					tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
-					// printf ("ac :%d\n", cmd->ac);
-					// for (int k = 0; cmd->av[k]; k++)
-					// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
-					// printf("stdout:\n");
-					exec_cmd(cmd, fd, pipe_flag, envlist);
-					// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
+					if ((*tok_lex)->type == CHR_RE)
+							tok_lex = enable_redirect(tok_lex);
+					else
+					{
+						//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
+						cmd = (t_cmd*)malloc(sizeof(t_cmd));
+						cmd->envlist = envlist;
+						cmd->env = env;
+						tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
+						// printf ("ac :%d\n", cmd->ac);
+						// for (int k = 0; cmd->av[k]; k++)
+						// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
+						// printf("stdout:\n");
+						exec_cmd(cmd, fd, pipe_flag, envlist);
+						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
+					}
 				}
 			else if (ac != 1)
 				return (2);

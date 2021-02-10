@@ -13,8 +13,8 @@ unsigned int g_get_chr[255] = {
 	[' '] = CHR_SP,
 	['&'] = CHR_OP,
 	['|'] = CHR_PI,
-	['>'] = CHR_OP,
-	['<'] = CHR_OP,
+	['>'] = CHR_RE,
+	['<'] = CHR_RE,
 	[';'] = CHR_OP,
 	['\0'] = CHR_END
 };
