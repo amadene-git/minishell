@@ -36,75 +36,6 @@ t_var	*create_var(const char *str)
 	return (variable);
 }
 
-t_dlist	*dlist_create_from_tab(const char **tab)
-{
-	int		i;
-	t_dlist *begin;
-	t_dlist *elem1;
-	t_dlist	*elem2;
-
-	if (!tab[0] || !tab)
-		return (NULL);
-	begin = dlist_create_elem(create_var(tab[0]));
-	elem1 = begin;
-	i = 1;
-	while (tab[i])
-	{
-		if (!(elem2 = dlist_create_elem(create_var(tab[i++]))))
-			return (NULL);
-		elem2->prev = elem1;
-		elem1->next = elem2;
-		if (tab[i])
-		{
-			if (!(elem1 = dlist_create_elem(create_var(tab[i++]))))
-				return (NULL);
-			elem1->prev = elem2;
-			elem2->next = elem1;
-		}
-	}
-	if (!(i % 2))
-	{
-		begin->prev = elem2;
-		elem2->next = begin;
-	}
-	else
-	{
-		begin->prev = elem1;
-		elem1->next = begin;
-	}
-	return (begin);
-}
-
-void	dlist_print(t_dlist *begin, int fd)
-{
-	t_dlist	*elem;
-	
-	if (!begin)
-		return;
-	elem = begin;
-	ft_putstr_fd(elem->data->name, fd);
-	if (elem->data->value)
-	{
-		ft_putchar_fd('=', fd);
-		ft_putendl_fd(elem->data->value, fd);
-	}
-	else
-		ft_putchar_fd('\n', fd);
-	elem = elem->next;
-	while (elem && elem != begin)
-	{
-			ft_putstr_fd(elem->data->name, fd);
-			if (elem->data->value)
-			{
-				ft_putchar_fd('=', fd);
-				ft_putendl_fd(elem->data->value, fd);
-			}
-			else
-				ft_putchar_fd('\n', fd);
-			elem = elem->next;
-	}
-}
-
 t_dlist *dlist_strchr_first(t_dlist *begin)
 {
 	t_dlist	*elem;
@@ -151,8 +82,6 @@ t_dlist	*dlist_chr_alpha_next(t_dlist *begin)
 	return (ret);
 }
 
-
-
 void	insert_var(t_dlist *envlist, t_var *variable)
 {
 	t_dlist	*elem;
@@ -190,11 +119,6 @@ void	free_var(t_var *variable)
 	free(variable);
 }
 
-
-
-
-
-
 void	free_elem(t_dlist *envlist, const char *name)
 {
 	t_dlist *elem;
@@ -222,25 +146,6 @@ void	free_envlist(t_dlist *envlist)
 	}
 	free_var(envlist->data);
 	free(envlist);
-}
-
-int		built_in_unset(int ac, char **av, t_dlist *envlist, int fd)
-{
-	int i;
-
-	i = 0;
-	while (++i < ac)
-		free_elem(envlist, av[i]);
-	return (0);
-
-}
-
-int		built_in_env(int ac, char **av, t_dlist *envlist, int fd)
-{
-	if (ac != 1)
-		return (-1);
-	dlist_print(envlist, fd);
-	return (0);
 }
 
 

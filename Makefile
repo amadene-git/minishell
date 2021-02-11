@@ -7,6 +7,7 @@ SRCS	=	srcs/main.c\
 			srcs/built_in_cd.c\
 			srcs/built_in_pwd.c\
 			srcs/built_in_export.c\
+			srcs/built_in_env.c\
 			srcs/dlist.c\
 			srcs/exec.c\
 			srcs/libft_utils.c\

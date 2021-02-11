@@ -17,10 +17,14 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 	status = 0;
 	while (cmd->av[0][++i])
 		cmd->av[0][i] = ft_tolower(cmd->av[0][i]);
-	pid = fork();
-	if (pid == -1)
+	cmd->pid = fork();
+	if (cmd->pid == -1)
 		ft_putstr_fd(strerror(errno), 2);
-	else if (pid == 0)
+	if (cmd->pid > 0)
+	{
+		pid = cmd->pid;
+	}
+	else if (cmd->pid == 0)
 	{
 		if (flag > 0)
 		{
@@ -43,19 +47,21 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 		{
 			status = 0;
 		}
-		else if (cmd->av[0] && !is_builtin(cmd->av[0]) && exec_bin(cmd->av, (char**)cmd->env, envlist))// copier envlist
+		else if (cmd->bin && !is_builtin(cmd->bin) && exec_bin(cmd))// copier envlist
 		{
 			status = -1;
 		}
 		else
-			exec_built_in(cmd->ac, cmd->av, cmd->envlist, 1);
+			exec_built_in(cmd);
+		exit (0);
+
 	}
 	if (flag == 2)
 	{
 		close(fd[0]);
 		close(fd[1]);
 	}
-	waitpid(pid, NULL, 0);
+	waitpid(cmd->pid, NULL, 0);
 	return (status);
 }
 
@@ -71,88 +77,6 @@ int	has_pipe(t_tok **tok_lex)
 		i++;
 	}
 	return (0);
-}
-
-char	*str_inc(char *nbr)
-{
-	int		i;
-	int		a;
-	char	*str = ft_strdup(nbr);
-
-	i = -1;
-	a = 0;
-	free(nbr);
-	while (str[++i])
-		a += (str[i] == '9') ? 0 : 1;
-	if (a == 0)
-	{
-		free(str);
-		i += 2;
-		str = (char*)malloc(sizeof(char) * (i));
-		str[i--] = 0;
-		while (--i)
-			str[i] = '0';
-		str[i] = '1';
-		return (str);
-	}
-	i--;
-	while (i >= 0)
-	{
-		if (str[i] >= '0' && str[i] <= '8')
-		{
-			str[i] += 1;
-			return (str);
-		}
-		if (str[i] < '0' || str[i] > '9')
-			return(NULL);
-		i--;
-	}
-	return (str);
-}
-
-t_dlist *init_env(const char **env)
-{
-	t_dlist *envlist;
-	t_dlist *elem;
-	char **tab;
-	char buf[PATHMAX + 1];
-
-	tab = (char**)malloc(sizeof(char*) * 2);
-	tab[0] = ft_strdup("export");
-	envlist = dlist_create_from_tab(env);
-	if (!(elem = dlist_chr(envlist, "PWD")) && getcwd(&buf[0], PATHMAX))
-	{
-		if(!getcwd(&buf[0], PATHMAX))
-		{
-			dprintf(2, "minishell: : getcwd: %s\n", strerror(errno));
-			return (NULL);
-		}
-		else
-		{
-			tab[1] = ft_strjoindoublefree(ft_strdup("PWD="), ft_strdup(&buf[0]));
-			built_in_export(2, tab, envlist, 1);
-			free(tab[1]);
-		}
-	}
-	if (!(elem = dlist_chr(envlist, "OLDPWD")))
-	{
-		tab[1] = ft_strdup("OLDPWD");
-		built_in_export(2, tab, envlist, 1);
-		free(tab[1]);
-
-	}
-	if (!(elem = dlist_chr(envlist, "SHLVL")))
-	{
-		tab[1] = ft_strjoindoublefree(ft_strdup("SHLVL="), ft_strdup("1"));
-		built_in_export(2, tab, envlist, 1);
-		free(tab[1]);
-
-	}
-	else
-		dlist_chr(envlist, "SHLVL")->data->value = str_inc(dlist_chr(envlist, "SHLVL")->data->value);
-	free(tab[0]);
-	free(tab);
-	return (envlist);
 }
 
 int	has_errors(t_tok **tok_lex)
@@ -227,14 +151,17 @@ int main(int ac,const char **av, const char	**env)
 						//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 						cmd = (t_cmd*)malloc(sizeof(t_cmd));
 						cmd->envlist = envlist;
-						cmd->env = env;
+						cmd->env = get_env_from_envlist(envlist, envlist, 0);
 						tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
+						cmd->bin = cmd->av[0];
+						cmd->fdout = 1;
 						// printf ("ac :%d\n", cmd->ac);
 						// for (int k = 0; cmd->av[k]; k++)
 						// 	printf("av[%d]:\"%s\"\n", k, cmd->av[k]);
 						// printf("stdout:\n");
 						exec_cmd(cmd, fd, pipe_flag, envlist);
 						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
+						free(cmd->env);
 					}
 				}
 			else if (ac != 1)

@@ -43,11 +43,14 @@ typedef struct  s_dlist
 typedef struct  s_cmd
 {
     int				ac;
-    char			**av;
-    const char		**env;
+    char    		**av;
+    char		    **env;
     t_dlist			*envlist;
+    char            *bin;
     int				fdin;
 	int				fdout;
+    int             fdpipe[2];
+    pid_t           pid;
 }               t_cmd;
 
 enum e_chr{
@@ -93,15 +96,21 @@ int		built_in_pwd(int ac, char **av, t_dlist *envlist, int fd);
 void	print_export(t_dlist *envlist, int fd);
 int     built_in_export(int ac, char **av, t_dlist *envlist, int fd);
 
-
+//built_in_env.c
+char	*str_plusplus(char *nbr);
+t_dlist	*init_env(const char **env);
+t_dlist *get_envlist_from_env(const char **env);
+void    envlist_print(const char **env, int fd);
+int     built_in_unset(t_cmd *cmd);
+char	*get_var_str(t_var *var);
+char	**get_env_from_envlist(t_dlist *begin, t_dlist *elem, int lvl);
+int     built_in_env(t_cmd *cmd);
 
 //exec.c
-char		**split(char *raw_cmd, char *limiti);
-void		free_array(char **array);
 void		get_absolute_path(char **cmd, t_dlist *envlist);
 int			is_builtin(char	*cmd);
-void		exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd);
-int 		exec_bin(char **cmd, char **env, t_dlist *envlist);
+void		exec_built_in(t_cmd *cmd);
+int 		exec_bin(t_cmd *cmd);
 
 //parser.c
 t_tok	**lexer(char *str, int *i, int lvl);
@@ -110,11 +119,9 @@ char	*get_st(char *str);
 char	*get_str(char *str, t_dlist *envlist);
 t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl);
 
-//built_in_export.c
+//dlist.c
 t_dlist *dlist_create_elem(void *data);
 t_var	*create_var(const char *str);
-t_dlist	*dlist_create_from_tab(const char **tab);
-void	dlist_print(t_dlist *begin, int fd);
 t_dlist *dlist_strchr_first(t_dlist *begin);
 t_dlist	*dlist_chr_alpha_next(t_dlist *begin);
 void	insert_var(t_dlist *envlist, t_var *variable);
@@ -122,8 +129,6 @@ t_dlist	*dlist_chr(t_dlist *begin, const char *name);
 void    free_var(t_var *variable);
 void	free_elem(t_dlist *envlist, const char *name);
 void    free_envlist(t_dlist *envlist);
-int		built_in_unset(int ac, char **av, t_dlist *envlist, int fd);
-int		built_in_env(int ac, char **av, t_dlist *envlist, int fd);
 
 //redirect.c
 

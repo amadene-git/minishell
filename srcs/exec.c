@@ -52,40 +52,40 @@ int		is_builtin(char	*cmd)
 	return (0);
 }
 
-void	exec_built_in(int ac, char **cmd, t_dlist *envlist, int fd)
+void	exec_built_in(t_cmd *cmd)
 {
-	if (!ft_strcmp("echo", cmd[0]))
+	if (!ft_strcmp("echo", cmd->bin))
 	{
-		built_in_echo(ac, cmd, envlist, fd);
+		built_in_echo(cmd->ac, cmd->av, cmd->envlist, cmd->fdout);
 	}
-	else if (!ft_strcmp("cd", cmd[0]))
+	else if (!ft_strcmp("cd", cmd->bin))
 	{
-		built_in_cd(ac, cmd, envlist, fd);
+		built_in_cd(cmd->ac, cmd->av, cmd->envlist, cmd->fdout);
 	}
-	else if (!ft_strcmp("pwd", cmd[0]))
+	else if (!ft_strcmp("pwd", cmd->bin))
 	{
-		built_in_pwd(ac, cmd, envlist, fd);
+		built_in_pwd(cmd->ac, cmd->av, cmd->envlist, cmd->fdout);
 	}
-	else if (!ft_strcmp("env", cmd[0]))
+	else if (!ft_strcmp("env", cmd->bin))
 	{
-		built_in_env(ac , cmd, envlist, fd);
+		built_in_env(cmd);
 	}
-	else if (!ft_strcmp("export", cmd[0]))
+	else if (!ft_strcmp("export", cmd->bin))
 	{
-		built_in_export(ac, cmd, envlist, fd);
+		built_in_export(cmd->ac, cmd->av, cmd->envlist, cmd->fdout);
 	}
-	else if (!ft_strcmp("unset", cmd[0]))
+	else if (!ft_strcmp("unset", cmd->bin))
 	{
-		built_in_unset(ac, cmd, envlist, fd);
+		built_in_unset(cmd);
 	}
 }
 
-int	exec_bin(char **cmd, char **env, t_dlist *envlist)
+int	exec_bin(t_cmd *cmd)
 {
-	get_absolute_path(cmd, envlist);
-	if (execve(cmd[0], cmd, env) == -1)
+	get_absolute_path(cmd->av, cmd->envlist);
+	if (execve(cmd->av[0], cmd->av, cmd->env) == -1)
 	{
-		dprintf(2, "minishell: %s: command not found\n", cmd[0]);
+		dprintf(2, "minishell: %s: command not found\n", cmd->bin);
 		return (-1);
 	}
 	return (0);
