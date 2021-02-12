@@ -40,6 +40,15 @@ typedef struct  s_dlist
     
 }               t_dlist;
 
+
+typedef struct s_tok
+{
+    void            *value;
+    int             type;
+    struct s_tok    *prev;
+    struct s_tok    *next;
+}               t_tok;
+
 typedef struct  s_cmd
 {
     int				ac;
@@ -51,6 +60,9 @@ typedef struct  s_cmd
 	int				fdout;
     int             fdpipe[2];
     pid_t           pid;
+    t_tok           *tok_lst;
+    struct  s_cmd   *prev;
+    struct  s_cmd   *next;
 }               t_cmd;
 
 enum e_chr{
@@ -65,21 +77,11 @@ enum e_chr{
 	CHR_END
 };
 
-
-
-typedef struct s_tok
-{
-    void    *value;
-    int     type;
-}               t_tok;
-
-
-
-
 typedef struct  s_minishell
 {
     char    *line;
     int     index;
+    t_cmd   *cmd_lst;
 }               t_minishell;
 
 //built_in_echo.c
@@ -118,6 +120,7 @@ char	*put_var_env(char *str, t_dlist *envlist);
 char	*get_st(char *str);
 char	*get_str(char *str, t_dlist *envlist);
 t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl);
+char	*get_word(char *str, t_dlist *envlist);
 
 //dlist.c
 t_dlist *dlist_create_elem(void *data);
@@ -132,7 +135,17 @@ void    free_envlist(t_dlist *envlist);
 
 //redirect.c
 
-t_tok	**enable_redirect(t_tok **tok_lex);
+int     enable_redirect(t_tok *cmd_tok);
+
+//token.c
+t_tok	*create_tok(int type, void *value);
+void	add_token_list(t_tok **begin, t_tok *new);
+void    add_front_tok_list(t_tok **begin, t_tok *new);
+int		tok_list_size(t_tok   *tok_lst);
+
+//cmd.c
+t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd);
+char	**to_char_args(t_tok *tok_lst);
 
 //libft a verifier
 char	*insert_string(char *str, char *to_insert, int start, int end);

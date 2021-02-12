@@ -15,6 +15,8 @@ SRCS	=	srcs/main.c\
 			srcs/libft_utils_suite.c\
 			srcs/ft_split.c\
 			srcs/redirect.c\
+			srcs/token.c\
+			srcs/cmd.c\
 
 
 OBJS	=	${SRCS:.c=.o }

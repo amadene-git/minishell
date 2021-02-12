@@ -6,48 +6,46 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 23:37:08 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/10 14:42:12 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/12 04:03:20 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	handle_file(t_cmd *cmd, int flags)
+int	handle_file(char *name, int flags)
 {
 	int	fd;
 
-	if ((fd = open(cmd->av[0], flags, 0644)) < 0)
+	if ((fd = open(name, flags, 0644)) < 0)
 	{
-		dprintf(2, "minishell: %s: %s\n", cmd->av[0], strerror(errno));
+		dprintf(2, "minishell: %s: %s\n", name, strerror(errno));
 	}
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
 	return (fd);
 }
 
-t_tok	**enable_redirect(t_tok **tok_lex)
+int		enable_redirect(t_tok *cmd_tok)
 {
-	t_cmd *cmd;
-
-	cmd = (t_cmd*)malloc(sizeof(t_cmd));
-	if (!ft_strcmp((*tok_lex)->value, ">") && !ft_strcmp((*(tok_lex + 1))->value, ">"))
+	while (cmd_tok && cmd_tok->next)
 	{
-		while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP || (*tok_lex)->type == CHR_RE)
-			tok_lex++;
-		tok_lex = get_cmd(tok_lex, cmd, 0);
-		handle_file(cmd, O_RDWR | O_CREAT | O_APPEND);
+		if (!ft_strcmp(cmd_tok->value, ">>"))
+		{
+			handle_file(cmd_tok->next->value, O_RDWR | O_CREAT | O_APPEND);
+			return (1);
+		}
+		else if (!ft_strcmp(cmd_tok->value, ">"))
+		{
+			handle_file(cmd_tok->next->value, O_TRUNC | O_RDWR | O_CREAT);
+			return (1);
+		}
+		else if (!ft_strcmp(cmd_tok->value, "<"))
+		{
+			handle_file(cmd_tok->next->value, O_RDONLY);
+			return (1);
+		}
+		else
+			cmd_tok = cmd_tok->next;
 	}
-	else if (!ft_strcmp((*tok_lex)->value, ">"))
-	{
-		while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP || (*tok_lex)->type == CHR_RE)
-			tok_lex++;
-		tok_lex = get_cmd(tok_lex, cmd, 0);
-		handle_file(cmd, O_TRUNC | O_RDWR | O_CREAT);
-	}
-	else if (!ft_strcmp((*tok_lex)->value, "<"))
-	{
-		while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP || (*tok_lex)->type == CHR_RE)
-			tok_lex++;
-		tok_lex = get_cmd(tok_lex, cmd, 0);
-		handle_file(cmd, O_RDONLY);
-	}
-	return (tok_lex);
+	return (0);
 }

@@ -1,7 +1,8 @@
 #include "../includes/minishell.h"
 
 unsigned int g_get_chr[255] = {
-	['!'...'%'] = CHR_WORD,
+	['!'] = CHR_WORD,
+	['#'...'%'] = CHR_WORD,
 	['*'...':'] = CHR_WORD,
 	['?'...'{'] = CHR_WORD,
 	['}'...'~']	= CHR_WORD,
@@ -74,14 +75,9 @@ t_tok	**lexer(char *str, int *i, int lvl)
 	else
 	{
 		tab = (t_tok**)malloc(sizeof(t_tok*) * (lvl + 2));
-		tab[lvl + 1] = (t_tok*)malloc(sizeof(t_tok));
-		tab[lvl + 1]->value = NULL;
-		tab[lvl + 1]->type = CHR_END;
+		tab[lvl + 1] = create_tok(CHR_END, NULL);
 	}	
-	tab[lvl] = (t_tok*)malloc(sizeof(t_tok));
-	tab[lvl]->value = value;
-	tab[lvl]->type = type;
-		
+	tab[lvl] = create_tok(type, value);	
 	return (tab);
 }
 
