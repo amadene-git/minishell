@@ -7,7 +7,6 @@
 # include <errno.h>
 # include <unistd.h>
 # include <string.h>
-# include <stdlib.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <dirent.h>
@@ -135,13 +134,14 @@ void    free_envlist(t_dlist *envlist);
 
 //redirect.c
 
-int     enable_redirect(t_tok *cmd_tok);
+void    enable_redirect(t_cmd *cmd);
 
 //token.c
 t_tok	*create_tok(int type, void *value);
-void	add_token_list(t_tok **begin, t_tok *new);
-void    add_front_tok_list(t_tok **begin, t_tok *new);
-int		tok_list_size(t_tok   *tok_lst);
+void	tok_list_append(t_tok **begin, t_tok *new);
+void    tok_list_prepend(t_tok **begin, t_tok *new);
+int		tok_list_size(t_tok *tok_lst);
+void    tok_list_remove(t_tok **begin, t_tok *tok);
 
 //cmd.c
 t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd);

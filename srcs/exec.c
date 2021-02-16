@@ -56,15 +56,15 @@ void	exec_built_in(t_cmd *cmd)
 {
 	if (!ft_strcmp("echo", cmd->bin))
 	{
-		built_in_echo(cmd->ac, cmd->av, cmd->envlist, cmd->fdout);
+		built_in_echo(cmd->ac, cmd->av, cmd->envlist, 1);
 	}
 	else if (!ft_strcmp("cd", cmd->bin))
 	{
-		built_in_cd(cmd->ac, cmd->av, cmd->envlist, cmd->fdout);
+		built_in_cd(cmd->ac, cmd->av, cmd->envlist, 1);
 	}
 	else if (!ft_strcmp("pwd", cmd->bin))
 	{
-		built_in_pwd(cmd->ac, cmd->av, cmd->envlist, cmd->fdout);
+		built_in_pwd(cmd->ac, cmd->av, cmd->envlist, 1);
 	}
 	else if (!ft_strcmp("env", cmd->bin))
 	{
@@ -72,7 +72,7 @@ void	exec_built_in(t_cmd *cmd)
 	}
 	else if (!ft_strcmp("export", cmd->bin))
 	{
-		built_in_export(cmd->ac, cmd->av, cmd->envlist, cmd->fdout);
+		built_in_export(cmd->ac, cmd->av, cmd->envlist, 1);
 	}
 	else if (!ft_strcmp("unset", cmd->bin))
 	{

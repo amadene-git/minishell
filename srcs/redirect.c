@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 23:37:08 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/12 04:03:20 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/17 00:50:09 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,32 +20,29 @@ int	handle_file(char *name, int flags)
 	{
 		dprintf(2, "minishell: %s: %s\n", name, strerror(errno));
 	}
-	dup2(fd, STDOUT_FILENO);
-	close(fd);
 	return (fd);
 }
 
-int		enable_redirect(t_tok *cmd_tok)
+void		enable_redirect(t_cmd *cmd)
 {
-	while (cmd_tok && cmd_tok->next)
+	t_tok *toks;
+
+	toks = cmd->tok_lst;
+	while (toks && toks->next)
 	{
-		if (!ft_strcmp(cmd_tok->value, ">>"))
+		if (toks->type == CHR_RE)
 		{
-			handle_file(cmd_tok->next->value, O_RDWR | O_CREAT | O_APPEND);
-			return (1);
-		}
-		else if (!ft_strcmp(cmd_tok->value, ">"))
-		{
-			handle_file(cmd_tok->next->value, O_TRUNC | O_RDWR | O_CREAT);
-			return (1);
-		}
-		else if (!ft_strcmp(cmd_tok->value, "<"))
-		{
-			handle_file(cmd_tok->next->value, O_RDONLY);
-			return (1);
+			if (!ft_strcmp(toks->value, ">>"))
+				cmd->fdout =  handle_file(toks->next->value, O_RDWR | O_CREAT | O_APPEND);
+			else if (!ft_strcmp(toks->value, ">"))
+				cmd->fdout = handle_file(toks->next->value, O_TRUNC | O_RDWR | O_CREAT);
+			else if (!ft_strcmp(toks->value, "<"))
+				cmd->fdin = handle_file(toks->next->value, O_RDONLY);
+			tok_list_remove(&cmd->tok_lst, toks);
+			tok_list_remove(&cmd->tok_lst, toks->next);
+			break;
 		}
 		else
-			cmd_tok = cmd_tok->next;
+			toks = toks->next;
 	}
-	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 23:55:26 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/12 02:15:59 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/17 00:43:32 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_tok	*create_tok(int type, void *value)
 	return tok;
 }
 
-void	add_token_list(t_tok **begin, t_tok *new)
+void	tok_list_append(t_tok **begin, t_tok *new)
 {
 	t_tok	*tok;
 
@@ -46,7 +46,7 @@ void	add_token_list(t_tok **begin, t_tok *new)
         *begin = new;
 }
 
-void	add_front_tok_list(t_tok **begin, t_tok *new)
+void	tok_list_prepend(t_tok **begin, t_tok *new)
 {
 	if (!new || !begin)
 		return ;
@@ -69,4 +69,40 @@ int		tok_list_size(t_tok   *tok_lst)
 		i++;
 	}
 	return (i);
+}
+
+void	tok_list_remove(t_tok **begin, t_tok *tok)
+{
+	t_tok	*temp;
+
+	temp = *begin;
+	while (temp != NULL)
+	{
+		if (temp == tok)
+		{
+			if (temp->next == NULL)
+			{
+				if (temp->prev == NULL)
+					*begin = NULL;
+				else
+					temp->prev->next = NULL;
+			}
+			else if (temp->prev == NULL)
+			{
+				temp->next->prev = NULL;
+				*begin = temp->next;
+			}
+			else
+			{
+				temp->next->prev = temp->prev;
+				temp->prev->next = temp->next;
+			}
+			free(tok->value);
+			free(tok);
+			break;
+		}
+		else
+			temp = temp->next;
+	}
+	//return (begin);
 }
