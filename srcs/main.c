@@ -170,7 +170,7 @@ int main(int ac,const char **av, const char	**env)
 							tmp->next = cmd;
 					
 					
-						if (has_pipe(tok_lex));
+						if (has_pipe(tok_lex) == 1)
 						{
 							cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
 							if (pipe(cmd->fdpipe) == -1)
