@@ -27,8 +27,8 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 		t = t->next;
 	}*/
 	cmd->av = to_char_args(cmd->tok_lst);
-	//while(cmd->av[++i])
-	//	dprintf(2," %s |", cmd->av[i]);
+	// while(cmd->av[++i])
+	// 	dprintf(2,"av(%d) %s |\n", i, cmd->av[i]);
 	cmd->ac = tok_list_size(cmd->tok_lst);
 	//dprintf(2,"%d", cmd->ac);
 	cmd->pid = fork();
@@ -40,22 +40,15 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 	}
 	else if (cmd->pid == 0)
 	{
-		if (flag > 0)
+		if (cmd->prev && cmd->prev->fdpipe)
 		{
-			if (flag == 1)
-			{
-				close(fd[0]);
-				dup2(fd[1], STDOUT_FILENO);
-				close(fd[1]);
-			}
-			else if (flag == 2)
-			{
-				close(fd[1]);
-				dup2(fd[0], STDIN_FILENO);
-				close(fd[0]);
-			}
-			/*close(fd[0]);
-			close(fd[1]);*/
+			dup2(cmd->prev->fdpipe[0], STDIN_FILENO);
+			close(cmd->prev->fdpipe[1]);
+		}
+		if (cmd->fdpipe)
+		{
+			dup2(cmd->fdpipe[1], STDOUT_FILENO);
+			close(cmd->fdpipe[0]);
 		}
 		if (cmd->fdout != -1)
 		{
@@ -81,12 +74,12 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 			exit (0);
 		}
 	}
-	if (flag == 2)
+	if (cmd->prev && cmd->prev->fdpipe)
 	{
-		close(fd[0]);
-		close(fd[1]);
+		close(cmd->prev->fdpipe[0]);
+		close(cmd->prev->fdpipe[1]);
 	}
-	waitpid(cmd->pid, NULL, 0);
+		waitpid(cmd->pid, NULL, 0);
 	return (status);
 }
 
@@ -95,7 +88,7 @@ int	has_pipe(t_tok **tok_lex)
 	int	i;
 
 	i = 0;
-	while (tok_lex[i]->type < CHR_END)
+	while ((tok_lex[i]->type <= CHR_SP || tok_lex[i]->type == CHR_PI))
 	{
 		if (tok_lex[i]->type == CHR_PI)
 			return (1);
@@ -130,6 +123,7 @@ int main(int ac,const char **av, const char	**env)
 	t_tok	**tok_lex;
 	t_dlist	*envlist = init_env(env);
 	t_cmd 	*cmd;
+	t_cmd	*tmp = NULL;
 	int		fd[2];
 	int		pipe_flag;
 	t_tok	*t;
@@ -155,19 +149,12 @@ int main(int ac,const char **av, const char	**env)
 			//while (tok_lex[++k]->type != CHR_END)
 			//	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
-			if (has_pipe(tok_lex))
-				pipe_flag++;
-			if (pipe_flag == 1)
-				if (pipe(fd) == -1)
-					return (-1);
 			if (!has_errors(tok_lex))
 				while ((*tok_lex)->type != CHR_END)
 				{
 					while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
 					|| (*tok_lex)->type == CHR_PI)
 					{
-						if ((*tok_lex)->type == CHR_PI)
-							pipe_flag++;
 						tok_lex++;
 					}
 						cmd = (t_cmd*)malloc(sizeof(t_cmd));
@@ -175,6 +162,20 @@ int main(int ac,const char **av, const char	**env)
 						cmd->env = env;
 						cmd->fdin = -1;
 						cmd->fdout = -1;
+						cmd->fdpipe = NULL;
+					
+						cmd->prev = (tmp) ? tmp : NULL;
+						cmd->next = NULL;
+						if (tmp)
+							tmp->next = cmd;
+					
+					
+						if (has_pipe(tok_lex));
+						{
+							cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
+							if (pipe(cmd->fdpipe) == -1)
+								dprintf(2, "erreur main:%s\n", strerror(errno));
+						}
 						//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 						//cmd->env = get_env_from_envlist(envlist, envlist, 0);
 						//tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
@@ -191,6 +192,7 @@ int main(int ac,const char **av, const char	**env)
 						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 						//free(cmd->env);
 						}
+						tmp = cmd;
 					//}
 				}
 			else if (ac != 1)
