@@ -57,7 +57,7 @@ typedef struct  s_cmd
     char            *bin;
     int				fdin;
 	int				fdout;
-    int             fdpipe[2];
+    int             *fdpipe;
     pid_t           pid;
     t_tok           *tok_lst;
     struct  s_cmd   *prev;

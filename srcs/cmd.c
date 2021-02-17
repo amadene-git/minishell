@@ -70,7 +70,7 @@ char	**to_char_args(t_tok *tok_lst)
 	if (!(args = (char **)ft_calloc(1, sizeof(char *) *
 		(tok_list_size(tok_lst) + 1))))
 		return NULL;
-	while (tok_lst)
+	while (tok_lst && tok_lst->value)
 	{
 		args[i] = ft_strdup(tok_lst->value);
 		tok_lst = tok_lst->next;
