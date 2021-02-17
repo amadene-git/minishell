@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 18:43:56 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/17 13:07:25 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/17 21:08:20 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd)
 {
 	int		i;
+	int		type;
 	char	*str;
 	char	*s1 = NULL;
 	char	*s2 = NULL;
@@ -44,14 +45,12 @@ t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd)
 		}
 		while ((tok_lex[i]->type == CHR_SP) && (s1 == NULL))
 			i++;
-		if (tok_lex[i]->type == CHR_RE)
+		if (s1)
+			token = create_tok(CHR_WORD, s1);
+		else if (tok_lex[i]->type == CHR_RE)
 		{
 			token = create_tok(CHR_RE, ft_strdup(tok_lex[i]->value));
 			i++;
-		}
-		else
-		{
-			token = create_tok(CHR_WORD, s1);
 		}
 		tok_lex = get_cmd_new(tok_lex + i, cmd);
 	}

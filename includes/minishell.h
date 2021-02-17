@@ -140,7 +140,7 @@ t_tok	*create_tok(int type, void *value);
 void	tok_list_append(t_tok **begin, t_tok *new);
 void    tok_list_prepend(t_tok **begin, t_tok *new);
 int		tok_list_size(t_tok *tok_lst);
-void    tok_list_remove(t_tok **begin, t_tok *tok);
+t_tok   *tok_list_remove(t_tok **begin, t_tok *tok);
 
 //cmd.c
 t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd);

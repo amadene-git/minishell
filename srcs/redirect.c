@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 23:37:08 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/17 00:50:09 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/17 20:23:53 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,13 @@ void		enable_redirect(t_cmd *cmd)
 		if (toks->type == CHR_RE)
 		{
 			if (!ft_strcmp(toks->value, ">>"))
-				cmd->fdout =  handle_file(toks->next->value, O_RDWR | O_CREAT | O_APPEND);
+				cmd->fdout = handle_file(toks->next->value, O_RDWR | O_CREAT | O_APPEND);
 			else if (!ft_strcmp(toks->value, ">"))
 				cmd->fdout = handle_file(toks->next->value, O_TRUNC | O_RDWR | O_CREAT);
 			else if (!ft_strcmp(toks->value, "<"))
 				cmd->fdin = handle_file(toks->next->value, O_RDONLY);
-			tok_list_remove(&cmd->tok_lst, toks);
-			tok_list_remove(&cmd->tok_lst, toks->next);
-			break;
+			toks = tok_list_remove(&cmd->tok_lst, toks);
+			toks = tok_list_remove(&cmd->tok_lst, toks);
 		}
 		else
 			toks = toks->next;

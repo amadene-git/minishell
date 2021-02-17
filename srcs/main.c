@@ -107,7 +107,7 @@ int	check_error(t_tok *actual, t_tok *prev)
 	if (actual->type == CHR_END && prev
 		&& (prev->type == CHR_RE || prev->type == CHR_PI))
 		return (0);
-	if ((actual->type == CHR_PI || actual->type == CHR_PI)
+	if ((actual->type == CHR_PI || actual->type == CHR_OP)
 		&& (prev->type == CHR_PI || prev->type == CHR_OP
 		|| prev->type == CHR_RE))
 		return (0);
@@ -163,7 +163,7 @@ int main(int ac,const char **av, const char	**env)
 			pipe_flag = 0;
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			//k = -1;
+			k = -1;
 			//while (tok_lex[++k]->type != CHR_END)
 			//	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
@@ -175,43 +175,45 @@ int main(int ac,const char **av, const char	**env)
 					{
 						tok_lex++;
 					}
-						cmd = (t_cmd*)malloc(sizeof(t_cmd));
-						cmd->envlist = envlist;
-						cmd->env = env;
-						cmd->fdin = -1;
-						cmd->fdout = -1;
-						cmd->fdpipe = NULL;
-					
-						cmd->prev = (tmp) ? tmp : NULL;
-						cmd->next = NULL;
-						if (tmp)
-							tmp->next = cmd;
-					
-					
-						if (has_pipe(tok_lex) == 1)
-						{
-							cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
-							if (pipe(cmd->fdpipe) == -1)
-								dprintf(2, "erreur main:%s\n", strerror(errno));
-						}
-						//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
-						//cmd->env = get_env_from_envlist(envlist, envlist, 0);
-						//tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
-						tok_lex = get_cmd_new(tok_lex, cmd);
-						enable_redirect(cmd);
-						if (cmd->tok_lst)
-						{
-							cmd->bin = cmd->tok_lst->value;
+					cmd = (t_cmd*)malloc(sizeof(t_cmd));
+					cmd->envlist = envlist;
+					cmd->env = env;
+					cmd->fdin = -1;
+					cmd->fdout = -1;
+					cmd->fdpipe = NULL;
+					cmd->prev = (tmp) ? tmp : NULL;
+					cmd->next = NULL;
+					if (tmp)
+						tmp->next = cmd;
+					if (has_pipe(tok_lex) == 1)
+					{
+						cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
+						if (pipe(cmd->fdpipe) == -1)
+							dprintf(2, "erreur main:%s\n", strerror(errno));
+					}
+					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
+					//cmd->env = get_env_from_envlist(envlist, envlist, 0);
+					//tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
+					tok_lex = get_cmd_new(tok_lex, cmd);
+					/*t = cmd->tok_lst;
+					while (t)
+					{
+						dprintf(2, "tok : %s \n", t->value);
+						t = t->next;
+					}*/
+					enable_redirect(cmd);
+					if (cmd->tok_lst)
+					{
+						cmd->bin = cmd->tok_lst->value;
 						//printf ("ac :%d\n", cmd->ac);
 						//for (int k = 0; cmd->av[k]; k++)
-						 	//dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
-						 //dprintf(2, "stdout:\n");
+							//dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
+							//dprintf(2, "stdout:\n");
 						exec_cmd(cmd, fd, pipe_flag, envlist);
 						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 						//free(cmd->env);
-						}
-						tmp = cmd;
-					//}
+					}
+					tmp = cmd;
 				}
 			else if (ac != 1)
 				return (2);
