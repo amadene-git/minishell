@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 18:43:56 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/16 21:02:28 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/17 13:07:25 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,12 @@
 t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd)
 {
 	int		i;
-	int		j;
 	char	*str;
 	char	*s1 = NULL;
 	char	*s2 = NULL;
 	t_tok	*token;
 
 	i = 0;
-	j = 0;
 	if ((tok_lex[i]->type >= CHR_WORD && tok_lex[i]->type <= CHR_SP) || tok_lex[i]->type == CHR_RE || tok_lex[i - 1]->type == CHR_RE)
 	{
 		while (tok_lex[i]->type == CHR_SP)

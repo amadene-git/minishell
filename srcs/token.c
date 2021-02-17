@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 23:55:26 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/17 00:43:32 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/17 14:10:47 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	tok_list_prepend(t_tok **begin, t_tok *new)
 		*begin = new;
 }
 
-int		tok_list_size(t_tok   *tok_lst)
+int		tok_list_size(t_tok *tok_lst)
 {
     int		i;
 
@@ -104,5 +104,4 @@ void	tok_list_remove(t_tok **begin, t_tok *tok)
 		else
 			temp = temp->next;
 	}
-	//return (begin);
 }
