@@ -113,6 +113,10 @@ int			is_builtin(char	*cmd);
 void		exec_built_in(t_cmd *cmd);
 int 		exec_bin(t_cmd *cmd);
 
+//errors.c
+int	check_error(t_tok *actual, t_tok *prev);
+int	has_errors(t_tok **tok_lex);
+
 //parser.c
 t_tok	**lexer(char *str, int *i, int lvl);
 char	*put_var_env(char *str, t_dlist *envlist);

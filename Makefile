@@ -17,6 +17,7 @@ SRCS	=	srcs/main.c\
 			srcs/redirect.c\
 			srcs/token.c\
 			srcs/cmd.c\
+			srcs/errors.c\
 
 
 OBJS	=	${SRCS:.c=.o }

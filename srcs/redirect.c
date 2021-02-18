@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 23:37:08 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/17 20:23:53 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/18 12:23:31 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	handle_file(char *name, int flags)
 	if ((fd = open(name, flags, 0644)) < 0)
 	{
 		dprintf(2, "minishell: %s: %s\n", name, strerror(errno));
+		exit(1);
 	}
 	return (fd);
 }

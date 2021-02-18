@@ -97,39 +97,6 @@ int	has_pipe(t_tok **tok_lex)
 	return (0);
 }
 
-int	check_error(t_tok *actual, t_tok *prev)
-{
-	if ((actual->type == CHR_PI || actual->type == CHR_OP) && !prev)
-		return (0);
-	if (actual->type == CHR_RE && (prev
-		&& prev->type == CHR_RE))
-		return (0);
-	if (actual->type == CHR_END && prev
-		&& (prev->type == CHR_RE || prev->type == CHR_PI))
-		return (0);
-	if ((actual->type == CHR_PI || actual->type == CHR_OP)
-		&& (prev->type == CHR_PI || prev->type == CHR_OP
-		|| prev->type == CHR_RE))
-		return (0);
-	return (1);
-}
-
-int	has_errors(t_tok **tok_lex)
-{
-	int		i;
-
-	i = -1;
-	while (tok_lex[++i] && tok_lex[i]->type <= CHR_END)
-	{
-		if ((i == 0 && !check_error(tok_lex[i], NULL)) || !check_error(tok_lex[i], tok_lex[i - 1]))
-		{
-			dprintf(2, "minishell: syntax error near unexpected token `%s'\n", tok_lex[i]->value);
-			return (1);
-		}
-	}
-	return (0);
-}
-
 int main(int ac,const char **av, const char	**env)
 {
 	signal(SIGINT, SIG_IGN);//gestion du crtl+C
@@ -163,7 +130,7 @@ int main(int ac,const char **av, const char	**env)
 			pipe_flag = 0;
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			k = -1;
+			//k = -1;
 			//while (tok_lex[++k]->type != CHR_END)
 			//	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
