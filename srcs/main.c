@@ -7,7 +7,7 @@ void handle_signal()
 	ft_putstr_fd("\n[minishell]>", 1);
 }
 
-int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist dans env
+int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
 {
 	int		i;
 	int		status;
@@ -15,22 +15,7 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 	char	**args;
 	t_tok	*t;
 
-	i = -1;
 	status = 0;
-	while (cmd->bin[++i])
-		cmd->bin[i] = ft_tolower(cmd->bin[i]);
-	i = -1;
-	/*t = cmd->tok_lst;
-	while (t)
-	{
-		dprintf(2, "tok : %s \n", t->value);
-		t = t->next;
-	}*/
-	cmd->av = to_char_args(cmd->tok_lst);
-	// while(cmd->av[++i])
-	// 	dprintf(2,"av(%d) %s |\n", i, cmd->av[i]);
-	cmd->ac = tok_list_size(cmd->tok_lst);
-	//dprintf(2,"%d", cmd->ac);
 	cmd->pid = fork();
 	if (cmd->pid == -1)
 		ft_putstr_fd(strerror(errno), 2);
@@ -66,7 +51,8 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 		}
 		else if (cmd->bin && !is_builtin(cmd->bin) && exec_bin(cmd))// copier envlist
 		{
-			status = -1;
+			status = 1;
+			exit(status);
 		}
 		else
 		{
@@ -79,7 +65,7 @@ int exec_cmd(t_cmd *cmd, int fd[2], int flag, t_dlist *envlist)//copier envlist 
 		close(cmd->prev->fdpipe[0]);
 		close(cmd->prev->fdpipe[1]);
 	}
-		waitpid(cmd->pid, NULL, 0);
+		waitpid(cmd->pid, &status, 0);
 	return (status);
 }
 
@@ -114,6 +100,7 @@ int main(int ac,const char **av, const char	**env)
 	t_tok	*t;
 	int		status;
 
+	status = 0;
 	while(gnl)
 	{
 		if (ac == 1)
@@ -177,18 +164,23 @@ int main(int ac,const char **av, const char	**env)
 						//for (int k = 0; cmd->av[k]; k++)
 							//dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
 							//dprintf(2, "stdout:\n");
-						exec_cmd(cmd, fd, pipe_flag, envlist);
+						prepare_cmd(cmd);
+						status = exec_no_fork(cmd);
+						if (status == 255)
+							break;
+						if (status == 0)
+							status = exec_cmd(cmd, envlist);
 						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 						//free(cmd->env);
 					}
 					tmp = cmd;
 				}
-			else if (ac != 1)
-				return (2);
+			else 
+				status = 2;
 		}
 		if (ac != 1)
 			gnl = 0;
 		free(line);
 	}
-	return (0);
+	return (status);
 }

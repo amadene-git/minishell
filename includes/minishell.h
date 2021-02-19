@@ -96,11 +96,15 @@ char	*get_var_str(t_var *var);
 char	**get_env_from_envlist(t_dlist *begin, t_dlist *elem, int lvl);
 int     built_in_env(t_cmd *cmd);
 
+//built_in_exit.c
+int     exit_cmd(t_cmd *cmd);
+
 //exec.c
 void		get_absolute_path(char **cmd, t_dlist *envlist);
 int			is_builtin(char	*cmd);
 void		exec_built_in(t_cmd *cmd);
 int 		exec_bin(t_cmd *cmd);
+int 	    exec_no_fork(t_cmd *cmd);
 
 //errors.c
 int	check_error(t_tok *actual, t_tok *prev);
@@ -138,9 +142,11 @@ t_tok   *tok_list_remove(t_tok **begin, t_tok *tok);
 //cmd.c
 t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd);
 char	**to_char_args(t_tok *tok_lst);
+void	prepare_cmd(t_cmd *cmd);
 
 //Utils.c
 char	*insert_string(char *str, char *to_insert, int start, int end);
 char	*ft_strjoindoublefree(char *s1, char *s2);
+int		is_number(char *str);
 
 #endif

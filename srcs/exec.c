@@ -82,6 +82,9 @@ void	exec_built_in(t_cmd *cmd)
 
 int	exec_bin(t_cmd *cmd)
 {
+	int status;
+
+	status = 0;
 	get_absolute_path(cmd->av, cmd->envlist);
 	if (execve(cmd->av[0], cmd->av, cmd->env) == -1)
 	{
@@ -89,4 +92,16 @@ int	exec_bin(t_cmd *cmd)
 		return (-1);
 	}
 	return (0);
+}
+
+int	exec_no_fork(t_cmd *cmd)
+{
+	int	status;
+
+	status = 0;
+	if (!ft_strcmp("exit", cmd->bin))
+	{
+		status = exit_cmd(cmd);
+	}
+	return (status);
 }
