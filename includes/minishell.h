@@ -62,7 +62,6 @@ enum e_chr{
 	CHR_OP,
     CHR_PI,
     CHR_RE,
-    CHR_PV,
 	CHR_END
 };
 
