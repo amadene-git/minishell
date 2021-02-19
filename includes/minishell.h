@@ -1,25 +1,14 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdlib.h>
 # include <signal.h>
 # include <stdio.h>
 # include <errno.h>
-# include <unistd.h>
 # include <string.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <dirent.h>
-#include <fcntl.h>
-
-//get_next_line defines
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 128
-# endif
-
-# ifndef OPEN_MAX
-#  define OPEN_MAX 256
-# endif
+# include "libft.h"
 
 # ifndef PATHSIZE
 #  define PATHMAX 32000
@@ -150,21 +139,8 @@ t_tok   *tok_list_remove(t_tok **begin, t_tok *tok);
 t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd);
 char	**to_char_args(t_tok *tok_lst);
 
-//libft a verifier
+//Utils.c
 char	*insert_string(char *str, char *to_insert, int start, int end);
-char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strjoindoublefree(char *s1, char *s2);
-int		ft_strcmp(const char *s1, const char *s2);
-char	*ft_strndup(const char *str, int n);
-void	ft_putstr_fd(char const *s, int fd);
-void	ft_putchar_fd(char c, int fd);
-char	*ft_strdup(const char *s1);
-int		ft_isalpha(int c);
-int		get_next_line(int const fd, char **line);
-size_t	ft_strlen(const char *s);
-void	ft_putendl_fd(char const *s, int fd);
-char	*ft_strchr(const char *s, int c);
-void	*ft_calloc(size_t count, size_t size);
-char	**ft_split(char const *s, char c);
-int		ft_tolower(int c);
+
 #endif

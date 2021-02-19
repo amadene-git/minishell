@@ -6,11 +6,11 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/18 13:07:52 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/18 13:08:57 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/19 14:17:31 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 int	check_error(t_tok *actual, t_tok *prev)
 {

@@ -6,11 +6,11 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 23:55:26 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/17 20:02:21 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/19 14:17:11 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 t_tok	*create_tok(int type, void *value)
 {

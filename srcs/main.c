@@ -112,6 +112,7 @@ int main(int ac,const char **av, const char	**env)
 	int		fd[2];
 	int		pipe_flag;
 	t_tok	*t;
+	int		status;
 
 	while(gnl)
 	{
