@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/18 13:07:52 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/19 14:17:31 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/02/19 17:13:30 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,11 @@ int	has_errors(t_tok **tok_lex)
 			i++;
 		if ((i == 0 && !check_error(tok_lex[i], NULL)) || !check_error(tok_lex[i], tok_lex[j]))
 		{
-			dprintf(2, "minishell: syntax error near unexpected token `%s'\n", tok_lex[i]->value);
+			dprintf(2, "minishell: syntax error near unexpected token `%s'\n", (char *)tok_lex[i]->value);
 			return (1);
 		}
+		if (tok_lex[i]->type == CHR_END)
+			return (0);
 		j = i;
 	}
 	return (0);
