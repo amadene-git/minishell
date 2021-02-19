@@ -33,7 +33,7 @@ t_tok	**lexer(char *str, int *i, int lvl)
 //		(*i)++;
 	j = *i;
 	value = NULL;
-	type = 6;
+	type = CHR_END;
 	if (g_get_chr[str[*i]] == CHR_STR)
 	{
 		while (g_get_chr[str[++j]] != CHR_STR && str[j])

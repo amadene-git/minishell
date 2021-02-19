@@ -6,11 +6,11 @@
 #    By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/03 15:10:22 by mbouzaie          #+#    #+#              #
-#    Updated: 2021/02/19 14:46:33 by mbouzaie         ###   ########.fr        #
+#    Updated: 2021/02/19 15:48:26 by mbouzaie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = gcc
+CC = @gcc
 
 NAME = libft.a
 
@@ -95,7 +95,7 @@ OBJ_B =	${SRC_B:.c=.o}
 all: $(NAME)
 
 $(NAME):
-	@$(CC) $(FLAGS) $(OPTION) $(SRC)
+	$(CC) $(FLAGS) $(OPTION) $(SRC)
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 	@echo "libft is here\n"
