@@ -10,13 +10,16 @@ unsigned int g_get_chr[255] = {
 	['"'] = CHR_STR,
 	['\''] = CHR_ST,
 	['\t'] = CHR_SP,
+	['\f'] = CHR_SP,
+	['\r'] = CHR_SP,
+	['\v'] = CHR_SP,
 	['\n'] = CHR_SP,
 	[' '] = CHR_SP,
 	['&'] = CHR_OP,
 	['|'] = CHR_PI,
 	['>'] = CHR_RE,
 	['<'] = CHR_RE,
-	[';'] = CHR_OP,
+	[';'] = CHR_PV,
 	['\0'] = CHR_END
 };
 
@@ -33,7 +36,7 @@ t_tok	**lexer(char *str, int *i, int lvl)
 //		(*i)++;
 	j = *i;
 	value = NULL;
-	type = 6;
+	type = CHR_END;
 	if (g_get_chr[str[*i]] == CHR_STR)
 	{
 		while (g_get_chr[str[++j]] != CHR_STR && str[j])
@@ -53,6 +56,17 @@ t_tok	**lexer(char *str, int *i, int lvl)
 			type = CHR_ERROR;
 		
 	}
+	else if (g_get_chr[str[*i]] > CHR_SP && g_get_chr[str[*i]] < CHR_END)
+	{
+		j++;
+		if (g_get_chr[str[j]] == g_get_chr[str[*i]])
+		{
+			j++;
+			if (g_get_chr[j] == CHR_PI)
+				type = CHR_OP;
+		}
+		
+	}
 	else
 		while (g_get_chr[str[*i]] == g_get_chr[str[j]])
 		{
@@ -67,7 +81,7 @@ t_tok	**lexer(char *str, int *i, int lvl)
 		value = ft_strndup(str + *i, j - *i);
 	else
 		value = NULL;
-	if (type != CHR_ERROR)
+	if (type == CHR_END)
 		type = g_get_chr[str[*i]];
 	*i = j;
 	if (g_get_chr[str[j]] != CHR_END)
