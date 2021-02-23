@@ -9,8 +9,11 @@ unsigned int g_get_chr[255] = {
 	['='] = CHR_WORD,
 	['"'] = CHR_STR,
 	['\''] = CHR_ST,
-	['\t'] = CHR_SP,
 	['\n'] = CHR_SP,
+	['\t'] = CHR_SP,
+	['\v'] = CHR_SP,
+	['\r'] = CHR_SP,
+	['\f'] = CHR_SP,
 	[' '] = CHR_SP,
 	['&'] = CHR_OP,
 	['|'] = CHR_PI,
@@ -98,7 +101,7 @@ char	*put_var_env(char *str, t_dlist *envlist)
 			i += 2;
 		else if (str[j++] == '$')
 		{
-			while (ft_isalpha(str[j]))
+			while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
 				j++;
 	//		printf("2\n");
 			name = ft_strndup(str + i + 1, j - i - 1);
@@ -145,7 +148,7 @@ char	*get_str(char *str, t_dlist *envlist)
         else if (str[i] == '$')
         {
             j = i + 1;
-            while (ft_isalpha(str[j]) || str[j] == '_')
+            while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
                 j++;
             ptr = ft_strndup(str + i + 1, j - (i + 1));
 			printf("ptr=%s\n", ptr);
@@ -153,10 +156,14 @@ char	*get_str(char *str, t_dlist *envlist)
 			{
             	str = insert_string(str, ft_strdup(dlist_chr(envlist, ptr)->data->value), i, j);
 				i += ft_strlen(dlist_chr(envlist, ptr)->data->value);
+				printf ("str[%d]=%c\n",i, str[i]);
 			}
 			else
+			{
             	str = insert_string(str, strdup(""), i, j);
-
+				if (i)
+					i--;
+			}
         }
     }
 	return (str);
@@ -180,17 +187,21 @@ char	*get_word(char *str, t_dlist *envlist)
         else if (str[i] == '$')
         {
             j = i + 1;
-            while (ft_isalpha(str[j]) || str[j] == '_')
+            while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
                 j++;
             ptr = ft_strndup(str + i + 1, j - (i + 1));
-			if (dlist_chr(envlist, ptr))
+			if (dlist_chr(envlist, ptr) && dlist_chr(envlist, ptr)->data->value)
 			{
             	str = insert_string(str, ft_strdup(dlist_chr(envlist, ptr)->data->value), i, j);
 				i += ft_strlen(dlist_chr(envlist, ptr)->data->value) - 1;
 			}
 			else
+			{
             	str = insert_string(str, strdup(""), i, j);
-        }
+        		if (i)
+					i--;
+			}
+		}
     }
 	return (str);
 }

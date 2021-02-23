@@ -76,7 +76,7 @@ typedef struct  s_minishell
 int		built_in_echo(int ac, char **av, t_dlist *envlist, int fd);
 
 //built_in_cd.c
-void	refresh_pwd(const char *pwd, const char *old, t_dlist *envlist, int fd);
+void	refresh_pwd(char *newpwd, t_dlist *envlist, int fd);
 int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd);
 
 //built_in_pwd.c
