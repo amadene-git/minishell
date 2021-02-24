@@ -50,9 +50,9 @@ char	*insert_string(char *str, char *to_insert, int start, int end)
 	+ ft_strlen(to_insert) + (end - start) + 1))))
 		return (NULL);
 	i = -1;
-	while (++i < start)
+	while (++i < start && str[i])
 		ret[i] = str[i];
-	while ((size_t)i < start + ft_strlen(to_insert))
+	while ((size_t)i < start + ft_strlen(to_insert) && to_insert[i - start])
 	{
 		ret[i] = to_insert[i - start];
 		i++;

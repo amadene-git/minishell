@@ -85,6 +85,7 @@ int		built_in_pwd(int ac, char **av, t_dlist *envlist, int fd);
 //built_in_export.c
 void	print_export(t_dlist *envlist, int fd);
 int     built_in_export(int ac, char **av, t_dlist *envlist, int fd);
+int     is_valid_name(char *str);
 
 //built_in_env.c
 char	*str_plusplus(char *nbr);
@@ -123,7 +124,7 @@ t_dlist *dlist_create_elem(void *data);
 t_var	*create_var(const char *str);
 t_dlist *dlist_strchr_first(t_dlist *begin);
 t_dlist	*dlist_chr_alpha_next(t_dlist *begin);
-void	insert_var(t_dlist *envlist, t_var *variable);
+t_dlist	*insert_var(t_dlist *envlist, t_var *variable);
 t_dlist	*dlist_chr(t_dlist *begin, const char *name);
 void    free_var(t_var *variable);
 void	free_elem(t_dlist *envlist, const char *name);

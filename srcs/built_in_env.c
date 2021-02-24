@@ -1,15 +1,24 @@
 #include "../includes/minishell.h"
 
-char    *str_plusplus(char *nbr)
+void	shlvl_plusplus(t_dlist *shlvl)
 {
     int     i;
     int     a;
-    char    *str = ft_strdup(nbr);
+    char    *str;
 
     i = -1;
     a = 0;
-    free(nbr);
-    while (str[++i])
+	if (shlvl->data->value)
+	{
+		str = ft_strdup(shlvl->data->value);
+		free(shlvl->data->value);
+	}
+	else
+	{
+		shlvl->data->value = ft_strdup("1");
+		return;
+	}
+	while (str[++i])
         a += (str[i] == '9') ? 0 : 1;
     if (a == 0)
     {
@@ -20,7 +29,8 @@ char    *str_plusplus(char *nbr)
         while (--i)
             str[i] = '0';
         str[i] = '1';
-        return (str);
+        shlvl->data->value = str;
+		return;
     }
     i--;
     while (i >= 0)
@@ -28,27 +38,40 @@ char    *str_plusplus(char *nbr)
         if (str[i] >= '0' && str[i] <= '8')
         {
             str[i] += 1;
-            return (str);
+			break;
         }
         if (str[i] < '0' || str[i] > '9')
-            return(NULL);
-        i--;
+		{
+			shlvl->data->value = ft_strdup("1");
+            return;
+		}
+		i--;
     }
-    return (str);
+    shlvl->data->value = str;
 }
+
+void	clean_spaces(t_dlist *shlvl)
+{
+	int 	i;
+	char	*copy;
+	
+	i = 0;
+	while (*shlvl->data->value == ' ')
+		shlvl->data->value++;
+	copy = ft_strdup(shlvl->data->value);
+	//free(shlvl->data->value);
+	shlvl->data->value = copy;
+} 
 
 t_dlist *init_env(const char **env)
 {
     t_dlist	*envlist;
     t_dlist	*elem;
-    char	**tab;
     char 	buf[PATHMAX + 1];
 	char 	*tmp;
 
-    tab = (char**)malloc(sizeof(char*) * 2);
-    tab[0] = ft_strdup("export");
     envlist = get_envlist_from_env(env);
-    if (!(elem = dlist_chr(envlist, "PWD")) && getcwd(&buf[0], PATHMAX))
+    if (!(elem = dlist_chr(envlist, "PWD")))
     {
         if(!getcwd(&buf[0], PATHMAX))
         {
@@ -56,30 +79,30 @@ t_dlist *init_env(const char **env)
             return (NULL);
         }
         else
-        {
-            tab[1] = ft_strjoindoublefree(ft_strdup("PWD="), ft_strdup(&buf[0]));
-            built_in_export(2, tab, envlist, 1);
-            free(tab[1]);
-        }
-    }
-    if (!(elem = dlist_chr(envlist, "OLDPWD")))
-    {
-        tab[1] = ft_strdup("OLDPWD");
-        built_in_export(2, tab, envlist, 1);
-        free(tab[1]);
-
-    }
+		{
+            tmp = ft_strjoindoublefree(ft_strdup("PWD="), ft_strdup(&buf[0]));
+			elem = insert_var(envlist, create_var((const char*)tmp));
+			free(tmp);
+		}
+	}
     if (!(elem = dlist_chr(envlist, "SHLVL")))
     {
-        tab[1] = ft_strjoindoublefree(ft_strdup("SHLVL="), ft_strdup("1"));
-        built_in_export(2, tab, envlist, 1);
-        free(tab[1]);
-
+            tmp = ft_strjoindoublefree(ft_strdup("SHLVL="), ft_strdup("1"));
+			elem = insert_var(envlist, create_var((const char*)tmp));
+			free(tmp);
     }
     else
-    	dlist_chr(envlist, "SHLVL")->data->value = str_plusplus(dlist_chr(envlist, "SHLVL")->data->value);
-    free(tab[0]);
-    free(tab);
+	{
+		shlvl_plusplus(elem);
+		clean_spaces(elem);
+	}
+	if (!(elem = dlist_chr(envlist, "_")))
+    {
+            tmp = ft_strjoindoublefree(ft_strdup("_="), ft_strdup("?"));
+			elem = insert_var(envlist, create_var((const char*)tmp));
+			free(tmp);
+    }
+
     return (envlist);
 }
 
@@ -173,11 +196,24 @@ void	envlist_print(const char **env, int fd)
 int		built_in_unset(t_cmd *cmd)
 {
 	int i;
+	int	status;
 
 	i = 0;
+	status = 0;
 	while (++i < cmd->ac)
-		free_elem(cmd->envlist, cmd->av[i]);
-	return (0);
+	{
+		if (!is_valid_name(cmd->av[i]))
+		{
+			dprintf(2, "minishell: unset: `%s': not a valid identifier\n", cmd->av[i]);
+			status = 1;
+		}
+		else if (!dlist_chr(cmd->envlist, cmd->av[i]))
+			status = 1;
+		else
+			free_elem(cmd->envlist, cmd->av[i]);
+		
+	}
+	return (status);
 
 }
 

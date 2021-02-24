@@ -80,8 +80,8 @@ int	exec_bin(t_cmd *cmd)
 	get_absolute_path(cmd->av, cmd->envlist);
 	if (execve(cmd->av[0], cmd->av, cmd->env) == -1)
 	{
-		dprintf(2, "minishell: %s: command not found\n", cmd->bin);
-		return (-1);
+		dprintf(2, "minishell: %s: %s\n", cmd->bin, strerror(errno));
+		return (1);
 	}
 	return (0);
 }
@@ -97,11 +97,11 @@ int	exec_no_fork(t_cmd *cmd)
 	}
 	else if (!ft_strcmp("cd", cmd->bin))
 	{
-		built_in_cd(cmd->ac, cmd->av, cmd->envlist, 1);
+		status = built_in_cd(cmd->ac, cmd->av, cmd->envlist, 1);
 	}
 	else if (!ft_strcmp("unset", cmd->bin))
 	{
-		built_in_unset(cmd);
+		status = built_in_unset(cmd);
 	}
 	else if (!ft_strcmp("export", cmd->bin) && cmd->ac > 1)
 	{

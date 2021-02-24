@@ -82,7 +82,7 @@ t_dlist	*dlist_chr_alpha_next(t_dlist *begin)
 	return (ret);
 }
 
-void	insert_var(t_dlist *envlist, t_var *variable)
+t_dlist	*insert_var(t_dlist *envlist, t_var *variable)
 {
 	t_dlist	*elem;
 
@@ -91,6 +91,7 @@ void	insert_var(t_dlist *envlist, t_var *variable)
 	elem->prev = envlist->prev;
 	elem->prev->next = elem;
 	envlist->prev = elem;
+	return (elem);
 }
 
 t_dlist	*dlist_chr(t_dlist *begin, const char *name)

@@ -21,7 +21,7 @@ int		built_in_echo(int ac, char **av, t_dlist *envlist, int fd)
 			else
 				ft_putstr_fd(av[i], fd);
 		}
-		else
+		else if (av[i][0])
 			ft_putstr_fd(av[i], fd);
 		if (i < ac - 1 && i > n)
 			ft_putchar_fd(' ', fd);

@@ -49,9 +49,8 @@ int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
 		{
 			status = 0;
 		}
-		else if (cmd->bin && !is_builtin(cmd->bin) && exec_bin(cmd))// copier envlist
+		else if (cmd->bin && !is_builtin(cmd->bin) && (status = exec_bin(cmd)))// copier envlist
 		{
-			status = 1;
 			exit(status);
 		}
 		else
@@ -81,6 +80,17 @@ int	has_pipe(t_tok **tok_lex)
 		i++;
 	}
 	return (0);
+}
+
+void	refresh_last_cmd(t_dlist *envlist, char *last_cmd)
+{
+	t_dlist *last;
+
+	if (!(last = dlist_chr(envlist, "_")))
+		last = insert_var(envlist, create_var("_="));
+	if (last->data->value)
+		free(last->data->value);
+	last->data->value = last_cmd;
 }
 
 int main(int ac,const char **av, const char	**env)
@@ -118,10 +128,10 @@ int main(int ac,const char **av, const char	**env)
 			pipe_flag = 0;
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			//k = -1;
-			//while (tok_lex[++k]->type != CHR_END)
-			//	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
-			//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			// k = -1;
+			// while (tok_lex[++k]->type != CHR_END)
+			// 	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			// printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			if (!has_errors(tok_lex))
 				while ((*tok_lex)->type != CHR_END)
 				{
@@ -160,19 +170,22 @@ int main(int ac,const char **av, const char	**env)
 					if (cmd->tok_lst)
 					{
 						cmd->bin = cmd->tok_lst->value;
-						//printf ("ac :%d\n", cmd->ac);
-						//for (int k = 0; cmd->av[k]; k++)
-							//dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
-							//dprintf(2, "stdout:\n");
 						prepare_cmd(cmd);
+						// printf ("ac :%d\n", cmd->ac);
+						// for (int k = 0; cmd->av[k]; k++)
+						// 	dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
+						// 	dprintf(2, "stdout:\n");
 						status = exec_no_fork(cmd);
 						if (status == 255)
 							break;
 						if (status == 0)
 							status = exec_cmd(cmd, envlist);
+							//printf("cmd->ac = %d last = %s\n", cmd->ac, cmd->av[cmd->ac - 1]);
+							refresh_last_cmd(envlist, ft_strdup(cmd->av[cmd->ac - 1]));
 						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 						//free(cmd->env);
 					}
+					k = 0;
 					tmp = cmd;
 				}
 			else 

@@ -136,14 +136,13 @@ char	*get_str(char *str, t_dlist *envlist)
 	char	*ptr;
 	t_dlist	*elem;
 
-	i = -1;
-	while (str[++i])
+	i = 0;
+	while (str[i])
     {
         if (str[i] == '\\')
         {
 			if (str[i + 1] == '"' || str[i + 1] == '$' || str[i + 1] == '\\')
             	str = insert_string(str, strdup(""), i, i + 1);
-            i++;
         }
         else if (str[i] == '$')
         {
@@ -151,20 +150,18 @@ char	*get_str(char *str, t_dlist *envlist)
             while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
                 j++;
             ptr = ft_strndup(str + i + 1, j - (i + 1));
-			printf("ptr=%s\n", ptr);
 			if (dlist_chr(envlist, ptr))
 			{
             	str = insert_string(str, ft_strdup(dlist_chr(envlist, ptr)->data->value), i, j);
-				i += ft_strlen(dlist_chr(envlist, ptr)->data->value);
-				printf ("str[%d]=%c\n",i, str[i]);
+				i += ft_strlen(dlist_chr(envlist, ptr)->data->value) - 1;
 			}
 			else
 			{
             	str = insert_string(str, strdup(""), i, j);
-				if (i)
-					i--;
+				i--;
 			}
         }
+		i++;
     }
 	return (str);
 }
@@ -176,13 +173,12 @@ char	*get_word(char *str, t_dlist *envlist)
 	char	*ptr;
 	t_dlist	*elem;
 
-	i = -1;
-	while (str[++i])
+	i = 0;
+	while (str[i])
     {
         if (str[i] == '\\')
         {
             str = insert_string(str, strdup(""), i, i + 1);
-            i++;
         }
         else if (str[i] == '$')
         {
@@ -198,10 +194,10 @@ char	*get_word(char *str, t_dlist *envlist)
 			else
 			{
             	str = insert_string(str, strdup(""), i, j);
-        		if (i)
-					i--;
+				i--;
 			}
 		}
+		i++;
     }
 	return (str);
 }
