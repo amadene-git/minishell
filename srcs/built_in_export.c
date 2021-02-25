@@ -19,7 +19,7 @@ void	print_export(t_dlist *envlist, int fd)
 	t_dlist	*elem;
 
 	elem = dlist_strchr_first(envlist);
-	if (elem)
+	if (elem && ft_strcmp("_", elem->data->name))
 	{
 		ft_putstr_fd("declare -x ", fd);
 		ft_putstr_fd(elem->data->name, fd);
@@ -35,7 +35,7 @@ void	print_export(t_dlist *envlist, int fd)
 	while (elem)
 	{
 		elem = dlist_chr_alpha_next(elem);
-		if (elem)
+		if (elem && ft_strcmp("_", elem->data->name))
 		{
 			ft_putstr_fd("declare -x ", fd);
 			ft_putstr_fd(elem->data->name, fd);

@@ -52,36 +52,50 @@ int		is_builtin(char	*cmd)
 	return (0);
 }
 
-void	exec_built_in(t_cmd *cmd)
+int	exec_built_in(t_cmd *cmd)
 {
+	int status = 0;
 	if (!ft_strcmp("echo", cmd->bin))
 	{
-		built_in_echo(cmd->ac, cmd->av, cmd->envlist, 1);
+		status = built_in_echo(cmd->ac, cmd->av, cmd->envlist, 1);
 	}
 	else if (!ft_strcmp("pwd", cmd->bin))
 	{
-		built_in_pwd(cmd->ac, cmd->av, cmd->envlist, 1);
+		status = built_in_pwd(cmd->ac, cmd->av, cmd->envlist, 1);
 	}
 	else if (!ft_strcmp("env", cmd->bin))
 	{
-		built_in_env(cmd);
+		status = built_in_env(cmd);
 	}
 	else if (!ft_strcmp("export", cmd->bin) && cmd->ac == 1)
 	{
-		built_in_export(cmd->ac, cmd->av, cmd->envlist, 1);
+		status = built_in_export(cmd->ac, cmd->av, cmd->envlist, 1);
 	}
+	return(status);
 }
 
 int	exec_bin(t_cmd *cmd)
 {
 	int status;
-
+	int fd;
+	struct stat *buff = (struct stat *)malloc(sizeof(buff));
 	status = 0;
 	get_absolute_path(cmd->av, cmd->envlist);
 	if (execve(cmd->av[0], cmd->av, cmd->env) == -1)
 	{
-		dprintf(2, "minishell: %s: %s\n", cmd->bin, strerror(errno));
-		return (1);
+		if (stat(cmd->av[0], buff) == -1)
+		{
+			dprintf(2, "minishell: %s: %s\n", cmd->av[0], strerror(errno));			
+		}
+		else if (errno == 8 /*|| errno == 13*/)
+			return (0);
+		else if (errno == 13 && S_ISDIR(buff->st_mode))
+		{
+			dprintf(2, "minishell: %s: is a directory\n", cmd->av[0]);			
+		}
+		else
+			dprintf(2, "minishell: %s: %s\n", cmd->av[0], strerror(errno));
+		return(126);
 	}
 	return (0);
 }
@@ -106,6 +120,7 @@ int	exec_no_fork(t_cmd *cmd)
 	else if (!ft_strcmp("export", cmd->bin) && cmd->ac > 1)
 	{
 		status = built_in_export(cmd->ac, cmd->av, cmd->envlist, 1);
+	//	printf ("status %d\n", status);
 	}
 	return (status);
 }

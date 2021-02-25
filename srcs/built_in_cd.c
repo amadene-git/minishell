@@ -24,7 +24,7 @@ void	refresh_pwd(char *newpwd, t_dlist *envlist, int fd)
 
 int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
 {
-	char	buff[3200];
+	char	*buff;
 	char	*pwdcopy;
 	t_dlist	*home;
 
@@ -55,11 +55,13 @@ int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
 		dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
 		return (1);
 	}
-	if (!getcwd(&buff[0], 31999))
+	buff = (char*)ft_calloc(PATHSIZE + 1, sizeof(char));
+	if (!getcwd(buff, PATHSIZE))
 	{
 		dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
 		return (1);
 	}
-	refresh_pwd(strdup(&buff[0]), envlist, fd);
+	refresh_pwd(strdup(buff), envlist, fd);
+	free(buff);
 	return (0);
 }

@@ -7,11 +7,12 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <sys/types.h>
+# include <sys/stat.h>
 # include <dirent.h>
 # include "libft.h"
 
 # ifndef PATHSIZE
-#  define PATHMAX 32000
+#  define PATHSIZE 32000
 # endif
 
 typedef struct  s_var
@@ -103,7 +104,7 @@ int     exit_cmd(t_cmd *cmd);
 //exec.c
 void		get_absolute_path(char **cmd, t_dlist *envlist);
 int			is_builtin(char	*cmd);
-void		exec_built_in(t_cmd *cmd);
+int 		exec_built_in(t_cmd *cmd);
 int 		exec_bin(t_cmd *cmd);
 int 	    exec_no_fork(t_cmd *cmd);
 

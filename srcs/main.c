@@ -55,8 +55,7 @@ int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
 		}
 		else
 		{
-			exec_built_in(cmd);
-			exit (0);
+			exit(exec_built_in(cmd));
 		}
 	}
 	if (cmd->prev && cmd->prev->fdpipe)
@@ -64,7 +63,8 @@ int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
 		close(cmd->prev->fdpipe[0]);
 		close(cmd->prev->fdpipe[1]);
 	}
-		waitpid(cmd->pid, &status, 0);
+	waitpid(cmd->pid, &status, 0);
+	status = WEXITSTATUS(status);
 	return (status);
 }
 
@@ -175,13 +175,14 @@ int main(int ac,const char **av, const char	**env)
 						// for (int k = 0; cmd->av[k]; k++)
 						// 	dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
 						// 	dprintf(2, "stdout:\n");
+				//		printf ("cmd->bin %s\ncmd->av %s\n", cmd->bin, cmd->av[0]);
 						status = exec_no_fork(cmd);
-						if (status == 255)
-							break;
+					//	if (status == 255)
+					//		break;
 						if (status == 0)
 							status = exec_cmd(cmd, envlist);
+						//	printf ("status = %d\n", status);
 							//printf("cmd->ac = %d last = %s\n", cmd->ac, cmd->av[cmd->ac - 1]);
-							refresh_last_cmd(envlist, ft_strdup(cmd->av[cmd->ac - 1]));
 						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 						//free(cmd->env);
 					}
@@ -195,5 +196,6 @@ int main(int ac,const char **av, const char	**env)
 			gnl = 0;
 		free(line);
 	}
-	return (status);
+	exit (status);
+	//return (3);
 }

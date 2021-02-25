@@ -150,10 +150,10 @@ char	*get_str(char *str, t_dlist *envlist)
             while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
                 j++;
             ptr = ft_strndup(str + i + 1, j - (i + 1));
-			if (dlist_chr(envlist, ptr))
+			if ((elem = dlist_chr(envlist, ptr)) && elem->data->value)
 			{
-            	str = insert_string(str, ft_strdup(dlist_chr(envlist, ptr)->data->value), i, j);
-				i += ft_strlen(dlist_chr(envlist, ptr)->data->value) - 1;
+            	str = insert_string(str, ft_strdup(elem->data->value), i, j);
+				i += ft_strlen(elem->data->value) - 1;
 			}
 			else
 			{
@@ -164,6 +164,26 @@ char	*get_str(char *str, t_dlist *envlist)
 		i++;
     }
 	return (str);
+}
+
+char	*str_clean_whitespaces(const char *str)
+{
+	int 	i;
+	char	**tab;
+	char	*ret;
+
+	tab = ft_split(str, ' ');
+	i = 0;
+	if (tab && tab[i])
+		ret =ft_strdup(tab[i]);
+	i = 1;
+	while (tab[i])
+	{
+		ret = ft_strjoindoublefree(ret, ft_strdup(" "));
+		ret = ft_strjoindoublefree(ret, tab[i]);
+		i++;
+	}
+	return (ret);
 }
 
 char	*get_word(char *str, t_dlist *envlist)
@@ -186,10 +206,10 @@ char	*get_word(char *str, t_dlist *envlist)
             while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
                 j++;
             ptr = ft_strndup(str + i + 1, j - (i + 1));
-			if (dlist_chr(envlist, ptr) && dlist_chr(envlist, ptr)->data->value)
+			if ((elem = dlist_chr(envlist, ptr)) && elem->data->value && elem->data->value[0])
 			{
-            	str = insert_string(str, ft_strdup(dlist_chr(envlist, ptr)->data->value), i, j);
-				i += ft_strlen(dlist_chr(envlist, ptr)->data->value) - 1;
+            	str = insert_string(str, str_clean_whitespaces(elem->data->value), i, j);
+				i += ft_strlen(elem->data->value) - 1;
 			}
 			else
 			{

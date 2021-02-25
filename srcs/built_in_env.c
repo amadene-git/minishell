@@ -2,52 +2,12 @@
 
 void	shlvl_plusplus(t_dlist *shlvl)
 {
-    int     i;
-    int     a;
-    char    *str;
+	long int nb;
 
-    i = -1;
-    a = 0;
-	if (shlvl->data->value)
-	{
-		str = ft_strdup(shlvl->data->value);
-		free(shlvl->data->value);
-	}
-	else
-	{
-		shlvl->data->value = ft_strdup("1");
-		return;
-	}
-	while (str[++i])
-        a += (str[i] == '9') ? 0 : 1;
-    if (a == 0)
-    {
-        free(str);
-        i += 2;
-        str = (char*)malloc(sizeof(char) * (i));
-        str[i--] = 0;
-        while (--i)
-            str[i] = '0';
-        str[i] = '1';
-        shlvl->data->value = str;
-		return;
-    }
-    i--;
-    while (i >= 0)
-    {
-        if (str[i] >= '0' && str[i] <= '8')
-        {
-            str[i] += 1;
-			break;
-        }
-        if (str[i] < '0' || str[i] > '9')
-		{
-			shlvl->data->value = ft_strdup("1");
-            return;
-		}
-		i--;
-    }
-    shlvl->data->value = str;
+	nb = (unsigned)ft_atoi(shlvl->data->value);
+	nb = (nb >= 0) ? nb + 1 : 0;
+	free(shlvl->data->value);
+	shlvl->data->value = ft_itoa(nb);
 }
 
 void	clean_spaces(t_dlist *shlvl)
@@ -67,23 +27,25 @@ t_dlist *init_env(const char **env)
 {
     t_dlist	*envlist;
     t_dlist	*elem;
-    char 	buf[PATHMAX + 1];
+    char 	*buff;
 	char 	*tmp;
 
     envlist = get_envlist_from_env(env);
     if (!(elem = dlist_chr(envlist, "PWD")))
     {
-        if(!getcwd(&buf[0], PATHMAX))
+		buff = ft_calloc(PATHSIZE + 1, sizeof(char));
+        if(!getcwd(buff, PATHSIZE))
         {
             dprintf(2, "minishell: : getcwd: %s\n", strerror(errno));
             return (NULL);
         }
         else
 		{
-            tmp = ft_strjoindoublefree(ft_strdup("PWD="), ft_strdup(&buf[0]));
+            tmp = ft_strjoindoublefree(ft_strdup("PWD="), ft_strdup(buff));
 			elem = insert_var(envlist, create_var((const char*)tmp));
 			free(tmp);
 		}
+		free(buff);
 	}
     if (!(elem = dlist_chr(envlist, "SHLVL")))
     {
