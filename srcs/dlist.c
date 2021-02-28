@@ -86,6 +86,8 @@ t_dlist	*insert_var(t_dlist *envlist, t_var *variable)
 {
 	t_dlist	*elem;
 
+	if (!elem || !envlist)
+		return (NULL);
 	elem = dlist_create_elem(variable);
 	elem->next = envlist;
 	elem->prev = envlist->prev;

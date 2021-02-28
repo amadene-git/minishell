@@ -142,7 +142,7 @@ int main(int ac,const char **av, const char	**env)
 					}
 					cmd = (t_cmd*)malloc(sizeof(t_cmd));
 					cmd->envlist = envlist;
-					cmd->env = env;
+					//cmd->env = env;
 					cmd->fdin = -1;
 					cmd->fdout = -1;
 					cmd->fdpipe = NULL;
@@ -160,7 +160,7 @@ int main(int ac,const char **av, const char	**env)
 							dprintf(2, "erreur main:%s\n", strerror(errno));
 					}
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
-					//cmd->env = get_env_from_envlist(envlist, envlist, 0);
+					cmd->env = get_env_from_envlist(envlist, envlist, 0);
 					//tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
 					tok_lex = get_cmd_new(tok_lex, cmd);
 					/*t = cmd->tok_lst;
