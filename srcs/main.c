@@ -148,6 +148,9 @@ int main(int ac,const char **av, const char	**env)
 					cmd->fdpipe = NULL;
 					cmd->prev = (tmp) ? tmp : NULL;
 					cmd->next = NULL;
+					cmd->tok_arg = NULL;
+					cmd->tok_lst = NULL;
+					
 					if (tmp)
 						tmp->next = cmd;
 					if (has_pipe(tok_lex) == 1)

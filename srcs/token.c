@@ -16,7 +16,8 @@ t_tok	*create_tok(int type, void *value)
 {
 	t_tok	*tok;
 
-	tok = (t_tok*)malloc(sizeof(t_tok));
+	if (!(tok = (t_tok*)malloc(sizeof(t_tok))))
+		return (NULL);
 	tok->type = type;
 	tok->value = value;
 	tok->next = NULL;

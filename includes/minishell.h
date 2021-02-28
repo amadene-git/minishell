@@ -50,6 +50,7 @@ typedef struct  s_cmd
     int             *fdpipe;
     pid_t           pid;
     t_tok           *tok_lst;
+    t_tok           *tok_arg;
     struct  s_cmd   *prev;
     struct  s_cmd   *next;
 }               t_cmd;

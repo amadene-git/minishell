@@ -160,6 +160,8 @@ char	*get_str(char *str, t_dlist *envlist)
 	char	*ptr;
 	t_dlist	*elem;
 
+	if (!str)
+		return (NULL);
 	i = 0;
 	while (str[i])
     {
@@ -245,6 +247,120 @@ char	*get_word(char *str, t_dlist *envlist)
     }
 	return (str);
 }
+
+// int		token_push_back(t_tok **begin, t_tok *token)
+// {
+// 	t_tok *tmp;
+
+// 	if (!begin || !token)
+// 		return (0);
+// 	if (!(*begin))
+// 	{
+// 		*begin = token;
+// 		return (1);
+// 	}
+// 	tmp = (*begin);
+// 	while (tmp && tmp->next)
+// 		tmp = tmp->next;
+// 	tmp->next = token;
+// 	token->prev = tmp;
+// 	return (1);
+// }
+
+// t_tok	*create_tok_arg_for_chr_word(const t_tok *tok_word, t_cmd *cmd)
+// {
+// 	int			i;
+// 	int 		j;
+// 	char		*ptr;
+// 	char	*str;
+// 	t_dlist		*elem;
+
+// 	if (!tok_word || !tok_word->value)
+// 		return (NULL);
+// 	str = (char*)tok_word->value;
+// 	if (!str[0])
+// 		return (NULL);
+// 	else if (!(str = ft_strdup((char*)tok_word->value)))
+// 		return (NULL);
+// 	i = 0;
+// 	while (str[i])
+//     {
+//         if (str[i] == '\\')
+//         {
+//             str = insert_string(str, strdup(""), i, i + 1);
+//         }
+//         else if (str[i] == '$')
+//         {
+//             j = i + 1;
+//             while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
+//                 j++;
+//             ptr = ft_strndup(str + i + 1, j - (i + 1));
+// 			if ((elem = dlist_chr(envlist, ptr)) && elem->data->value && elem->data->value[0])
+// 			{
+//             	str = insert_string(str, str_clean_whitespaces(elem->data->value), i, j);
+// 				i += ft_strlen(elem->data->value) - 1;
+// 			}
+// 			else
+// 			{
+//             	str = insert_string(str, strdup(""), i, j);
+// 				i--;
+// 			}
+// 		}
+// 		i++;
+//     }
+// 	return (str);
+// 	return (NULL);
+// }
+
+// t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
+// {
+// 	char 	*str;
+// 	t_tok	*token;
+
+// 	if (!tok_lex || !(*tok_lex))
+// 		return (NULL);
+// 	while ((*tok_lex)->type > CHR_ERROR && (*tok_lex)->type < CHR_OP)
+// 		{
+// 			if ((*tok_lex)->type == CHR_ST)
+// 			{
+// 				if (ft_strlen((*tok_lex)->value) <= 2)
+// 				{
+// 					tok_lex++;
+// 					continue;
+// 				}
+// 				str = ft_strndup((*tok_lex)->value + 1, ft_strlen((*tok_lex)->value) - 2);
+// 				if (!str)
+// 					return (NULL);
+// 				if (!token_push_back(&cmd->tok_arg, create_tok(CHR_ST, str)))
+// 					return (NULL);
+// 			}
+// 			else if ((*tok_lex)->type == CHR_STR)
+// 			{
+// 				if (ft_strlen((*tok_lex)->value) <= 2)
+// 				{
+// 					tok_lex++;
+// 					continue;
+// 				}
+// 				str = get_str(ft_strndup((*tok_lex)->value + 1, ft_strlen((*tok_lex)->value) - 2), cmd->envlist);
+// 				if (!str)
+// 					return (NULL);
+// 				if (!*str)
+// 				{
+// 					free(str);
+// 					tok_lex++;
+// 				}
+// 				else if (!token_push_back(&cmd->tok_arg, create_tok(CHR_ST, str)))
+// 					return (NULL);
+// 			}
+// 			else if ((*tok_lex)->type == CHR_WORD)
+// 			{
+// 				token = create_tok_arg_for_chr_word((*tok_lex), cmd);
+// 				if (!token_push_back(&cmd->tok_arg, token))
+// 					return (NULL);
+// 			}
+// 			tok_lex++;
+// 		}
+// }
 
 t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl)
 {
