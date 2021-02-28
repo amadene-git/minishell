@@ -19,7 +19,7 @@ unsigned int g_get_chr[255] = {
 	['|'] = CHR_PI,
 	['>'] = CHR_RE,
 	['<'] = CHR_RE,
-	[';'] = CHR_OP,
+	[';'] = CHR_PV,
 	['\0'] = CHR_END
 };
 
@@ -55,6 +55,30 @@ t_tok	**lexer(char *str, int *i, int lvl)
 		else
 			type = CHR_ERROR;
 		
+	}
+	else if (g_get_chr[str[*i]] > CHR_SP && g_get_chr[str[*i]] < CHR_END)
+	{
+		while (g_get_chr[str[j]] > CHR_SP && g_get_chr[str[j]] < CHR_END)//tant que différent d'un mot
+			j++;
+		if (j > *i + 2)//la taille du tok->value ne doit pas dépasser 2
+			type = CHR_ERROR;
+		else if (g_get_chr[str[*i]] == CHR_OP)
+			type = CHR_ERROR;
+		else if (g_get_chr[str[*i]] == CHR_PI)
+		{
+			if (j != *i + 1)
+				type = CHR_ERROR;
+		}
+		else if (g_get_chr[str[*i]] == CHR_RE)
+		{
+			if (!ft_strcmp("<>", str + *i) || !ft_strcmp("><", str + *i) || !ft_strcmp("<<", str + *i))
+				type = CHR_ERROR;
+		}
+		else if (g_get_chr[str[*i]] == CHR_PV)
+		{
+			if (j != *i + 1)
+				type = CHR_ERROR;
+		}
 	}
 	else
 		while (g_get_chr[str[*i]] == g_get_chr[str[j]])

@@ -14,6 +14,8 @@
 
 int	check_error(t_tok *actual, t_tok *prev)
 {
+	if (actual->type == CHR_ERROR)
+		return (0);
 	if ((actual->type == CHR_PI || actual->type == CHR_OP) && !prev)
 		return (0);
 	if (actual->type == CHR_RE && (prev
@@ -40,7 +42,7 @@ int	has_errors(t_tok **tok_lex)
 	{
 		while (tok_lex[i]->type == CHR_SP)
 			i++;
-		if ((i == 0 && !check_error(tok_lex[i], NULL)) || !check_error(tok_lex[i], tok_lex[j]))
+		if (tok_lex[i] && ((i == 0 && !check_error(tok_lex[i], NULL)) || !check_error(tok_lex[i], tok_lex[j])))
 		{
 			dprintf(2, "minishell: syntax error near unexpected token `%s'\n", (char *)tok_lex[i]->value);
 			return (1);
