@@ -121,6 +121,7 @@ char	*get_st(char *str);
 char	*get_str(char *str, t_dlist *envlist);
 t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl);
 char	*get_word(char *str, t_dlist *envlist);
+t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd);
 
 //dlist.c
 t_dlist *dlist_create_elem(void *data);
