@@ -114,9 +114,12 @@ char	*get_var_str(t_var *var)
 	int		i;
 
 	str = ft_strjoindoublefree(ft_strdup(var->name), ft_strdup("="));
-	value = ft_strdup(var->value);
+	if (var->value)
+		value = ft_strdup(var->value);
+	else
+		value = NULL;
 	i = -1;
-	while (value[++i])
+	while (value && value[++i])
 	{
 		if (value[i] == '"' || value[i] == '\\' || value[i] == '$')
 		{
@@ -133,7 +136,12 @@ char	**get_env_from_envlist(t_dlist *begin, t_dlist *elem, int lvl)
 	char 	**env;
 	
 	if (elem->next != begin)
-		env = get_env_from_envlist(begin, elem->next, lvl + 1);
+	{
+		if (elem->data->value)
+			env = get_env_from_envlist(begin, elem->next, lvl + 1);
+		else
+			env = get_env_from_envlist(begin, elem->next, lvl);
+	}
 	else
 	{
 		env = (char**)malloc(sizeof(char*) * (lvl + 2));
@@ -141,7 +149,8 @@ char	**get_env_from_envlist(t_dlist *begin, t_dlist *elem, int lvl)
 		env[lvl] = get_var_str(elem->data);
 		return (env);
 	}
-	env[lvl] = get_var_str(elem->data);
+	if (elem->data->value)
+		env[lvl] = get_var_str(elem->data);
 	return (env);
 }
 

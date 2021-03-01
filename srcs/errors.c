@@ -37,17 +37,17 @@ int	has_errors(t_tok **tok_lex)
 	int		j;
 
 	i = -1;
-	j = -1;
+	j = 0;
 	while (tok_lex[++i] && tok_lex[i]->type <= CHR_END)
 	{
-		while (tok_lex[i]->type == CHR_SP)
+		while (tok_lex[i] && tok_lex[i]->type == CHR_SP)
 			i++;
 		if (tok_lex[i] && ((i == 0 && !check_error(tok_lex[i], NULL)) || !check_error(tok_lex[i], tok_lex[j])))
 		{
 			dprintf(2, "minishell: syntax error near unexpected token `%s'\n", (char *)tok_lex[i]->value);
 			return (1);
 		}
-		if (tok_lex[i]->type == CHR_END)
+		if (tok_lex[i] && tok_lex[i]->type == CHR_END)
 			return (0);
 		j = i;
 	}

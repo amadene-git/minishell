@@ -128,7 +128,7 @@ int main(int ac,const char **av, const char	**env)
 			pipe_flag = 0;
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			// k = -1;
+			k = -1;
 			// while (tok_lex[++k]->type != CHR_END)
 			// 	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			// printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
