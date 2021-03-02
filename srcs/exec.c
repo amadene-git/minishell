@@ -1,17 +1,22 @@
 #include "../includes/minishell.h"
 
-void	get_absolute_path(char **cmd, t_dlist *envlist)
+void	get_absolute_path(t_cmd *cmd, t_dlist *envlist)
 {
 	char			*path = NULL;
 	char			*strdir = NULL;
 	DIR				*dir;
 	struct dirent	*sd;
+	int				i;
 
 	if (dlist_chr(envlist, "PATH"))
 		path = dlist_chr(envlist, "PATH")->data->value;
 	else
 		return;
-	if (cmd[0][0] != '/' && strncmp(cmd[0], "./", 2) != 0)
+	if (cmd->av[0][0] != '/' && strncmp(cmd->av[0], "./", 2) != 0)
+	{
+		i = -1;
+		while (cmd->bin[++i])
+			cmd->bin[i] = ft_tolower(cmd->bin[i]);
 		while (path)
 		{
 			if (ft_strchr(path, ':'))
@@ -27,16 +32,16 @@ void	get_absolute_path(char **cmd, t_dlist *envlist)
 			if ((dir = opendir(strdir)) == NULL)
 				continue;
 			while ((sd = readdir(dir)) != NULL)
-				if (!ft_strcmp(sd->d_name, cmd[0]))
+				if (!ft_strcmp(sd->d_name, cmd->av[0]))
 				{
-					free(cmd[0]);
 					strdir = ft_strjoindoublefree(strdir, ft_strdup("/"));
-					cmd[0] = ft_strjoindoublefree(strdir, ft_strdup(sd->d_name));
+					cmd->bin = ft_strjoindoublefree(strdir, ft_strdup(sd->d_name));
 					return;
 				}
 			closedir(dir);
 			free(strdir);
 		}
+	}
 }
 
 int		is_builtin(char	*cmd)
@@ -80,23 +85,38 @@ int	exec_bin(t_cmd *cmd)
 	int fd;
 	struct stat *buff = (struct stat *)malloc(sizeof(buff));
 	status = 0;
-	get_absolute_path(cmd->av, cmd->envlist);
-	if (execve(cmd->av[0], cmd->av, cmd->env) == -1)
+	if (lstat(cmd->bin, buff) != -1)
 	{
-		if (stat(cmd->av[0], buff) == -1)
+		if ((buff->st_mode & S_IFDIR) && access(cmd->bin, F_OK) == -1)
 		{
-			dprintf(2, "minishell: %s: %s\n", cmd->av[0], strerror(errno));			
+			dprintf(2, "minishell: %s: No such file or directory", cmd->bin);
+			return (127);
 		}
-		else if (errno == 8 /*|| errno == 13*/)
-			return (0);
-		else if (errno == 13 && S_ISDIR(buff->st_mode))
-		{
-			dprintf(2, "minishell: %s: is a directory\n", cmd->av[0]);			
-		}
-		else
-			dprintf(2, "minishell: %s: %s\n", cmd->av[0], strerror(errno));
-		return(126);
+		else if (buff->st_mode & S_IFREG)
+			if (buff->st_mode & S_IXUSR)
+			{
+				if (execve(cmd->bin, cmd->av, cmd->env) == -1)
+				{
+					if (errno == 8 )//|| errno == 13)
+						return (0);
+					else if (errno == 13 && S_ISDIR(buff->st_mode))
+					{
+						dprintf(2, "minishell: %s: is a directory\n", cmd->bin);			
+					}
+					return(126);
+				}
+			}
+			else
+			{
+				dprintf(2, "minishell: %s: Permission denied\n", cmd->bin);
+				return (126);
+			}
 	}
+	else
+	{
+		dprintf(2, "minishell: %s: command not found\n", cmd->bin);
+		return (127);	
+	}	
 	return (0);
 }
 

@@ -108,6 +108,7 @@ int main(int ac,const char **av, const char	**env)
 	int		fd[2];
 	int		pipe_flag;
 	t_tok	*t;
+	t_dlist	*l;
 	int		status;
 
 	status = 0;
@@ -128,7 +129,9 @@ int main(int ac,const char **av, const char	**env)
 			pipe_flag = 0;
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			k = -1;
+			//k = -1;
+			//l = dlist_chr(envlist, "PATH");
+			//dprintf(2, "lst: type: %s, value: %s\n", l->data->name, l->data->value);
 			// while (tok_lex[++k]->type != CHR_END)
 			// 	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			// printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
@@ -162,15 +165,13 @@ int main(int ac,const char **av, const char	**env)
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
 					//tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
-					get_tok_arg(tok_lex, cmd);
 					tok_lex = get_cmd_new(tok_lex, cmd);
-					
-					t = cmd->tok_arg;
-					while (t)
+				//t = cmd->tok_arg;
+					/*while (t)
 					{
 						dprintf(2, "tok : %s \n", t->value);
 						t = t->next;
-					}
+					}*/
 					enable_redirect(cmd);
 					if (cmd->tok_lst)
 					{

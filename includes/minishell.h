@@ -104,7 +104,7 @@ int     built_in_env(t_cmd *cmd);
 int     exit_cmd(t_cmd *cmd);
 
 //exec.c
-void		get_absolute_path(char **cmd, t_dlist *envlist);
+void		get_absolute_path(t_cmd *cmd, t_dlist *envlist);
 int			is_builtin(char	*cmd);
 int 		exec_built_in(t_cmd *cmd);
 int 		exec_bin(t_cmd *cmd);
@@ -121,7 +121,6 @@ char	*get_st(char *str);
 char	*get_str(char *str, t_dlist *envlist);
 t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl);
 char	*get_word(char *str, t_dlist *envlist);
-t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd);
 
 //dlist.c
 t_dlist *dlist_create_elem(void *data);
