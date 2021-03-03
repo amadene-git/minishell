@@ -116,8 +116,7 @@ int main(int ac,const char **av, const char	**env)
 	{
 		if (ac == 1)
 		{
-			ft_putstr_fd("[minishell]", 1);
-			ft_putchar_fd('>', 1);
+			ft_dprintf(1, "[minishell]>");
 			gnl = get_next_line(0, &line);
 		}
 		else 
@@ -160,7 +159,7 @@ int main(int ac,const char **av, const char	**env)
 					{
 						cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
 						if (pipe(cmd->fdpipe) == -1)
-							dprintf(2, "erreur main:%s\n", strerror(errno));
+							ft_dprintf(2, "erreur main:%s\n", strerror(errno));
 					}
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);

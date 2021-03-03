@@ -37,13 +37,13 @@ int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
 		{
 			if (chdir(home->data->value) == -1)
 			{
-				dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
+				ft_dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
 				return (1);
 			}
 		}
 		else
 		{
-			dprintf(2, "minishell: cd: HOME not set\n");
+			ft_dprintf(2, "minishell: cd: HOME not set\n");
 			return (1);
 		}
 		
@@ -52,13 +52,13 @@ int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
 	;
 	else if (ac > 1 && (chdir(av[1]) == -1))
 	{
-		dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
+		ft_dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
 		return (1);
 	}
 	buff = (char*)ft_calloc(PATHSIZE + 1, sizeof(char));
 	if (!getcwd(buff, PATHSIZE))
 	{
-		dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
+		ft_dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
 		return (1);
 	}
 	refresh_pwd(strdup(buff), envlist, fd);

@@ -89,7 +89,7 @@ int	exec_bin(t_cmd *cmd)
 	{
 		if ((buff->st_mode & S_IFDIR) && access(cmd->bin, F_OK) == -1)
 		{
-			dprintf(2, "minishell: %s: No such file or directory", cmd->bin);
+			ft_dprintf(2, "minishell: %s: No such file or directory", cmd->bin);
 			return (127);
 		}
 		else if (buff->st_mode & S_IFREG)
@@ -101,20 +101,20 @@ int	exec_bin(t_cmd *cmd)
 						return (0);
 					else if (errno == 13 && S_ISDIR(buff->st_mode))
 					{
-						dprintf(2, "minishell: %s: is a directory\n", cmd->bin);			
+						ft_dprintf(2, "minishell: %s: is a directory\n", cmd->bin);			
 					}
 					return(126);
 				}
 			}
 			else
 			{
-				dprintf(2, "minishell: %s: Permission denied\n", cmd->bin);
+				ft_dprintf(2, "minishell: %s: Permission denied\n", cmd->bin);
 				return (126);
 			}
 	}
 	else
 	{
-		dprintf(2, "minishell: %s: command not found\n", cmd->bin);
+		ft_dprintf(2, "minishell: %s: command not found\n", cmd->bin);
 		return (127);	
 	}	
 	return (0);

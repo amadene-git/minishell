@@ -107,11 +107,11 @@ int		built_in_export(int ac, char **av, t_dlist *envlist, int fd)
 			var = create_var(av[i]);
 			if (!is_valid_name(var->name))
 			{
-				dprintf(2, "minishell: export: `%s",var->name);
+				ft_dprintf(2, "minishell: export: `%s",var->name);
 				if (var->value)
-					dprintf(2, "=%s': not a valid identifier\n", var->value);
+					ft_dprintf(2, "=%s': not a valid identifier\n", var->value);
 				else	
-					dprintf(2, "': not a valid identifier\n");
+					ft_dprintf(2, "': not a valid identifier\n");
 				status = 1;
 			}
 			else if (!(elem = dlist_chr(envlist, var->name)) && !(status = 0))

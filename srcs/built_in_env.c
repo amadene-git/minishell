@@ -36,7 +36,7 @@ t_dlist *init_env(const char **env)
 		buff = ft_calloc(PATHSIZE + 1, sizeof(char));
         if(!getcwd(buff, PATHSIZE))
         {
-            dprintf(2, "minishell: : getcwd: %s\n", strerror(errno));
+            ft_dprintf(2, "minishell: : getcwd: %s\n", strerror(errno));
             return (NULL);
         }
         else
@@ -175,7 +175,7 @@ int		built_in_unset(t_cmd *cmd)
 	{
 		if (!is_valid_name(cmd->av[i]))
 		{
-			dprintf(2, "minishell: unset: `%s': not a valid identifier\n", cmd->av[i]);
+			ft_dprintf(2, "minishell: unset: `%s': not a valid identifier\n", cmd->av[i]);
 			status = 1;
 		}
 		else if (!dlist_chr(cmd->envlist, cmd->av[i]))

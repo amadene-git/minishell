@@ -10,6 +10,7 @@
 # include <sys/stat.h>
 # include <dirent.h>
 # include "libft.h"
+# include "ft_dprintf.h"
 
 # ifndef PATHSIZE
 #  define PATHSIZE 32000
