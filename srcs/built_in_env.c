@@ -113,7 +113,8 @@ char	*get_var_str(t_var *var)
 	char	*value;
 	int		i;
 
-	str = ft_strjoindoublefree(ft_strdup(var->name), ft_strdup("="));
+	if (var && var->name)
+		str = ft_strjoindoublefree(ft_strdup(var->name), ft_strdup("="));
 	if (var->value)
 		value = ft_strdup(var->value);
 	else
@@ -123,11 +124,12 @@ char	*get_var_str(t_var *var)
 	{
 		if (value[i] == '"' || value[i] == '\\' || value[i] == '$')
 		{
-			insert_string(value, ft_strdup("\\"), i, i);
+			value = insert_string(value, ft_strdup("\\"), i, i);
 			i++;
 		}
 	}
-	str = ft_strjoindoublefree(str, value);
+	if (str && value)
+		str = ft_strjoindoublefree(str, value);
 	return (str);
 }
 

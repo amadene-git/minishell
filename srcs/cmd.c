@@ -83,8 +83,8 @@ void	prepare_cmd(t_cmd *cmd)
 {
 	int	i;
 
-	cmd->av = to_char_args(cmd->tok_lst);
-	cmd->ac = tok_list_size(cmd->tok_lst);
+	//cmd->av = to_char_args(cmd->tok_lst);
+	//cmd->ac = tok_list_size(cmd->tok_lst);
 	get_absolute_path(cmd, cmd->envlist);
 }
 /*

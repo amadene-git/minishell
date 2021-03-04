@@ -248,160 +248,304 @@ char	*get_word(char *str, t_dlist *envlist)
 	return (str);
 }
 
-// int		token_push_back(t_tok **begin, t_tok *token)
-// {
-// 	t_tok *tmp;
+int		token_push_back(t_tok **begin, t_tok *token)
+{
+	t_tok *tmp;
 
-// 	if (!begin || !token)
-// 		return (0);
-// 	if (!(*begin))
-// 	{
-// 		*begin = token;
-// 		return (1);
-// 	}
-// 	tmp = (*begin);
-// 	while (tmp && tmp->next)
-// 		tmp = tmp->next;
-// 	tmp->next = token;
-// 	token->prev = tmp;
-// 	return (1);
-// }
+	if (!begin || !token)
+		return (0);
+	if (!(*begin))
+	{
+		*begin = token;
+		return (1);
+	}
+	tmp = (*begin);
+	while (tmp && tmp->next)
+		tmp = tmp->next;
+	tmp->next = token;
+	token->prev = tmp;
+	return (1);
+}
 
-// t_tok	*create_tok_arg_for_chr_word(const t_tok *tok_word, t_cmd *cmd)
-// {
-// 	int			i;
-// 	int 		j;
-// 	char		*ptr;
-// 	char	*str;
-// 	t_dlist		*elem;
+t_tok	*get_env_var_tok(const char *value)
+{
+	t_tok	*tok_var;
+	t_tok	*token;
+	char	*str;
+	int		i;
+	int		j;
 
-// 	if (!tok_word || !tok_word->value)
-// 		return (NULL);
-// 	str = (char*)tok_word->value;
-// 	if (!str[0])
-// 		return (NULL);
-// 	else if (!(str = ft_strdup((char*)tok_word->value)))
-// 		return (NULL);
-// 	i = 0;
-// 	while (str[i])
-//     {
-//         if (str[i] == '\\')
-//         {
-//             str = insert_string(str, strdup(""), i, i + 1);
-//         }
-//         else if (str[i] == '$')
-//         {
-//             j = i + 1;
-//             while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
-//                 j++;
-//             ptr = ft_strndup(str + i + 1, j - (i + 1));
-// 			if ((elem = dlist_chr(envlist, ptr)) && elem->data->value && elem->data->value[0])
-// 			{
-//             	str = insert_string(str, str_clean_whitespaces(elem->data->value), i, j);
-// 				i += ft_strlen(elem->data->value) - 1;
-// 			}
-// 			else
-// 			{
-//             	str = insert_string(str, strdup(""), i, j);
-// 				i--;
-// 			}
-// 		}
-// 		i++;
-//     }
-// 	return (str);
-// 	return (NULL);
-// }
+	tok_var = NULL;
+	if (!value)
+	{
+		tok_var = create_tok(CHR_ST, NULL);
+		return (tok_var);
+	}
+	if (!*value)
+	{
+		tok_var = create_tok(CHR_ST, ft_strdup(""));
+		return (tok_var);
+	}
+	i = 0;
+	while (value[i])
+	{
+		if (ft_isspace(value[i]))
+		{
+			token = create_tok(CHR_SP, NULL);
+			if (!token_push_back(&tok_var, token))
+				return (NULL);
+			while (ft_isspace(value[i]))
+				i++;
+		}
+		else
+		{
+			j = i;
+			while (value[j] && !ft_isspace(value[j]))
+				j++;
+			str = ft_strndup(value + i, j - i);
+			if (!str)
+				return (NULL);
+			token = create_tok(CHR_ST, str);
+			if (!token_push_back(&tok_var, token))
+				return (NULL);
+			i = j;
+		}
+	}
+	return (tok_var);
+}
 
-// t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
-// {
-// 	char 	*str;
-// 	t_tok	*token;
+t_tok	*get_word_tok(t_tok	*tok_lex, t_cmd	*cmd)
+{
+	char	*str;
+	t_tok	*tok_word;
+	t_tok	*token;
+	t_dlist	*elem;
+	char	*var_name;
+	int		i;
+	int		j;
+	int		k;
+	t_tok	*tmp;
 
-// 	if (!tok_lex || !(*tok_lex))
-// 		return (NULL);
-// 	while ((*tok_lex)->type > CHR_ERROR && (*tok_lex)->type < CHR_OP)
-// 		{
-// 			if ((*tok_lex)->type == CHR_ST)
-// 			{
-// 				if (ft_strlen((*tok_lex)->value) <= 2)
-// 				{
-// 					tok_lex++;
-// 					continue;
-// 				}
-// 				str = ft_strndup((*tok_lex)->value + 1, ft_strlen((*tok_lex)->value) - 2);
-// 				if (!str)
-// 					return (NULL);
-// 				if (!token_push_back(&cmd->tok_arg, create_tok(CHR_ST, str)))
-// 					return (NULL);
-// 			}
-// 			else if ((*tok_lex)->type == CHR_STR)
-// 			{
-// 				if (ft_strlen((*tok_lex)->value) <= 2)
-// 				{
-// 					tok_lex++;
-// 					continue;
-// 				}
-// 				str = get_str(ft_strndup((*tok_lex)->value + 1, ft_strlen((*tok_lex)->value) - 2), cmd->envlist);
-// 				if (!str)
-// 					return (NULL);
-// 				if (!*str)
-// 				{
-// 					free(str);
-// 					tok_lex++;
-// 				}
-// 				else if (!token_push_back(&cmd->tok_arg, create_tok(CHR_ST, str)))
-// 					return (NULL);
-// 			}
-// 			else if ((*tok_lex)->type == CHR_WORD)
-// 			{
-// 				token = create_tok_arg_for_chr_word((*tok_lex), cmd);
-// 				if (!token_push_back(&cmd->tok_arg, token))
-// 					return (NULL);
-// 			}
-// 			tok_lex++;
-// 		}
-// }
+	str = ft_strndup(tok_lex->value, ft_strlen((char*)tok_lex->value));
+	// printf("get_word str->%s\n", str);
+	if (!str)
+		return (NULL);
+	i = 0;
+	k = 0;
+	tok_word = NULL;
+	while (str[i])
+	{
+		if (str[i] == '\\')
+        {
+            str = insert_string(str, strdup(""), i, i + 1);
+			if (!str)
+				return (NULL);
+		}
+		else if (str[i] == '$')
+		{
+			j = i + 1;
+			while (ft_isalnum(str[j]) || str[j] == '_')
+				j++;
+			if (j == i + 1)
+			{
+				i++;
+				continue;
+			}
+			if (i - k > 0)
+			{
+				token = create_tok(CHR_ST, ft_strndup(str + k, i - k));
+				if (!token)
+					return (NULL);
+				if (!token_push_back(&tok_word, token))
+					return (NULL);
+			}
+			var_name = ft_strndup(str + i + 1, j - (i + 1));
+			if (!var_name)
+				return (NULL);
+			elem = dlist_chr(cmd->envlist, var_name);
+			if (!elem)
+			{
+				token = create_tok(CHR_ST, NULL);
+				if (!token)
+					return (NULL);
+				if (!token_push_back(&tok_word, token))
+					return (NULL);
+			}
+			else
+			{
+				// printf("elem ->%p\n", elem);
+				// printf("data ->%p\n", elem->data);
+				// printf("value ->%p\n", elem->data->value);
+				token = get_env_var_tok((char*)elem->data->value);
+				// printf("wesh\n");
+				if (!token)
+					return (NULL);
+				tmp = token;
+				// printf("*********************** get env var tok ****************************\n");
+				// while (tmp)
+				// {
+				// 	printf ("value->%s; type->%d\n", tmp->value, tmp->type);
+				// 	tmp = tmp->next;
+				// }
+				// printf("@@@@@@@@@@@@@@@@@@@@@@@ get env var tok @@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+				if (!token_push_back(&tok_word, token))
+					return (NULL);
+			}
+			i = j - 1;
+			k = j;
+		}
+		i++;
+	}
+	// printf("end tok_word str->%s\n", str);
+	if (i - k > 0)
+	{
+		token = create_tok(CHR_ST, ft_strndup(str + k, i - k));
+		// if (token)
+		// 	printf("tok_word created ->%s\n", token->value);
+		if (!token)
+			return (NULL);
+		if (!token_push_back(&tok_word, token))
+			return (NULL);
+	}
+	return (tok_word);
+}
 
-t_tok	**get_cmd(t_tok **tok_lex,  t_cmd *cmd, int lvl)
+t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
+{
+	char 	*str;
+	t_tok	*token;
+	t_tok	*tmp;
+
+	if (!tok_lex || !(*tok_lex))
+		return (NULL);
+	while ((*tok_lex)->type > CHR_ERROR && (*tok_lex)->type < CHR_OP)
+		{
+			// printf("tok_lex:%s\n", (*tok_lex)->value);
+			if ((*tok_lex)->type == CHR_SP)
+			{
+				token = create_tok(CHR_SP, NULL);
+				if (token)
+				{
+					if (!token_push_back(&cmd->tok_arg, token))
+						return (NULL);
+				}
+				else
+					return (NULL);
+			}
+			else if ((*tok_lex)->type == CHR_ST)
+			{
+				// if (ft_strlen((*tok_lex)->value) <= 2)
+				// {
+				// 	tok_lex++;
+				// 	continue;
+				// }
+				str = ft_strndup((*tok_lex)->value + 1, ft_strlen((*tok_lex)->value) - 2);
+				if (str)
+				{
+					token = create_tok(CHR_ST, str);
+					if (token)
+						token_push_back(&cmd->tok_arg, token);
+					else	
+						return (NULL);
+				}
+				else
+					return (NULL);
+				
+			}
+			else if ((*tok_lex)->type == CHR_STR)
+			{
+				// if (ft_strlen((*tok_lex)->value) <= 2)
+				// {
+				// 	tok_lex++;
+				// 	continue;
+				// }
+				str = get_str(ft_strndup((*tok_lex)->value + 1, ft_strlen((*tok_lex)->value) - 2), cmd->envlist);
+				if (str)
+				{
+					// if (!*str)
+					// {
+					// 	free(str);
+					// 	tok_lex++;
+					// 	continue;
+					// }
+					token = create_tok(CHR_ST, str);
+					if (token)
+						token_push_back(&cmd->tok_arg, token);
+					else
+						return (NULL);
+				}
+				else
+				{
+					return (NULL);
+				}
+				
+			}
+			else if ((*tok_lex)->type == CHR_WORD)
+			{
+				token = get_word_tok(*tok_lex, cmd);
+				// if (token)
+				// {
+				// 	printf("tok_arg token->%s\n", token->value);
+				// }
+				// tmp = token;
+				// printf("*************************************** get word tok ****************************\n");
+				// while (tmp)
+				// {
+				// 	printf ("value->%s; type->%d\n", tmp->value, tmp->type);
+				// 	tmp = tmp->next;
+				// }
+				// printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get word tok @@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+				if (token)
+					token_push_back(&cmd->tok_arg, token);
+				else
+					return (NULL);
+			}
+			tok_lex++;
+		}
+		token_push_back(&cmd->tok_arg, create_tok(CHR_END, NULL));
+		return (tok_lex);
+}
+
+void	get_ac_av(t_tok *tok_lst,  t_cmd *cmd, int lvl)
 {
 	int		i;
 	char	*str;
+	char	**tab;
 	char	*s1 = NULL;
 	char	*s2 = NULL;
 
 	i = 0;
-	if (tok_lex[i]->type >= CHR_WORD && tok_lex[i]->type <= CHR_SP)
+	if (!tok_lst)
+		return;
+	if (tok_lst->type != CHR_END)
 	{
-		while (tok_lex[i]->type == CHR_SP)
-			i++;
-		while (tok_lex[i]->type >= CHR_WORD && tok_lex[i]->type <= CHR_ST)
+		while (tok_lst->type == CHR_SP)
+			tok_lst = tok_lst->next;
+		while (tok_lst && tok_lst->type == CHR_ST)
 		{
-			if (tok_lex[i]->type == CHR_ST)
+			if (tok_lst->value)
 			{
-				s2 = ft_strndup(tok_lex[i]->value + 1, ft_strlen(tok_lex[i]->value) - 2);
+				s2 = ft_strdup((char*)tok_lst->value);
+				s1 = ft_strjoindoublefree(s1, s2);
 			}
-			else if (tok_lex[i]->type == CHR_STR)
-			{
-				s2 = get_str(ft_strndup(tok_lex[i]->value + 1, ft_strlen(tok_lex[i]->value) - 2), cmd->envlist);
-			}
-			else if (tok_lex[i]->type == CHR_WORD)
-			{
-				s2 = get_word(ft_strdup(tok_lex[i]->value), cmd->envlist);
-			}
-			s1 = ft_strjoindoublefree(s1, s2);
-			i++;
+			tok_lst = tok_lst->next;
 		}
-		tok_lex = get_cmd(tok_lex + i, cmd, lvl + 1);
+		if (s1 && tok_lst->type != CHR_END)
+			get_ac_av(tok_lst->next, cmd, lvl + 1);
+		else if (s1)
+			get_ac_av(tok_lst, cmd, lvl + 1);
+		else
+			get_ac_av(tok_lst, cmd, lvl);
+
 	}
 	else
 	{
 		cmd->av = (char**)malloc(sizeof(char*) * (lvl + 1));
 		cmd->av[lvl] = NULL;
-		cmd->ac = (tok_lex[i - 1]->type == CHR_SP) ? lvl - 1 : lvl;
-		//cmd->ac = lvl;
-		return (tok_lex + i);
+		cmd->ac = lvl;
+		return;
 	}
-	cmd->av[lvl] = s1;
-	return (tok_lex);
-
+	if (s1)
+		cmd->av[lvl] = s1;
+	return;
 }

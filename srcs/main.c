@@ -163,16 +163,25 @@ int main(int ac,const char **av, const char	**env)
 					}
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
-					//tok_lex = get_cmd(tok_lex, cmd, 0);// cmd incremente tok_lex
+
+					/*tok_lex = */get_tok_arg(tok_lex, cmd);
+					// printf("get_tok_arg\n");
+					// t = cmd->tok_arg;
+					// while (t)
+					// {
+					// 	dprintf(2, "tok : %s->%d \n", t->value, t->type);
+					// 	t = t->next;
+					// }
+					get_ac_av(cmd->tok_arg, cmd, 0);
+					// printf("get ac av, ac=%d\n", cmd->ac);
+					// for (int i  = 0; i <= cmd->ac; i++)
+					// {
+					// 	if (cmd->av)
+					// 		printf("av[%d]->%s\n",i, cmd->av[i]);
+					// }
 					tok_lex = get_cmd_new(tok_lex, cmd);
-				//t = cmd->tok_arg;
-					/*while (t)
-					{
-						dprintf(2, "tok : %s \n", t->value);
-						t = t->next;
-					}*/
 					enable_redirect(cmd);
-					if (cmd->tok_lst)
+					if (cmd->tok_lst && cmd->av && cmd->av[0])
 					{
 						cmd->bin = cmd->tok_lst->value;
 						prepare_cmd(cmd);
