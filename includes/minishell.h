@@ -156,5 +156,6 @@ void	prepare_cmd(t_cmd *cmd);
 char	*insert_string(char *str, char *to_insert, int start, int end);
 char	*ft_strjoindoublefree(char *s1, char *s2);
 int		is_number(char *str);
+int		ft_strcmpci(const char *s1, const char *s2);
 
 #endif

@@ -14,9 +14,6 @@ void	get_absolute_path(t_cmd *cmd, t_dlist *envlist)
 		return;
 	if (cmd->av[0][0] != '/' && strncmp(cmd->av[0], "./", 2) != 0)
 	{
-		i = -1;
-		while (cmd->bin[++i])
-			cmd->bin[i] = ft_tolower(cmd->bin[i]);
 		while (path)
 		{
 			if (ft_strchr(path, ':'))
@@ -32,7 +29,7 @@ void	get_absolute_path(t_cmd *cmd, t_dlist *envlist)
 			if ((dir = opendir(strdir)) == NULL)
 				continue;
 			while ((sd = readdir(dir)) != NULL)
-				if (!ft_strcmp(sd->d_name, cmd->av[0]))
+				if (!ft_strcmpci(sd->d_name, cmd->av[0]))
 				{
 					strdir = ft_strjoindoublefree(strdir, ft_strdup("/"));
 					cmd->bin = ft_strjoindoublefree(strdir, ft_strdup(sd->d_name));
@@ -83,7 +80,9 @@ int	exec_bin(t_cmd *cmd)
 {
 	int status;
 	int fd;
+	int	i;
 	struct stat *buff = (struct stat *)malloc(sizeof(buff));
+
 	status = 0;
 	if (lstat(cmd->bin, buff) != -1)
 	{
