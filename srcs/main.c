@@ -7,6 +7,27 @@ void handle_signal()
 	ft_putstr_fd("\n[minishell]>", 1);
 }
 
+void stock_env_status(int status, t_dlist *envlist)
+{
+	t_var	*var;
+	t_dlist	*elem;
+
+	var = (t_var*)malloc(sizeof(t_var));
+	var->name = ft_strdup("?");
+	var->value = ft_strdup(ft_itoa(status));
+	if (!(elem = dlist_chr(envlist, var->name)))
+	{
+		free(elem->data->value);
+		elem->data->value = var->value;
+	}
+	// else if (var->value)
+	// {
+	// 	free_var(elem->data);
+	// 	elem->data = var;
+	// }
+
+}
+
 int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
 {
 	int		i;
@@ -202,6 +223,7 @@ int main(int ac,const char **av, const char	**env)
 					}
 					k = 0;
 					tmp = cmd;
+					stock_env_status(status, envlist);
 				}
 			else 
 				status = 2;

@@ -86,7 +86,7 @@ int	exec_bin(t_cmd *cmd)
 	status = 0;
 	if (lstat(cmd->bin, buff) != -1)
 	{
-		if ((buff->st_mode & S_IFDIR) && access(cmd->bin, F_OK) == -1)
+		if ((buff->st_mode & S_IFDIR) || access(cmd->bin, F_OK) == -1)
 		{
 			ft_dprintf(2, "minishell: %s: No such file or directory", cmd->bin);
 			return (127);
