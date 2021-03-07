@@ -418,7 +418,7 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 
 	if (!tok_lex || !(*tok_lex))
 		return (NULL);
-	while ((*tok_lex)->type > CHR_ERROR && (*tok_lex)->type < CHR_OP)
+	while ((*tok_lex)->type > CHR_ERROR && (*tok_lex)->type < CHR_PV)
 		{
 			// printf("tok_lex:%s\n", (*tok_lex)->value);
 			if ((*tok_lex)->type == CHR_SP)
@@ -500,6 +500,16 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 				else
 					return (NULL);
 			}
+			else
+			{
+				token = create_tok((*tok_lex)->type, ft_strdup((*tok_lex)->value));
+				if (token)
+					token_push_back(&cmd->tok_arg, token);
+				else
+					return (NULL);
+				
+			}
+			
 			tok_lex++;
 		}
 		token_push_back(&cmd->tok_arg, create_tok(CHR_END, NULL));
@@ -517,7 +527,7 @@ void	get_ac_av(t_tok *tok_lst,  t_cmd *cmd, int lvl)
 	i = 0;
 	if (!tok_lst)
 		return;
-	if (tok_lst->type != CHR_END)
+	if (tok_lst->type != CHR_END && tok_lst->type > CHR_ERROR &&  tok_lst->type < CHR_OP)
 	{
 		while (tok_lst->type == CHR_SP)
 			tok_lst = tok_lst->next;
@@ -530,7 +540,7 @@ void	get_ac_av(t_tok *tok_lst,  t_cmd *cmd, int lvl)
 			}
 			tok_lst = tok_lst->next;
 		}
-		if (s1 && tok_lst->type != CHR_END)
+		if (s1 && tok_lst->type != CHR_END && tok_lst->type > CHR_ERROR &&  tok_lst->type < CHR_OP)
 			get_ac_av(tok_lst->next, cmd, lvl + 1);
 		else if (s1)
 			get_ac_av(tok_lst, cmd, lvl + 1);
