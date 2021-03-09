@@ -184,27 +184,33 @@ int main(int ac,const char **av, const char	**env)
 					}
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
-					/*tok_lex =*/ get_tok_arg(tok_lex, cmd);
+					tok_lex = get_tok_arg(tok_lex, cmd);
 					//printf("get_tok_arg\n");
-
-					/*t = cmd->tok_arg;
-					while (t)
-					{
-						dprintf(2, "tok : %s->%d \n", t->value, t->type);
-						t = t->next;
-					}
-					printf("get ac av, ac=%d\n", cmd->ac);
+					/*printf("get ac av, ac=%d\n", cmd->ac);
 					for (int i  = 0; i <= cmd->ac; i++)
 					{
 						if (cmd->av)
 							printf("av[%d]->%s\n",i, cmd->av[i]);
 					}*/
-					tok_lex = get_cmd_new(tok_lex, cmd);
-					enable_redirect(cmd);
-					get_ac_av(cmd->tok_arg, cmd, 0);
-					if (cmd->tok_lst && cmd->av && cmd->av[0])
+					//tok_lex = get_cmd_new(tok_lex, cmd);
+					/*t = cmd->tok_arg;
+					while (t)
 					{
-						cmd->bin = cmd->tok_lst->value;
+						dprintf(2, "tok : %s->%d \n", t->value, t->type);
+						t = t->next;
+					}*/
+					enable_redirect(cmd);
+					/*t = cmd->tok_arg;
+					while (t)
+					{
+						dprintf(2, "tok : %s->%d \n", t->value, t->type);
+						t = t->next;
+					}*/
+					get_ac_av(cmd->tok_arg, cmd, 0);
+					if (cmd->tok_arg && cmd->av && cmd->av[0])
+					{
+
+						cmd->bin = ft_strdup(cmd->av[0]);
 						prepare_cmd(cmd);
 						// printf ("ac :%d\n", cmd->ac);
 						// for (int k = 0; cmd->av[k]; k++)
