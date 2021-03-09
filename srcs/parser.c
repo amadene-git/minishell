@@ -512,7 +512,7 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 			
 			tok_lex++;
 		}
-		token_push_back(&cmd->tok_arg, create_tok(CHR_END, NULL));
+		token_push_back(&cmd->tok_arg, create_tok(CHR_END, "newline"));
 		return (tok_lex);
 }
 

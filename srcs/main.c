@@ -149,12 +149,12 @@ int main(int ac,const char **av, const char	**env)
 			pipe_flag = 0;
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
-			//k = -1;
+			k = -1;
 			//l = dlist_chr(envlist, "PATH");
 			//dprintf(2, "lst: type: %s, value: %s\n", l->data->name, l->data->value);
-			// while (tok_lex[++k]->type != CHR_END)
+			//while (tok_lex[++k]->type != CHR_END)
 			// 	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
-			// printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
+			//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			if (!has_errors(tok_lex))
 				while ((*tok_lex)->type != CHR_END)
 				{
@@ -184,9 +184,9 @@ int main(int ac,const char **av, const char	**env)
 					}
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
-
 					/*tok_lex =*/ get_tok_arg(tok_lex, cmd);
 					//printf("get_tok_arg\n");
+
 					/*t = cmd->tok_arg;
 					while (t)
 					{
