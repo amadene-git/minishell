@@ -384,7 +384,7 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 
 	if (!tok_lex || !(*tok_lex))
 		return (NULL);
-	while ((*tok_lex)->type > CHR_ERROR && (*tok_lex)->type < CHR_PV)
+	while ((*tok_lex)->type > CHR_ERROR && (*tok_lex)->type < CHR_PV && (*tok_lex)->type != CHR_PI)
 		{
 			// printf("tok_lex:%s\n", (*tok_lex)->value);
 			if ((*tok_lex)->type == CHR_SP)

@@ -137,6 +137,7 @@ int main(int ac,const char **av, const char	**env)
 	int		fd[2];
 	int		pipe_flag;
 	int		status;
+	//t_tok	*t;
 
 	status = 0;
 	while(gnl)
@@ -199,30 +200,24 @@ int main(int ac,const char **av, const char	**env)
 							printf("av[%d]->%s\n",i, cmd->av[i]);
 					}*/
 					//tok_lex = get_cmd_new(tok_lex, cmd);
-					/*t_tok	*t = cmd->tok_arg;
-					while (t)
-					{
-						dprintf(2, "tok : %s->%d \n", t->value, t->type);
-						t = t->next;
-					}*/
-					enable_redirect(cmd);
 					/*t = cmd->tok_arg;
 					while (t)
 					{
 						dprintf(2, "tok : %s->%d \n", t->value, t->type);
 						t = t->next;
 					}*/
+					enable_redirect(cmd);
 					get_ac_av(cmd->tok_arg, cmd, 0);
 					if (cmd->tok_arg && cmd->av && cmd->av[0])
 					{
 
 						cmd->bin = ft_strdup(cmd->av[0]);
 						prepare_cmd(cmd);
-						// printf ("ac :%d\n", cmd->ac);
-						// for (int k = 0; cmd->av[k]; k++)
-						// 	dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
-						// 	dprintf(2, "stdout:\n");
-				//		printf ("cmd->bin %s\ncmd->av %s\n", cmd->bin, cmd->av[0]);
+						/*printf ("ac :%d\n", cmd->ac);
+						for (int k = 0; cmd->av[k]; k++)
+						 	dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
+						 	dprintf(2, "stdout:\n");
+						printf ("cmd->bin %s\ncmd->av %s\n", cmd->bin, cmd->av[0]);*/
 						status = exec_no_fork(cmd);
 					//	if (status == 255)
 					//		break;
