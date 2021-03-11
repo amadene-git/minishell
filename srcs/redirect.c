@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 23:37:08 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/09 14:38:19 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/09 15:27:36 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void		enable_redirect(t_cmd *cmd)
 	char	*tmp_str;
 
 	toks = cmd->tok_arg;
-	file_name = ft_strnew(0);
 	while (toks && toks->next)
 	{
 		if (toks->type == CHR_RE)
@@ -40,11 +39,12 @@ void		enable_redirect(t_cmd *cmd)
 			tmp = toks->next;
 			while (tmp->type == CHR_SP)
 				tmp = tmp->next;
+			file_name = ft_strnew(0);
 			while (tmp->type == CHR_ST)
 			{
 				tmp_str = file_name;
-				file_name = ft_strjoin(tmp->value, file_name);
-				ft_memdel((void **) &tmp_str);
+				file_name = ft_strjoin(file_name, tmp->value);
+				ft_memdel((void **)&tmp_str);
 				tmp = tmp->next;
 			}
 			if (!ft_strcmp(toks->value, ">>"))
@@ -55,6 +55,7 @@ void		enable_redirect(t_cmd *cmd)
 				cmd->fdin = handle_file(file_name, O_RDONLY);
 			while (toks != tmp)
 				toks = tok_list_remove(&cmd->tok_arg, toks);
+			ft_memdel((void **)&file_name);
 		}
 		else
 			toks = toks->next;

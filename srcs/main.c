@@ -2,9 +2,12 @@
 
 typedef void (*sighandler_t)(int);
 
-void handle_signal()
+void handle_signal(int signo)
 {
-	ft_putstr_fd("\n[minishell]>", 1);
+	if (signo == SIGINT)
+		ft_putstr_fd("\n[minishell]>", 1);
+	if (signo == SIGQUIT)
+		ft_dprintf(2, "\b\b  \b\b");
 }
 
 void stock_env_status(int status, t_dlist *envlist)
@@ -28,13 +31,10 @@ void stock_env_status(int status, t_dlist *envlist)
 
 }
 
-int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
+int exec_cmd(t_cmd *cmd)//copier envlist dans env
 {
-	int		i;
 	int		status;
 	pid_t	pid = 0;
-	char	**args;
-	t_tok	*t;
 
 	status = 0;
 	cmd->pid = fork();
@@ -43,6 +43,8 @@ int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
 	if (cmd->pid > 0)
 	{
 		pid = cmd->pid;
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 	}
 	else if (cmd->pid == 0)
 	{
@@ -85,6 +87,10 @@ int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
 		close(cmd->prev->fdpipe[1]);
 	}
 	waitpid(cmd->pid, &status, 0);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == 3)
+		ft_dprintf(2, "Quitter (core dumped)\n");
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, handle_signal);
 	status = WEXITSTATUS(status);
 	return (status);
 }
@@ -117,7 +123,9 @@ void	refresh_last_cmd(t_dlist *envlist, char *last_cmd)
 int main(int ac,const char **av, const char	**env)
 {
 	signal(SIGINT, SIG_IGN);//gestion du crtl+C
+	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, handle_signal);
 
 	char	*line;
 	int		gnl = 1;
@@ -128,9 +136,8 @@ int main(int ac,const char **av, const char	**env)
 	t_cmd	*tmp = NULL;
 	int		fd[2];
 	int		pipe_flag;
-	t_tok	*t;
-	t_dlist	*l;
 	int		status;
+	//t_tok	*t;
 
 	status = 0;
 	while(gnl)
@@ -184,38 +191,38 @@ int main(int ac,const char **av, const char	**env)
 					}
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
-					/*tok_lex =*/ get_tok_arg(tok_lex, cmd);
+					tok_lex = get_tok_arg(tok_lex, cmd);
 					//printf("get_tok_arg\n");
-
-					/*t = cmd->tok_arg;
-					while (t)
-					{
-						dprintf(2, "tok : %s->%d \n", t->value, t->type);
-						t = t->next;
-					}
-					printf("get ac av, ac=%d\n", cmd->ac);
+					/*printf("get ac av, ac=%d\n", cmd->ac);
 					for (int i  = 0; i <= cmd->ac; i++)
 					{
 						if (cmd->av)
 							printf("av[%d]->%s\n",i, cmd->av[i]);
 					}*/
-					tok_lex = get_cmd_new(tok_lex, cmd);
+					//tok_lex = get_cmd_new(tok_lex, cmd);
+					/*t = cmd->tok_arg;
+					while (t)
+					{
+						dprintf(2, "tok : %s->%d \n", t->value, t->type);
+						t = t->next;
+					}*/
 					enable_redirect(cmd);
 					get_ac_av(cmd->tok_arg, cmd, 0);
-					if (cmd->tok_lst && cmd->av && cmd->av[0])
+					if (cmd->tok_arg && cmd->av && cmd->av[0])
 					{
-						cmd->bin = cmd->tok_lst->value;
+
+						cmd->bin = ft_strdup(cmd->av[0]);
 						prepare_cmd(cmd);
-						// printf ("ac :%d\n", cmd->ac);
-						// for (int k = 0; cmd->av[k]; k++)
-						// 	dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
-						// 	dprintf(2, "stdout:\n");
-				//		printf ("cmd->bin %s\ncmd->av %s\n", cmd->bin, cmd->av[0]);
+						/*printf ("ac :%d\n", cmd->ac);
+						for (int k = 0; cmd->av[k]; k++)
+						 	dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
+						 	dprintf(2, "stdout:\n");
+						printf ("cmd->bin %s\ncmd->av %s\n", cmd->bin, cmd->av[0]);*/
 						status = exec_no_fork(cmd);
 					//	if (status == 255)
 					//		break;
 						if (status == 0)
-							status = exec_cmd(cmd, envlist);
+							status = exec_cmd(cmd);
 						//	printf ("status = %d\n", status);
 							//printf("cmd->ac = %d last = %s\n", cmd->ac, cmd->av[cmd->ac - 1]);
 						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
@@ -226,12 +233,16 @@ int main(int ac,const char **av, const char	**env)
 					//stock_env_status(status, envlist);
 				}
 			else 
+			{
 				status = 2;
+			}
 		}
 		if (ac != 1)
 			gnl = 0;
 		free(line);
 	}
+	if (ac == 1)
+		ft_dprintf(1, "exit\n");
 	exit (status);
 	//return (3);
 }

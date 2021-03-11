@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/30 19:27:05 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/05 11:20:07 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/09 15:52:03 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,9 @@ int		is_number(char *str)
 	int	i;
 
 	i = 0;
-	if (str[0] == '-' || str[0] == '+')
+	while (ft_isspace(str[i]))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
 		i++;
 	while (str[i])
 	{
