@@ -2,9 +2,12 @@
 
 typedef void (*sighandler_t)(int);
 
-void handle_signal()
+void handle_signal(int signo)
 {
-	ft_putstr_fd("\n[minishell]>", 1);
+	if (signo == SIGINT)
+		ft_putstr_fd("\n[minishell]>", 1);
+	if (signo == SIGQUIT)
+		ft_dprintf(2, "\b\b  \b\b");
 }
 
 void stock_env_status(int status, t_dlist *envlist)
@@ -43,6 +46,8 @@ int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
 	if (cmd->pid > 0)
 	{
 		pid = cmd->pid;
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 	}
 	else if (cmd->pid == 0)
 	{
@@ -85,6 +90,10 @@ int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
 		close(cmd->prev->fdpipe[1]);
 	}
 	waitpid(cmd->pid, &status, 0);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == 3)
+		ft_dprintf(2, "Quitter (core dumped)\n");
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, handle_signal);
 	status = WEXITSTATUS(status);
 	return (status);
 }
@@ -117,7 +126,9 @@ void	refresh_last_cmd(t_dlist *envlist, char *last_cmd)
 int main(int ac,const char **av, const char	**env)
 {
 	signal(SIGINT, SIG_IGN);//gestion du crtl+C
+	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, handle_signal);
 
 	char	*line;
 	int		gnl = 1;
@@ -232,12 +243,16 @@ int main(int ac,const char **av, const char	**env)
 					//stock_env_status(status, envlist);
 				}
 			else 
+			{
 				status = 2;
+			}
 		}
 		if (ac != 1)
 			gnl = 0;
 		free(line);
 	}
+	if (ac == 1)
+		ft_dprintf(1, "exit\n");
 	exit (status);
 	//return (3);
 }
