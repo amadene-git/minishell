@@ -180,15 +180,8 @@ int main(int ac,const char **av, const char	**env)
 					cmd->next = NULL;
 					cmd->tok_arg = NULL;
 					cmd->tok_lst = NULL;
-					
 					if (tmp)
 						tmp->next = cmd;
-					if (has_pipe(tok_lex) == 1)
-					{
-						cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
-						if (pipe(cmd->fdpipe) == -1)
-							ft_dprintf(2, "erreur main:%s\n", strerror(errno));
-					}
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
 					tok_lex = get_tok_arg(tok_lex, cmd);
@@ -207,10 +200,15 @@ int main(int ac,const char **av, const char	**env)
 						t = t->next;
 					}*/
 					enable_redirect(cmd);
+					if (has_pipe(tok_lex) == 1 && cmd->fdin != -1 && cmd->fdout != -1)
+					{
+						cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
+						if (pipe(cmd->fdpipe) == -1)
+							ft_dprintf(2, "erreur main:%s\n", strerror(errno));
+					}
 					get_ac_av(cmd->tok_arg, cmd, 0);
 					if (cmd->tok_arg && cmd->av && cmd->av[0])
 					{
-
 						cmd->bin = ft_strdup(cmd->av[0]);
 						prepare_cmd(cmd);
 						/*printf ("ac :%d\n", cmd->ac);
