@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int		built_in_echo(int ac, char **av, t_dlist *envlist, int fd)
+int		built_in_echo(int ac, char **av, int fd)
 {
 	int	i;
 	int	n;

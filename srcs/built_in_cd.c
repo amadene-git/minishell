@@ -1,8 +1,7 @@
 #include "../includes/minishell.h"
 
-void	refresh_pwd(char *newpwd, t_dlist *envlist, int fd)
+void	refresh_pwd(char *newpwd, t_dlist *envlist)
 {
-	char	**tab;
 	t_dlist *pwd;
 	t_dlist *oldpwd = dlist_chr(envlist, "OLDPWD");
 
@@ -22,10 +21,9 @@ void	refresh_pwd(char *newpwd, t_dlist *envlist, int fd)
 	pwd->data->value = newpwd;
 }
 
-int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
+int		built_in_cd(int ac, char **av, t_dlist *envlist)//cd -> $HOME
 {
 	char	*buff;
-	char	*pwdcopy;
 	t_dlist	*home;
 
 
@@ -61,7 +59,7 @@ int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd)//cd -> $HOME
 		ft_dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
 		return (1);
 	}
-	refresh_pwd(strdup(buff), envlist, fd);
+	refresh_pwd(strdup(buff), envlist);
 	free(buff);
 	return (0);
 }

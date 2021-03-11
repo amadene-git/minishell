@@ -15,11 +15,9 @@
 t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd)
 {
 	int		i;
-	int		type;
-	char	*str;
 	char	*s1 = NULL;
 	char	*s2 = NULL;
-	t_tok	*token;
+	t_tok	*token = NULL;
 
 	i = 0;
 	if ((tok_lex[i]->type >= CHR_WORD && tok_lex[i]->type <= CHR_SP) || tok_lex[i]->type == CHR_RE || tok_lex[i - 1]->type == CHR_RE)
@@ -81,7 +79,6 @@ char	**to_char_args(t_tok *tok_lst)
 
 void	prepare_cmd(t_cmd *cmd)
 {
-	int	i;
 
 	//cmd->av = to_char_args(cmd->tok_lst);
 	//cmd->ac = tok_list_size(cmd->tok_lst);

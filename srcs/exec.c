@@ -6,7 +6,6 @@ void	get_absolute_path(t_cmd *cmd, t_dlist *envlist)
 	char			*strdir = NULL;
 	DIR				*dir;
 	struct dirent	*sd;
-	int				i;
 
 	if (dlist_chr(envlist, "PATH"))
 		path = dlist_chr(envlist, "PATH")->data->value;
@@ -59,11 +58,11 @@ int	exec_built_in(t_cmd *cmd)
 	int status = 0;
 	if (!ft_strcmp("echo", cmd->bin))
 	{
-		status = built_in_echo(cmd->ac, cmd->av, cmd->envlist, 1);
+		status = built_in_echo(cmd->ac, cmd->av, 1);
 	}
 	else if (!ft_strcmp("pwd", cmd->bin))
 	{
-		status = built_in_pwd(cmd->ac, cmd->av, cmd->envlist, 1);
+		status = built_in_pwd(cmd->ac, cmd->av);
 	}
 	else if (!ft_strcmp("env", cmd->bin))
 	{
@@ -79,8 +78,6 @@ int	exec_built_in(t_cmd *cmd)
 int	exec_bin(t_cmd *cmd)
 {
 	int status;
-	int fd;
-	int	i;
 	struct stat *buff = (struct stat *)malloc(sizeof(buff));
 
 	status = 0;
@@ -92,6 +89,7 @@ int	exec_bin(t_cmd *cmd)
 			return (127);
 		}
 		else if (buff->st_mode & S_IFREG)
+		{
 			if (buff->st_mode & S_IXUSR)
 			{
 				if (execve(cmd->bin, cmd->av, cmd->env) == -1)
@@ -110,6 +108,7 @@ int	exec_bin(t_cmd *cmd)
 				ft_dprintf(2, "minishell: %s: Permission denied\n", cmd->bin);
 				return (126);
 			}
+		}
 	}
 	else
 	{
@@ -130,7 +129,7 @@ int	exec_no_fork(t_cmd *cmd)
 	}
 	else if (!ft_strcmp("cd", cmd->bin))
 	{
-		status = built_in_cd(cmd->ac, cmd->av, cmd->envlist, 1);
+		status = built_in_cd(cmd->ac, cmd->av, cmd->envlist);
 	}
 	else if (!ft_strcmp("unset", cmd->bin))
 	{

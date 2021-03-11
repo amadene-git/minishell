@@ -56,7 +56,6 @@ t_dlist *dlist_strchr_first(t_dlist *begin)
 
 t_dlist	*dlist_chr_alpha_next(t_dlist *begin)
 {
-	char	*cmp;
 	t_dlist	*elem;
 	t_dlist *ret;
 
@@ -86,7 +85,7 @@ t_dlist	*insert_var(t_dlist *envlist, t_var *variable)
 {
 	t_dlist	*elem;
 
-	if (!elem || !envlist)
+	if (!envlist || !variable)
 		return (NULL);
 	elem = dlist_create_elem(variable);
 	elem->next = envlist;

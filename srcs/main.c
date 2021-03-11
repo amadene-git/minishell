@@ -31,13 +31,10 @@ void stock_env_status(int status, t_dlist *envlist)
 
 }
 
-int exec_cmd(t_cmd *cmd, t_dlist *envlist)//copier envlist dans env
+int exec_cmd(t_cmd *cmd)//copier envlist dans env
 {
-	int		i;
 	int		status;
 	pid_t	pid = 0;
-	char	**args;
-	t_tok	*t;
 
 	status = 0;
 	cmd->pid = fork();
@@ -139,8 +136,6 @@ int main(int ac,const char **av, const char	**env)
 	t_cmd	*tmp = NULL;
 	int		fd[2];
 	int		pipe_flag;
-	t_tok	*t;
-	t_dlist	*l;
 	int		status;
 
 	status = 0;
@@ -204,7 +199,7 @@ int main(int ac,const char **av, const char	**env)
 							printf("av[%d]->%s\n",i, cmd->av[i]);
 					}*/
 					//tok_lex = get_cmd_new(tok_lex, cmd);
-					/*t = cmd->tok_arg;
+					/*t_tok	*t = cmd->tok_arg;
 					while (t)
 					{
 						dprintf(2, "tok : %s->%d \n", t->value, t->type);
@@ -232,7 +227,7 @@ int main(int ac,const char **av, const char	**env)
 					//	if (status == 255)
 					//		break;
 						if (status == 0)
-							status = exec_cmd(cmd, envlist);
+							status = exec_cmd(cmd);
 						//	printf ("status = %d\n", status);
 							//printf("cmd->ac = %d last = %s\n", cmd->ac, cmd->av[cmd->ac - 1]);
 						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);

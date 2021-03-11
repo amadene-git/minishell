@@ -44,7 +44,7 @@ OBJS			= $(addprefix $(OBJ_DIR), $(OFILE))
 
 CC				= gcc
 RM				= rm -f
-CFLAGS			= -g -o #-Wall -Wextra -Werror
+CFLAGS			= -Wall -Wextra -Werror -g -o
 				 
 LIBS			= $(CUB3D_H) $(LIBFT_H)
 

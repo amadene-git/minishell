@@ -77,14 +77,14 @@ typedef struct  s_minishell
 }               t_minishell;
 
 //built_in_echo.c
-int		built_in_echo(int ac, char **av, t_dlist *envlist, int fd);
+int		built_in_echo(int ac, char **av, int fd);
 
 //built_in_cd.c
-void	refresh_pwd(char *newpwd, t_dlist *envlist, int fd);
-int		built_in_cd(int ac, char **av, t_dlist *envlist, int fd);
+void	refresh_pwd(char *newpwd, t_dlist *envlist);
+int		built_in_cd(int ac, char **av, t_dlist *envlist);
 
 //built_in_pwd.c
-int		built_in_pwd(int ac, char **av, t_dlist *envlist, int fd);
+int		built_in_pwd(int ac, char **av);
 
 //built_in_export.c
 void	print_export(t_dlist *envlist, int fd);
