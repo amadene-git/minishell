@@ -137,7 +137,6 @@ int main(int ac,const char **av, const char	**env)
 	int		fd[2];
 	int		pipe_flag;
 	int		status;
-	//t_tok	*t;
 
 	status = 0;
 	while(gnl)
@@ -193,7 +192,7 @@ int main(int ac,const char **av, const char	**env)
 							printf("av[%d]->%s\n",i, cmd->av[i]);
 					}*/
 					//tok_lex = get_cmd_new(tok_lex, cmd);
-					/*t = cmd->tok_arg;
+					/*t_tok	*t = cmd->tok_arg;
 					while (t)
 					{
 						dprintf(2, "tok : %s->%d \n", t->value, t->type);
