@@ -66,9 +66,9 @@ t_tok	**lexer(char *str, int *i, int lvl)
 		if (g_get_chr[(int)str[*i]] == CHR_RE)
 		{
 			type = CHR_RE;
-			if (!ft_strncmp(str + *i, ">>", 2))
+			if (!ft_strncmp(str + *i, ">>", 2)  || !ft_strncmp(str + *i, "<<", 2))
 				j++;
-			else if (!ft_strncmp(str + *i, "<>", 2) || !ft_strncmp(str + *i, "><", 2) || !ft_strncmp(str + *i, "<<", 2))
+			else if (!ft_strncmp(str + *i, "<>", 2) || !ft_strncmp(str + *i, "><", 2))
 				type = CHR_ERROR;
 		}
 		if (g_get_chr[(int)str[*i]] == CHR_PV)
