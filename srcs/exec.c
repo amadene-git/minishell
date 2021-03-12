@@ -77,10 +77,8 @@ int	exec_built_in(t_cmd *cmd)
 
 int	exec_bin(t_cmd *cmd)
 {
-	int status;
 	struct stat *buff = (struct stat *)malloc(sizeof(buff));
 
-	status = 0;
 	if (lstat(cmd->bin, buff) != -1)
 	{
 		if ((buff->st_mode & S_IFDIR) || access(cmd->bin, F_OK) == -1)

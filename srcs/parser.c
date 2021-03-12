@@ -291,7 +291,6 @@ t_tok	*get_word_tok(t_tok	*tok_lex, t_cmd	*cmd)
 	int		i;
 	int		j;
 	int		k;
-	t_tok	*tmp;
 
 	str = ft_strndup(tok_lex->value, ft_strlen((char*)tok_lex->value));
 	// printf("get_word str->%s\n", str);
@@ -347,7 +346,7 @@ t_tok	*get_word_tok(t_tok	*tok_lex, t_cmd	*cmd)
 				// printf("wesh\n");
 				if (!token)
 					return (NULL);
-				tmp = token;
+				//tmp = token;
 				// printf("*********************** get env var tok ****************************\n");
 				// while (tmp)
 				// {
@@ -484,11 +483,9 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 
 void	get_ac_av(t_tok *tok_lst,  t_cmd *cmd, int lvl)
 {
-	int		i;
 	char	*s1 = NULL;
 	char	*s2 = NULL;
 
-	i = 0;
 	if (!tok_lst)
 		return;
 	if (tok_lst->type != CHR_END && tok_lst->type > CHR_ERROR &&  tok_lst->type < CHR_OP)

@@ -27,14 +27,12 @@ void stock_env_status(int status, t_dlist *envlist)
 	// {
 	// 	free_var(elem->data);
 	// 	elem->data = var;
-	// }
-
+	// 
 }
 
 int exec_cmd(t_cmd *cmd)//copier envlist dans env
 {
 	int		status;
-	pid_t	pid = 0;
 
 	status = 0;
 	cmd->pid = fork();
@@ -42,7 +40,6 @@ int exec_cmd(t_cmd *cmd)//copier envlist dans env
 		ft_putstr_fd(strerror(errno), 2);
 	if (cmd->pid > 0)
 	{
-		pid = cmd->pid;
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
 	}
@@ -134,8 +131,6 @@ int main(int ac,const char **av, const char	**env)
 	t_dlist	*envlist = init_env(env);
 	t_cmd 	*cmd;
 	t_cmd	*tmp = NULL;
-	int		fd[2];
-	int		pipe_flag;
 	int		status;
 
 	status = 0;
@@ -150,9 +145,6 @@ int main(int ac,const char **av, const char	**env)
 			line = ft_strdup(av[2]);
 		if (gnl && *line)
 		{
-			fd[0] = 0;
-			fd[1] = 0;
-			pipe_flag = 0;
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
 			k = -1;

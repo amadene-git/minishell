@@ -12,10 +12,8 @@ void	shlvl_plusplus(t_dlist *shlvl)
 
 void	clean_spaces(t_dlist *shlvl)
 {
-	int 	i;
 	char	*copy;
 	
-	i = 0;
 	while (*shlvl->data->value == ' ')
 		shlvl->data->value++;
 	copy = ft_strdup(shlvl->data->value);
