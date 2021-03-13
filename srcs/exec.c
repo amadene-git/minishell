@@ -78,28 +78,55 @@ int	exec_built_in(t_cmd *cmd)
 int	exec_bin(t_cmd *cmd)
 {
 	struct stat *buff = (struct stat *)malloc(sizeof(buff));
-
-	if (lstat(cmd->bin, buff) != -1)
+	int fd;
+	if (access(cmd->bin, F_OK))
 	{
-		if ((buff->st_mode & S_IFDIR) || access(cmd->bin, F_OK) == -1)
+		ft_dprintf(2, "minishell: %s: No such file or directory\n", cmd->bin);
+		return (127);
+	}
+	else if (lstat(cmd->bin, buff) != -1)
+	{
+		if (S_ISLNK(buff->st_mode))
+			stat(cmd->bin, buff);
+		if (access(cmd->bin, F_OK))
 		{
-			ft_dprintf(2, "minishell: %s: No such file or directory", cmd->bin);
+			ft_dprintf(2, "minishell: %s: No such file or directory\n", cmd->bin);
 			return (127);
 		}
-		else if (buff->st_mode & S_IFREG)
+		else if (buff->st_mode & S_IFREG || S_ISDIR(buff->st_mode))
 		{
-			if (buff->st_mode & S_IXUSR)
+			if (S_ISDIR(buff->st_mode) && ((cmd->av[0][0]=='.' && cmd->av[0][1] == '/')
+				|| cmd->av[0][ft_strlen(cmd->av[0]) - 1] == '/'))
 			{
+				ft_dprintf(2, "minishell: %s: is a directory\n", cmd->bin);
+				return(126);
+			}
+			else if (buff->st_mode & S_IXUSR)
+			{
+				fd = open(cmd->bin, O_RDONLY);
+				if (fd == -1)
+				{
+					ft_dprintf(2, "minishell: %s: Permission denied\n", cmd->bin);
+					return (126);
+				}
+				else
+					close(fd);
 				if (execve(cmd->bin, cmd->av, cmd->env) == -1)
 				{
-					if (errno == 8 )//|| errno == 13)
+					if (errno == 8 )
 						return (0);
-					else if (errno == 13 && S_ISDIR(buff->st_mode))
+					if (errno == 13)
 					{
-						ft_dprintf(2, "minishell: %s: is a directory\n", cmd->bin);			
+						ft_dprintf(2, "minishell: %s: command not found\n", cmd->bin);
+						return (127);
 					}
 					return(126);
 				}
+			}
+			else if (ft_strchr(cmd->bin, '/') == NULL)
+			{
+				ft_dprintf(2, "minishell: %s: command not found\n", cmd->bin);
+				return (127);
 			}
 			else
 			{
