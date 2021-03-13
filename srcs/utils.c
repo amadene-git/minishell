@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/30 19:27:05 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/09 15:52:03 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/13 16:19:17 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,16 @@ int		is_number(char *str)
 		i++;
 	while (str[i])
 	{
-		if (!ft_isdigit(str[i]))
+		if (!ft_isdigit(str[i]) && !ft_isblank(str[i]))
 			return(0);
+		if (ft_isblank(str[i]))
+			break;
+		i++;
+	}
+	while (str[i])
+	{
+		if (!ft_isblank(str[i]))
+			return (0);
 		i++;
 	}
 	return (1);
@@ -107,4 +115,32 @@ int		ft_strcmpci(const char *s1, const char *s2)
 		l2 = ft_tolower(*s2);
 	}
 	return ((int)(l1 - l2));
+}
+
+int		is_minus_one(const char *str)
+{
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '-')
+		str++;
+	else
+		return (0);
+	while (*str == '0')
+		str++;
+	if (*str == '1')
+		return (1);
+	return (0);
+}
+
+int		is_zero(const char *str)
+{
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '-' || *str == '+')
+		str++;
+	while (*str == '0')
+		str++;
+	if (*str == '\0')
+		return (1);
+	return (0);
 }
