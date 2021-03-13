@@ -52,6 +52,7 @@ int exec_cmd(t_cmd *cmd)//copier envlist dans env
 		}
 		if (cmd->fdpipe)
 		{
+			cmd->fdin != -1 || cmd->fdout != -1 ? exit(1) : 0;
 			dup2(cmd->fdpipe[1], STDOUT_FILENO);
 			close(cmd->fdpipe[0]);
 		}
@@ -212,7 +213,7 @@ int main(int ac,const char **av, const char	**env)
 						t = t->next;
 					}*/
 					enable_redirect(cmd);
-					if (has_pipe(tok_lex) == 1 && cmd->fdin != -1 && cmd->fdout != -1)
+					if (has_pipe(tok_lex) == 1)
 					{
 						cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
 						if (pipe(cmd->fdpipe) == -1)
