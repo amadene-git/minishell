@@ -117,6 +117,24 @@ void	refresh_last_cmd(t_dlist *envlist, char *last_cmd)
 	last->data->value = last_cmd;
 }
 
+void	free_lexer(t_tok **tok_lex, int lvl)
+{
+	if (tok_lex[lvl + 1] && tok_lex[lvl + 1]->type != CHR_END)
+		free_lexer(tok_lex, lvl + 1);
+	else
+	{
+		if (tok_lex[lvl]->value)
+			free(tok_lex[lvl]->value);
+		free(tok_lex[lvl]);
+		return;
+	}
+	if (tok_lex[lvl]->value)
+		free(tok_lex[lvl]->value);
+	free(tok_lex[lvl]);
+	if (!lvl)
+		free(tok_lex);
+}
+
 int main(int ac,const char **av, const char	**env)
 {
 	signal(SIGINT, SIG_IGN);//gestion du crtl+C
@@ -128,6 +146,7 @@ int main(int ac,const char **av, const char	**env)
 	int		gnl = 1;
 	int		k;
 	t_tok	**tok_lex;
+	t_tok	**save_lex;
 	t_dlist	*envlist = init_env(env);
 	t_cmd 	*cmd;
 	t_cmd	*tmp = NULL;
@@ -147,6 +166,7 @@ int main(int ac,const char **av, const char	**env)
 		{
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
+			save_lex = tok_lex;
 			k = -1;
 			//l = dlist_chr(envlist, "PATH");
 			//dprintf(2, "lst: type: %s, value: %s\n", l->data->name, l->data->value);
@@ -154,6 +174,7 @@ int main(int ac,const char **av, const char	**env)
 			// 	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			if (!has_errors(tok_lex))
+			{
 				while ((*tok_lex)->type != CHR_END)
 				{
 					while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
@@ -222,6 +243,8 @@ int main(int ac,const char **av, const char	**env)
 					tmp = cmd;
 					//stock_env_status(status, envlist);
 				}
+				free_lexer(save_lex, 0);
+			}
 			else 
 			{
 				status = 2;
