@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/18 13:07:52 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/12 00:16:55 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/13 17:02:40 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	check_error(t_tok *actual, t_tok *prev)
 {
 	if (actual->type == CHR_ERROR)
 		return (0);
-	if ((actual->type == CHR_PI || actual->type == CHR_OP) && !prev)
+	if ((actual->type == CHR_PI || actual->type == CHR_PV) && !prev)
 		return (0);
 	if (actual->type == CHR_RE && (prev
 		&& prev->type == CHR_RE))
@@ -24,8 +24,8 @@ int	check_error(t_tok *actual, t_tok *prev)
 	if (actual->type == CHR_END && prev
 		&& (prev->type == CHR_RE || prev->type == CHR_PI))
 		return (0);
-	if ((actual->type == CHR_PI || actual->type == CHR_OP)
-		&& (prev->type == CHR_PI || prev->type == CHR_OP
+	if ((actual->type == CHR_PI || actual->type == CHR_PV)
+		&& (prev->type == CHR_PI || prev->type == CHR_PV
 		|| prev->type == CHR_RE))
 		return (0);
 	return (1);
