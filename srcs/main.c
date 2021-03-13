@@ -97,7 +97,7 @@ int	has_pipe(t_tok **tok_lex)
 	int	i;
 
 	i = 0;
-	while (tok_lex[i] && (tok_lex[i]->type <= CHR_SP || tok_lex[i]->type == CHR_PI))
+	while ((tok_lex[i]->type <= CHR_SP || tok_lex[i]->type == CHR_PI))
 	{
 		if (tok_lex[i]->type == CHR_PI)
 			return (1);
@@ -211,9 +211,8 @@ int main(int ac,const char **av, const char	**env)
 						dprintf(2, "tok : %s->%d \n", t->value, t->type);
 						t = t->next;
 					}*/
-
 					enable_redirect(cmd);
-					if (has_pipe(tok_lex) == 1 && cmd->fdin == -1 && cmd->fdout == -1)
+					if (has_pipe(tok_lex) == 1 && cmd->fdin != -1 && cmd->fdout != -1)
 					{
 						cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
 						if (pipe(cmd->fdpipe) == -1)
