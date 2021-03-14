@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/18 13:07:52 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/13 17:02:40 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/14 00:43:53 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 int	check_error(t_tok *actual, t_tok *prev)
 {
+	if (actual->type == CHR_ERROR && (!ft_strcmp(actual->value, "\"") \
+		|| !ft_strcmp(actual->value, "\'")))
+		return (2);
 	if (actual->type == CHR_ERROR)
 		return (0);
 	if ((actual->type == CHR_PI || actual->type == CHR_PV) && !prev)
@@ -45,6 +48,12 @@ int	has_errors(t_tok **tok_lex)
 		if (tok_lex[i] && ((j == -1 && !check_error(tok_lex[i], NULL)) || (j != -1 && !check_error(tok_lex[i], tok_lex[j]))))
 		{
 			ft_dprintf(2, "minishell: syntax error near unexpected token `%s'\n", (char *)tok_lex[i]->value);
+			return (1);
+
+		}
+		else if (tok_lex[i] && check_error(tok_lex[i], NULL) == 2)
+		{
+			ft_dprintf(2, "minishell: unexpected EOF while looking for matching `%s'\n", (char *)tok_lex[i]->value);
 			return (1);
 		}
 		if (tok_lex[i] && tok_lex[i]->type == CHR_END)

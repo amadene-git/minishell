@@ -10,7 +10,7 @@ void handle_signal(int signo)
 		ft_dprintf(2, "\b\b  \b\b");
 }
 
-void stock_env_status(int status, t_dlist *envlist)
+t_dlist *stock_env_status(int status, t_dlist *envlist)
 {
 	t_var	*var;
 	t_dlist	*elem;
@@ -18,16 +18,14 @@ void stock_env_status(int status, t_dlist *envlist)
 	var = (t_var*)malloc(sizeof(t_var));
 	var->name = ft_strdup("?");
 	var->value = ft_strdup(ft_itoa(status));
-	if (!(elem = dlist_chr(envlist, var->name)))
+	if ((elem = dlist_chr(envlist, var->name)))
 	{
 		free(elem->data->value);
 		elem->data->value = var->value;
 	}
-	// else if (var->value)
-	// {
-	// 	free_var(elem->data);
-	// 	elem->data = var;
-	// 
+	else
+		envlist = insert_var(envlist, var);
+	return (envlist);
 }
 
 int exec_cmd(t_cmd *cmd)//copier envlist dans env
@@ -185,7 +183,6 @@ int main(int ac,const char **av, const char	**env)
 					}
 					cmd = (t_cmd*)malloc(sizeof(t_cmd));
 					cmd->envlist = envlist;
-					//cmd->env = env;
 					cmd->fdin = -1;
 					cmd->fdout = -1;
 					cmd->fdpipe = NULL;
@@ -197,6 +194,7 @@ int main(int ac,const char **av, const char	**env)
 						tmp->next = cmd;
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
+					envlist = stock_env_status(status, envlist);
 					tok_lex = get_tok_arg(tok_lex, cmd);
 					//printf("get_tok_arg\n");
 					/*printf("get ac av, ac=%d\n", cmd->ac);
@@ -204,15 +202,14 @@ int main(int ac,const char **av, const char	**env)
 					{
 						if (cmd->av)
 							printf("av[%d]->%s\n",i, cmd->av[i]);
-					}*/
-					//tok_lex = get_cmd_new(tok_lex, cmd);
-					/*t_tok	*t = cmd->tok_arg;
+					}
+					t_tok	*t = cmd->tok_arg;
 					while (t)
 					{
 						dprintf(2, "tok : %s->%d \n", t->value, t->type);
 						t = t->next;
 					}*/
-					enable_redirect(cmd);
+					status = enable_redirect(cmd);
 					if (has_pipe(tok_lex) == 1)
 					{
 						cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
@@ -220,7 +217,7 @@ int main(int ac,const char **av, const char	**env)
 							ft_dprintf(2, "erreur main:%s\n", strerror(errno));
 					}
 					get_ac_av(cmd->tok_arg, cmd, 0);
-					if (cmd->tok_arg && cmd->av && cmd->av[0])
+					if (cmd->tok_arg && cmd->av && cmd->av[0] && !status)
 					{
 						cmd->bin = ft_strdup(cmd->av[0]);
 						prepare_cmd(cmd);
@@ -241,7 +238,7 @@ int main(int ac,const char **av, const char	**env)
 					}
 					k = 0;
 					tmp = cmd;
-					//stock_env_status(status, envlist);
+					envlist = stock_env_status(status, envlist);
 				}
 				free_lexer(save_lex, 0);
 			}
@@ -257,5 +254,4 @@ int main(int ac,const char **av, const char	**env)
 	if (ac == 1)
 		ft_dprintf(1, "exit\n");
 	exit (status);
-	//return (3);
 }

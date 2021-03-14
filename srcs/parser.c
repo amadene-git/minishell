@@ -190,7 +190,7 @@ char	*get_word(char *str, t_dlist *envlist)
         else if (str[i] == '$')
         {
             j = i + 1;
-            while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
+            while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_' || str[j] == '?')
                 j++;
             ptr = ft_strndup(str + i + 1, j - (i + 1));
 			if ((elem = dlist_chr(envlist, ptr)) && elem->data->value && elem->data->value[0])
@@ -304,7 +304,7 @@ t_tok	*get_word_tok(t_tok	*tok_lex, t_cmd	*cmd)
 		else if (str[i] == '$')
 		{
 			j = i + 1;
-			while (ft_isalnum(str[j]) || str[j] == '_')
+			while (ft_isalnum(str[j]) || str[j] == '_' || str[j] == '?')
 				j++;
 			if (j == i + 1)
 			{

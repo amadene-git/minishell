@@ -138,7 +138,7 @@ void	free_elem(t_dlist *envlist, const char *name);
 void    free_envlist(t_dlist *envlist);
 
 //redirect.c
-void    enable_redirect(t_cmd *cmd);
+int      enable_redirect(t_cmd *cmd);
 
 //token.c
 t_tok	*create_tok(int type, void *value);

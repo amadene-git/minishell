@@ -79,12 +79,8 @@ int	exec_bin(t_cmd *cmd)
 {
 	struct stat *buff = (struct stat *)malloc(sizeof(buff));
 	int fd;
-	if (access(cmd->bin, F_OK))
-	{
-		ft_dprintf(2, "minishell: %s: No such file or directory\n", cmd->bin);
-		return (127);
-	}
-	else if (lstat(cmd->bin, buff) != -1)
+
+	if (lstat(cmd->bin, buff) != -1)
 	{
 		if (S_ISLNK(buff->st_mode))
 			stat(cmd->bin, buff);
@@ -135,6 +131,11 @@ int	exec_bin(t_cmd *cmd)
 			}
 		}
 	}
+	/*else if (access(cmd->bin, F_OK))
+	{
+		ft_dprintf(2, "minishell: %s: No such file or directory\n", cmd->bin);
+		return (127);
+	}*/
 	else
 	{
 		ft_dprintf(2, "minishell: %s: command not found\n", cmd->bin);
