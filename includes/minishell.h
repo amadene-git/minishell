@@ -151,6 +151,7 @@ t_tok   *tok_list_remove(t_tok **begin, t_tok *tok);
 t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd);
 char	**to_char_args(t_tok *tok_lst);
 void	prepare_cmd(t_cmd *cmd);
+void	free_cmd(t_cmd *cmd);
 
 //Utils.c
 char	*insert_string(char *str, char *to_insert, int start, int end);

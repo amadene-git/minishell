@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 18:43:56 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/05 12:27:41 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/14 16:43:19 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,27 +84,27 @@ void	prepare_cmd(t_cmd *cmd)
 	//cmd->ac = tok_list_size(cmd->tok_lst);
 	get_absolute_path(cmd, cmd->envlist);
 }
-/*
-t_cmd	*parse_cmd(t_tok **tok_list, int i)
-{
-	if ((*tok_list)->type = CHR_WORD)
-	{
-		
-	}
-}
 
-t_cmd	*parse_cmd_lst(t_tok **tok_lex)
+void	free_cmd(t_cmd *cmd)
 {
-	t_cmd	*cmd;
 	int		i;
 
-	if (!(cmd = ft_calloc(1, sizeof(t_cmd))))
-		return (NULL);
-	i = -1;
-	while (tok_lex[++i]->type < CHR_END)
+	while (cmd)
 	{
-		i++;
+		if (cmd->av)
+		{
+			i = -1;
+			while (cmd->av[++i])
+				ft_memdel((void **)&cmd->av[i]);
+			free(cmd->av);
+		}
+		if (cmd->fdpipe)
+			free(cmd->fdpipe);
+		if (cmd->bin)
+			ft_memdel((void **)&cmd->bin);
+		while (cmd->tok_arg)
+			cmd->tok_arg = tok_list_remove(&cmd->tok_arg, cmd->tok_arg);
+		free(cmd);
+		cmd = cmd->prev;
 	}
-
 }
-*/

@@ -96,7 +96,7 @@ t_tok	**lexer(char *str, int *i, int lvl)
 	else
 	{
 		tab = (t_tok**)malloc(sizeof(t_tok*) * (lvl + 2));
-		tab[lvl + 1] = create_tok(CHR_END, "newline");
+		tab[lvl + 1] = create_tok(CHR_END, ft_strdup("newline"));
 	}	
 	tab[lvl] = create_tok(type, value);	
 	return (tab);
@@ -471,7 +471,7 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 			
 			tok_lex++;
 		}
-		token_push_back(&cmd->tok_arg, create_tok(CHR_END, "newline"));
+		token_push_back(&cmd->tok_arg, create_tok(CHR_END, ft_strdup("newline")));
 		return (tok_lex);
 }
 

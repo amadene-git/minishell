@@ -17,11 +17,12 @@ t_dlist *stock_env_status(int status, t_dlist *envlist)
 
 	var = (t_var*)malloc(sizeof(t_var));
 	var->name = ft_strdup("?");
-	var->value = ft_strdup(ft_itoa(status));
+	var->value = ft_itoa(status);
 	if ((elem = dlist_chr(envlist, var->name)))
 	{
 		free(elem->data->value);
-		elem->data->value = var->value;
+		elem->data->value = ft_strdup(var->value);
+		free_var(var);
 	}
 	else
 		envlist = insert_var(envlist, var);
@@ -118,7 +119,7 @@ void	refresh_last_cmd(t_dlist *envlist, char *last_cmd)
 
 void	free_lexer(t_tok **tok_lex, int lvl)
 {
-	if (tok_lex[lvl + 1] && tok_lex[lvl + 1]->type != CHR_END)
+	if (tok_lex[lvl + 1] && tok_lex[lvl + 1]->type < CHR_END)
 		free_lexer(tok_lex, lvl + 1);
 	else
 	{
@@ -154,19 +155,22 @@ int main(int ac,const char **av, const char	**env)
 	status = 0;
 	while(gnl)
 	{
+		line = NULL;
+		cmd = NULL;
 		if (ac == 1)
 		{
 			ft_dprintf(1, "[minishell]>");
 			gnl = get_next_line(0, &line);
 		}
-		else 
+		else if (ac > 2)
 			line = ft_strdup(av[2]);
-		if (gnl && *line)
+		if (gnl && line && *line)
 		{
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
 			save_lex = tok_lex;
 			k = -1;
+			cmd = NULL;
 			//l = dlist_chr(envlist, "PATH");
 			//dprintf(2, "lst: type: %s, value: %s\n", l->data->name, l->data->value);
 			//while (tok_lex[++k]->type != CHR_END)
@@ -190,6 +194,7 @@ int main(int ac,const char **av, const char	**env)
 					cmd->next = NULL;
 					cmd->tok_arg = NULL;
 					cmd->tok_lst = NULL;
+					cmd->bin = NULL;
 					if (tmp)
 						tmp->next = cmd;
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
@@ -240,17 +245,17 @@ int main(int ac,const char **av, const char	**env)
 					tmp = cmd;
 					envlist = stock_env_status(status, envlist);
 				}
-				free_lexer(save_lex, 0);
 			}
 			else 
-			{
 				status = 2;
-			}
+			free_lexer(save_lex, 0);
 		}
 		if (ac != 1)
 			gnl = 0;
 		free(line);
 	}
+	if (cmd)
+		free_cmd(cmd);
 	if (ac == 1)
 		ft_dprintf(1, "exit\n");
 	exit (status);

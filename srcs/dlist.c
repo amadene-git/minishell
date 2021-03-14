@@ -117,7 +117,8 @@ void	free_var(t_var *variable)
 {
 	if (variable->value)
 		free(variable->value);
-	free(variable->name);
+	if (variable->name)
+		free(variable->name);
 	free(variable);
 }
 

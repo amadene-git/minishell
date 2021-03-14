@@ -31,7 +31,11 @@ void	get_absolute_path(t_cmd *cmd, t_dlist *envlist)
 				if (!ft_strcmpci(sd->d_name, cmd->av[0]))
 				{
 					strdir = ft_strjoindoublefree(strdir, ft_strdup("/"));
+					if (cmd->bin)
+						ft_memdel((void **)&cmd->bin);
 					cmd->bin = ft_strjoindoublefree(strdir, ft_strdup(sd->d_name));
+					if (dir != NULL)
+						closedir(dir);
 					return;
 				}
 			closedir(dir);
@@ -77,27 +81,27 @@ int	exec_built_in(t_cmd *cmd)
 
 int	exec_bin(t_cmd *cmd)
 {
-	struct stat *buff = (struct stat *)malloc(sizeof(buff));
+	struct stat buff;
 	int fd;
 
-	if (lstat(cmd->bin, buff) != -1)
+	if (lstat(cmd->bin, &buff) != -1)
 	{
-		if (S_ISLNK(buff->st_mode))
-			stat(cmd->bin, buff);
+		if (S_ISLNK(buff.st_mode))
+			stat(cmd->bin, &buff);
 		if (access(cmd->bin, F_OK))
 		{
 			ft_dprintf(2, "minishell: %s: No such file or directory\n", cmd->bin);
 			return (127);
 		}
-		else if (buff->st_mode & S_IFREG || S_ISDIR(buff->st_mode))
+		else if (buff.st_mode & S_IFREG || S_ISDIR(buff.st_mode))
 		{
-			if (S_ISDIR(buff->st_mode) && ((cmd->av[0][0]=='.' && cmd->av[0][1] == '/')
+			if (S_ISDIR(buff.st_mode) && ((cmd->av[0][0]=='.' && cmd->av[0][1] == '/')
 				|| cmd->av[0][ft_strlen(cmd->av[0]) - 1] == '/'))
 			{
 				ft_dprintf(2, "minishell: %s: is a directory\n", cmd->bin);
 				return(126);
 			}
-			else if (buff->st_mode & S_IXUSR)
+			else if (buff.st_mode & S_IXUSR)
 			{
 				fd = open(cmd->bin, O_RDONLY);
 				if (fd == -1)
@@ -131,11 +135,6 @@ int	exec_bin(t_cmd *cmd)
 			}
 		}
 	}
-	/*else if (access(cmd->bin, F_OK))
-	{
-		ft_dprintf(2, "minishell: %s: No such file or directory\n", cmd->bin);
-		return (127);
-	}*/
 	else
 	{
 		ft_dprintf(2, "minishell: %s: command not found\n", cmd->bin);

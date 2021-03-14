@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 23:55:26 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/02/28 22:47:38 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/14 16:31:24 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ t_tok	*tok_list_remove(t_tok **begin, t_tok *tok)
 				temp->next->prev = temp->prev;
 				temp->prev->next = temp->next;
 			}
-			free(tok->value);
+			ft_memdel((void **)&tok->value);
 			free(tok);
 			return (temp->next);
 		}
