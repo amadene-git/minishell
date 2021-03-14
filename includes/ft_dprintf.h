@@ -6,12 +6,12 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/20 16:30:39 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/03 12:43:27 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/14 16:48:56 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#ifndef FT_DPRINTF_H
+# define FT_DPRINTF_H
 
 # include <stdarg.h>
 # include "libft.h"

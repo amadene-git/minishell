@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/10 14:09:57 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/13 16:21:30 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/14 16:50:00 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ long int	ft_atoi(const char *str)
 	{
 		if ((result > 922337203685477580 || (result == 922337203685477580
 			&& (*str - '0') > 7)) && sign == 1)
-				return (-1);
+			return (-1);
 		else if ((result > 922337203685477580 || (result == 922337203685477580
 			&& (*str - '0') > 8)) && sign == -1)
 			return (0);
