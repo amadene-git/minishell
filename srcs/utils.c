@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/30 19:27:05 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/13 16:19:17 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/14 21:52:35 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,4 +143,20 @@ int		is_zero(const char *str)
 	if (*str == '\0')
 		return (1);
 	return (0);
+}
+
+int		is_valid_name(char *str)
+{
+	int i;
+
+	i = 0;
+	while (*str)
+	{
+		if (!ft_isalnum(*str) && *str != '_')
+			return (0);
+		if (ft_isalpha(*str) || *str == '_')
+			i = 1;
+		str++;
+	}
+	return (i);
 }

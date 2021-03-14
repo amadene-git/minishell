@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   built_in_echo.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/14 20:47:44 by mbouzaie          #+#    #+#             */
+/*   Updated: 2021/03/14 20:51:59 by mbouzaie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int		built_in_echo(int ac, char **av, int fd)
@@ -14,7 +26,7 @@ int		built_in_echo(int ac, char **av, int fd)
 		if (av[i][0] == '-' && i == n + 1)
 		{
 			j++;
-			while (av[i][j] && av[i][j] == 'n')// ou *av[i] == 'e'
+			while (av[i][j] && av[i][j] == 'n')
 				j++;
 			if (!av[i][j])
 				n = i;
@@ -30,4 +42,3 @@ int		built_in_echo(int ac, char **av, int fd)
 		ft_putchar_fd('\n', fd);
 	return (0);
 }
-

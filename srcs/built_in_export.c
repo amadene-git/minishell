@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   built_in_export.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/14 20:55:54 by mbouzaie          #+#    #+#             */
+/*   Updated: 2021/03/14 22:29:34 by mbouzaie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	print_value(char *str, int fd)
@@ -14,28 +26,15 @@ void	print_value(char *str, int fd)
 	}
 }
 
-void	print_export(t_dlist *envlist, int fd)
+int		print_export(t_dlist *envlist, int fd)
 {
 	t_dlist	*elem;
 
 	elem = dlist_strchr_first(envlist);
-	if (elem && ft_strcmp("_", elem->data->name))
-	{
-		ft_putstr_fd("declare -x ", fd);
-		ft_putstr_fd(elem->data->name, fd);
-		if (elem->data->value)
-		{
-			ft_putstr_fd("=\"", fd);
-			print_value(elem->data->value, fd);
-			ft_putendl_fd("\"", fd);
-		}
-		else
-			ft_putchar_fd('\n', fd);
-	}
 	while (elem)
 	{
-		elem = dlist_chr_alpha_next(elem);
-		if (elem && ft_strcmp("_", elem->data->name))
+		if (elem && ft_strcmp("_", elem->data->name)\
+			&& ft_strcmp("?", elem->data->name))
 		{
 			ft_putstr_fd("declare -x ", fd);
 			ft_putstr_fd(elem->data->name, fd);
@@ -48,24 +47,9 @@ void	print_export(t_dlist *envlist, int fd)
 			else
 				ft_putchar_fd('\n', fd);
 		}
+		elem = dlist_chr_alpha_next(elem);
 	}
-}
-
-int		is_valid_name(char *str)
-{
-	int i;
-
-	i = 0;
-	while (*str)
-	{
-		if (!ft_isalnum(*str) && *str != '_')
-			return (0);
-		if (ft_isalpha(*str) || *str == '_')
-			i = 1;
-		str++;
-	}
-	return (i);
-
+	return (0);
 }
 
 char	*ft_str_trim_backslash(char *str)
@@ -86,6 +70,16 @@ char	*ft_str_trim_backslash(char *str)
 	return (str);
 }
 
+int		export_error(t_var *var)
+{
+	ft_dprintf(2, "minishell: export: `%s", var->name);
+	if (var->value)
+		ft_dprintf(2, "=%s': not a valid identifier\n", var->value);
+	else
+		ft_dprintf(2, "': not a valid identifier\n");
+	return (1);
+}
+
 int		built_in_export(int ac, char **av, t_dlist *envlist, int fd)
 {
 	int		i;
@@ -95,35 +89,22 @@ int		built_in_export(int ac, char **av, t_dlist *envlist, int fd)
 
 	status = 0;
 	if (ac == 1)
-	{
-		print_export(envlist, fd);		
-		return (status);
-	}
-	i = 0;
-	if (ac > 1)
-	{
+		return (print_export(envlist, fd));
+	if (ac > 1 && !(i = 0))
 		while (++i < ac)
 		{
 			var = create_var(av[i]);
 			if (!is_valid_name(var->name))
-			{
-				ft_dprintf(2, "minishell: export: `%s",var->name);
-				if (var->value)
-					ft_dprintf(2, "=%s': not a valid identifier\n", var->value);
-				else	
-					ft_dprintf(2, "': not a valid identifier\n");
-				status = 1;
-			}
-			else if (!(elem = dlist_chr(envlist, var->name)) && !(status = 0))
+				status = export_error(var);
+			else if (!(elem = dlist_chr(envlist, var->name)))
 				insert_var(envlist, var);
-			else if (var->value && !(status = 0))
+			else if (var->value)
 			{
 				free_var(elem->data);
 				elem->data = var;
 			}
-			else if (!(status = 0))
+			else
 				free_var(var);
 		}
-	}
 	return (status);
 }

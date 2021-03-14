@@ -193,7 +193,6 @@ int main(int ac,const char **av, const char	**env)
 					cmd->prev = (tmp) ? tmp : NULL;
 					cmd->next = NULL;
 					cmd->tok_arg = NULL;
-					cmd->tok_lst = NULL;
 					cmd->bin = NULL;
 					if (tmp)
 						tmp->next = cmd;

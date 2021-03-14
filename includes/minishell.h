@@ -50,7 +50,6 @@ typedef struct  s_cmd
 	int				fdout;
     int             *fdpipe;
     pid_t           pid;
-    t_tok           *tok_lst;
     t_tok           *tok_arg;
     struct  s_cmd   *prev;
     struct  s_cmd   *next;
@@ -87,9 +86,8 @@ int		built_in_cd(int ac, char **av, t_dlist *envlist);
 int		built_in_pwd(int ac, char **av);
 
 //built_in_export.c
-void	print_export(t_dlist *envlist, int fd);
+int 	print_export(t_dlist *envlist, int fd);
 int     built_in_export(int ac, char **av, t_dlist *envlist, int fd);
-int     is_valid_name(char *str);
 
 //built_in_env.c
 char	*str_plusplus(char *nbr);
@@ -148,7 +146,6 @@ int		tok_list_size(t_tok *tok_lst);
 t_tok   *tok_list_remove(t_tok **begin, t_tok *tok);
 
 //cmd.c
-t_tok	**get_cmd_new(t_tok **tok_lex,  t_cmd *cmd);
 char	**to_char_args(t_tok *tok_lst);
 void	prepare_cmd(t_cmd *cmd);
 void	free_cmd(t_cmd *cmd);
@@ -160,4 +157,5 @@ int		is_number(char *str);
 int		ft_strcmpci(const char *s1, const char *s2);
 int		is_minus_one(const char *str);
 int		is_zero(const char *str);
+int		is_valid_name(char *str);
 #endif
