@@ -76,7 +76,7 @@ int			built_in_cd(int ac, char **av, t_dlist *envlist)
 		ft_dprintf(2, "minishell: cd: %s: %s\n", av[1], strerror(errno));
 		return (1);
 	}
-	refresh_pwd(strdup(buff), envlist);
+	refresh_pwd(ft_strdup(buff), envlist);
 	free(buff);
 	return (0);
 }

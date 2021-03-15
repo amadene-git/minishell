@@ -135,6 +135,15 @@ void	free_lexer(t_tok **tok_lex, int lvl)
 		free(tok_lex);
 }
 
+void	free_av(char **av, int lvl)
+{
+	if (av[lvl + 1])
+		free_av(av, lvl + 1);
+	free(av[lvl]);
+	if (!lvl)
+		free(av);
+}
+
 int main(int ac,const char **av, const char	**env)
 {
 	signal(SIGINT, SIG_IGN);//gestion du crtl+C
@@ -194,6 +203,7 @@ int main(int ac,const char **av, const char	**env)
 					cmd->next = NULL;
 					cmd->tok_arg = NULL;
 					cmd->bin = NULL;
+					cmd->tok_lex = save_lex;
 					if (tmp)
 						tmp->next = cmd;
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
@@ -243,6 +253,8 @@ int main(int ac,const char **av, const char	**env)
 					k = 0;
 					tmp = cmd;
 					envlist = stock_env_status(status, envlist);
+					free_av(cmd->env, 0);
+					free_av(cmd->av, 0);
 				}
 			}
 			else 
@@ -255,6 +267,7 @@ int main(int ac,const char **av, const char	**env)
 	}
 	if (cmd)
 		free_cmd(cmd);
+	free_envlist(envlist);
 	if (ac == 1)
 		ft_dprintf(1, "exit\n");
 	exit (status);
