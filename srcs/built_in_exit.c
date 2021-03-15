@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 18:05:22 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/15 13:19:28 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/15 14:48:46 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	free_tok_arg(t_tok *tok_arg)
 void	exit_minishell(int status, t_cmd *cmd)
 {
 	free_lexer(cmd->tok_lex, 0);
-	printf("wesh\n");
 	free_av(cmd->env, 0);
 	free_av(cmd->av, 0);
 	free_envlist(cmd->envlist);

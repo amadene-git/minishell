@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/14 23:09:02 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/14 23:22:04 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/15 22:04:56 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,8 @@ char			*put_var_env(char *str, t_dlist *envlist);
 char			*get_st(char *str);
 char			*get_str(char *str, t_dlist *envlist);
 t_tok			**get_cmd(t_tok **tok_lex, t_cmd *cmd, int lvl);
+int				exec_cmd(t_cmd *cmd);
+void			handle_signal(int signo);
 char			*get_word(char *str, t_dlist *envlist);
 void			get_ac_av(t_tok *tok_lst, t_cmd *cmd, int lvl);
 t_tok			**get_tok_arg(t_tok **tok_lex, t_cmd *cmd);

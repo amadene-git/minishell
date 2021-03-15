@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/18 13:07:52 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/14 00:43:53 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/15 22:27:35 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ int	has_errors(t_tok **tok_lex)
 	{
 		while (tok_lex[i] && tok_lex[i]->type == CHR_SP)
 			i++;
-		if (tok_lex[i] && ((j == -1 && !check_error(tok_lex[i], NULL)) || (j != -1 && !check_error(tok_lex[i], tok_lex[j]))))
+		if (tok_lex[i] && ((j == -1 && !check_error(tok_lex[i], NULL))\
+			|| (j != -1 && !check_error(tok_lex[i], tok_lex[j]))))
 		{
 			ft_dprintf(2, "minishell: syntax error near unexpected token `%s'\n", (char *)tok_lex[i]->value);
 			return (1);
-
 		}
 		else if (tok_lex[i] && check_error(tok_lex[i], NULL) == 2)
 		{

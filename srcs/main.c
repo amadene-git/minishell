@@ -29,69 +29,6 @@ t_dlist *stock_env_status(int status, t_dlist *envlist)
 	return (envlist);
 }
 
-int exec_cmd(t_cmd *cmd)//copier envlist dans env
-{
-	int		status;
-
-	status = 0;
-	cmd->pid = fork();
-	if (cmd->pid == -1)
-		ft_putstr_fd(strerror(errno), 2);
-	if (cmd->pid > 0)
-	{
-		signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
-	}
-	else if (cmd->pid == 0)
-	{
-		if (cmd->prev && cmd->prev->fdpipe)
-		{
-			dup2(cmd->prev->fdpipe[0], STDIN_FILENO);
-			close(cmd->prev->fdpipe[1]);
-		}
-		if (cmd->fdpipe)
-		{
-			cmd->fdin != -1 || cmd->fdout != -1 ? exit(1) : 0;
-			dup2(cmd->fdpipe[1], STDOUT_FILENO);
-			close(cmd->fdpipe[0]);
-		}
-		if (cmd->fdout != -1)
-		{
-			dup2(cmd->fdout, STDOUT_FILENO);
-			close(cmd->fdout);
-		}
-		if (cmd->fdin != -1)
-		{
-			dup2(cmd->fdin, STDIN_FILENO);
-			close(cmd->fdin);
-		}
-		if (!ft_strcmp("exit", cmd->bin))
-		{
-			status = 0;
-		}
-		else if (cmd->bin && !is_builtin(cmd->bin) && (status = exec_bin(cmd)))// copier envlist
-		{
-			exit(status);
-		}
-		else
-		{
-			exit(exec_built_in(cmd));
-		}
-	}
-	if (cmd->prev && cmd->prev->fdpipe)
-	{
-		close(cmd->prev->fdpipe[0]);
-		close(cmd->prev->fdpipe[1]);
-	}
-	waitpid(cmd->pid, &status, 0);
-	if (WIFSIGNALED(status) && WTERMSIG(status) == 3)
-		ft_dprintf(2, "Quitter (core dumped)\n");
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, handle_signal);
-	status = WEXITSTATUS(status);
-	return (status);
-}
-
 int	has_pipe(t_tok **tok_lex)
 {
 	int	i;
@@ -247,8 +184,8 @@ int main(int ac,const char **av, const char	**env)
 			gnl = 0;
 		free(line);
 	}
-	if (cmd)
-		free_cmd(cmd);
+	//if (cmd)
+	//	free_cmd(cmd);
 	free_envlist(envlist);
 	if (ac == 1)
 		ft_dprintf(1, "exit\n");

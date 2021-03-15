@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 23:55:26 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/14 23:06:30 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/15 15:31:15 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ t_tok	*create_tok(int type, void *value)
 	tok->value = value;
 	tok->next = NULL;
 	tok->prev = NULL;
-	return tok;
+	return (tok);
 }
 
 int		tok_list_size(t_tok *tok_lst)
 {
-    int		i;
+	int		i;
 
 	i = 0;
 	while (tok_lst)
@@ -43,7 +43,6 @@ t_tok	*tok_list_remove(t_tok **begin, t_tok *tok)
 
 	temp = *begin;
 	while (temp != NULL)
-	{
 		if (temp == tok)
 		{
 			if (temp->next == NULL)
@@ -69,6 +68,5 @@ t_tok	*tok_list_remove(t_tok **begin, t_tok *tok)
 		}
 		else
 			temp = temp->next;
-	}
 	return (NULL);
 }
