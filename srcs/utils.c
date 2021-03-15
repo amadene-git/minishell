@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/30 19:27:05 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/14 21:52:35 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/15 13:37:21 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ int		is_number(char *str)
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]) && !ft_isblank(str[i]))
-			return(0);
+			return (0);
 		if (ft_isblank(str[i]))
-			break;
+			break ;
 		i++;
 	}
 	while (str[i])
@@ -92,57 +92,6 @@ int		is_number(char *str)
 		i++;
 	}
 	return (1);
-}
-
-int		ft_strcmpci(const char *s1, const char *s2)
-{
-	char	l1;
-	char	l2;
-
-	if (!s1 && !s2)
-		return (0);
-	if (!s1)
-		return ((int)(-*s2));
-	if (!s2)
-		return ((int)*s1);
-	l1 = ft_tolower(*s1);
-	l2 = ft_tolower(*s2);
-	while (*s1 && *s2 && !(l1 - l2))
-	{
-		s1++;
-		s2++;
-		l1 = ft_tolower(*s1);
-		l2 = ft_tolower(*s2);
-	}
-	return ((int)(l1 - l2));
-}
-
-int		is_minus_one(const char *str)
-{
-	while (ft_isspace(*str))
-		str++;
-	if (*str == '-')
-		str++;
-	else
-		return (0);
-	while (*str == '0')
-		str++;
-	if (*str == '1')
-		return (1);
-	return (0);
-}
-
-int		is_zero(const char *str)
-{
-	while (ft_isspace(*str))
-		str++;
-	if (*str == '-' || *str == '+')
-		str++;
-	while (*str == '0')
-		str++;
-	if (*str == '\0')
-		return (1);
-	return (0);
 }
 
 int		is_valid_name(char *str)

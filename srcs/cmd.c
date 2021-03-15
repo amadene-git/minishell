@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 18:43:56 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/14 22:17:08 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/15 12:45:55 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@ char	**to_char_args(t_tok *tok_lst)
 
 void	prepare_cmd(t_cmd *cmd)
 {
-
-	//cmd->av = to_char_args(cmd->tok_lst);
-	//cmd->ac = tok_list_size(cmd->tok_lst);
 	get_absolute_path(cmd, cmd->envlist);
 }
 

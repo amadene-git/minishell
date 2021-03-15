@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/03 14:55:29 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/13 16:20:52 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/15 13:16:04 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ char				*ft_strrchr(const char *s, int c);
 char				*ft_strnstr(const char *haystack, const char *needle, \
 								size_t len);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
+int					ft_strcmpci(const char *s1, const char *s2);
 long int			ft_atoi(const char *str);
 int					ft_isupper(int c);
 int					ft_islower(int c);
@@ -66,6 +67,8 @@ int					ft_isspace(int c);
 int					ft_isblank(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
+int					ft_iszero(const char *str);
+int					ft_isminusone(const char *str);
 char				*ft_strupr(char *str);
 void				*ft_memalloc(size_t size);
 void				ft_memdel(void **ap);

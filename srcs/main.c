@@ -156,22 +156,24 @@ void	free_av(char **av, int lvl)
 
 int main(int ac,const char **av, const char	**env)
 {
-	signal(SIGINT, SIG_IGN);//gestion du crtl+C
+	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
 
 	char	*line;
-	int		gnl = 1;
+	int		gnl;
 	int		k;
 	t_tok	**tok_lex;
 	t_tok	**save_lex;
-	t_dlist	*envlist = init_env(env);
+	t_dlist	*envlist;
 	t_cmd 	*cmd;
 	t_cmd	*tmp = NULL;
 	int		status;
 
 	status = 0;
+	gnl = 1;
+	envlist = init_env(env);
 	while(gnl)
 	{
 		line = NULL;
@@ -188,22 +190,13 @@ int main(int ac,const char **av, const char	**env)
 			k = 0;
 			tok_lex = lexer(line, &k, 0);
 			save_lex = tok_lex;
-			k = -1;
 			cmd = NULL;
-			//l = dlist_chr(envlist, "PATH");
-			//dprintf(2, "lst: type: %s, value: %s\n", l->data->name, l->data->value);
-			//while (tok_lex[++k]->type != CHR_END)
-			// 	printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
-			//printf("tok %d type:%d value:%s|\n", k, tok_lex[k]->type, (char*)(tok_lex[k]->value));
 			if (!has_errors(tok_lex))
-			{
 				while ((*tok_lex)->type != CHR_END)
 				{
 					while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
 					|| (*tok_lex)->type == CHR_PI || (*tok_lex)->type == CHR_PV)
-					{
 						tok_lex++;
-					}
 					cmd = (t_cmd*)malloc(sizeof(t_cmd));
 					cmd->envlist = envlist;
 					cmd->fdin = -1;
@@ -220,23 +213,10 @@ int main(int ac,const char **av, const char	**env)
 						tmp->line = NULL;
 						tmp->next = cmd;
 					}
-					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
+					
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
 					envlist = stock_env_status(status, envlist);
 					tok_lex = get_tok_arg(tok_lex, cmd);
-					//printf("get_tok_arg\n");
-					/*printf("get ac av, ac=%d\n", cmd->ac);
-					for (int i  = 0; i <= cmd->ac; i++)
-					{
-						if (cmd->av)
-							printf("av[%d]->%s\n",i, cmd->av[i]);
-					}
-					t_tok	*t = cmd->tok_arg;
-					while (t)
-					{
-						dprintf(2, "tok : %s->%d \n", t->value, t->type);
-						t = t->next;
-					}*/
 					status = enable_redirect(cmd);
 					if (has_pipe(tok_lex) == 1)
 					{
@@ -249,20 +229,9 @@ int main(int ac,const char **av, const char	**env)
 					{
 						cmd->bin = ft_strdup(cmd->av[0]);
 						prepare_cmd(cmd);
-						/*printf ("ac :%d\n", cmd->ac);
-						for (int k = 0; cmd->av[k]; k++)
-						 	dprintf(2, "av[%d]:\"%s\"\n", k, cmd->av[k]);
-						 	dprintf(2, "stdout:\n");
-						printf ("cmd->bin %s\ncmd->av %s\n", cmd->bin, cmd->av[0]);*/
 						status = exec_no_fork(cmd);
-					//	if (status == 255)
-					//		break;
 						if (status == 0)
 							status = exec_cmd(cmd);
-						//	printf ("status = %d\n", status);
-							//printf("cmd->ac = %d last = %s\n", cmd->ac, cmd->av[cmd->ac - 1]);
-						// printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
-						//free(cmd->env);
 					}
 					k = 0;
 					tmp = cmd;
@@ -270,7 +239,6 @@ int main(int ac,const char **av, const char	**env)
 					free_av(cmd->env, 0);
 					free_av(cmd->av, 0);
 				}
-			}
 			else 
 				status = 2;
 			free_lexer(save_lex, 0);
