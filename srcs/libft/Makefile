@@ -6,7 +6,7 @@
 #    By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/03 15:10:22 by mbouzaie          #+#    #+#              #
-#    Updated: 2021/03/03 13:01:55 by mbouzaie         ###   ########.fr        #
+#    Updated: 2021/03/15 13:18:41 by mbouzaie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -86,7 +86,10 @@ SRC_B =	ft_lstnew.c \
 		ft_char_in_set.c \
 		ft_str_in_set.c \
 		ft_strcmp.c \
+		ft_strcmpci.c \
 		ft_strndup.c \
+		ft_iszero.c \
+		ft_isminusone.c \
 		ft_dprintf/ft_dprintf.c \
 		ft_dprintf/print_va_char.c \
 		ft_dprintf/print_va_dec.c \

@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 18:05:22 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/14 20:55:16 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/15 13:19:28 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int		exit_cmd(t_cmd *cmd)
 	if (cmd->ac == 1)
 		exit_minishell(0);
 	if (!is_number(cmd->av[1]) || (ft_atoi(cmd->av[1]) == -1 &&\
-		!is_minus_one(cmd->av[1])) || (ft_atoi(cmd->av[1]) == 0 &&\
-		!is_zero(cmd->av[1])))
+		!ft_isminusone(cmd->av[1])) || (ft_atoi(cmd->av[1]) == 0 &&\
+		!ft_iszero(cmd->av[1])))
 	{
 		ft_dprintf(2, "minishell: exit: %s: numeric argument required\n",\
 					cmd->av[1]);
