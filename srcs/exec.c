@@ -11,7 +11,7 @@ void	get_absolute_path(t_cmd *cmd, t_dlist *envlist)
 		path = dlist_chr(envlist, "PATH")->data->value;
 	else
 		return;
-	if (cmd->av[0][0] != '/' && strncmp(cmd->av[0], "./", 2) != 0)
+	if (cmd->av[0][0] != '/' && ft_strncmp(cmd->av[0], "./", 2) != 0)
 	{
 		while (path)
 		{

@@ -63,6 +63,7 @@ typedef struct	s_cmd
 	t_tok			*tok_arg;
 	struct s_cmd	*prev;
 	struct s_cmd	*next;
+	t_tok			**tok_lex;
 }				t_cmd;
 
 enum			e_chr{
@@ -138,4 +139,7 @@ int				ft_strcmpci(const char *s1, const char *s2);
 int				is_minus_one(const char *str);
 int				is_zero(const char *str);
 int				is_valid_name(char *str);
+void			free_av(char **av, int lvl);
+void			free_lexer(t_tok **tok_lex, int lvl);
+
 #endif
