@@ -26,7 +26,10 @@ void	get_absolute_path(t_cmd *cmd, t_dlist *envlist)
 				path = NULL;
 			}
 			if ((dir = opendir(strdir)) == NULL)
+			{
+				free(strdir);
 				continue;
+			}
 			while ((sd = readdir(dir)) != NULL)
 				if (!ft_strcmpci(sd->d_name, cmd->av[0]))
 				{

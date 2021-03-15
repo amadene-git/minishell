@@ -12,12 +12,36 @@
 
 #include "../includes/minishell.h"
 
+void	free_tok_arg(t_tok *tok_arg)
+{
+	t_tok	*tmp;
+
+	while (tok_arg->prev)
+		tok_arg = tok_arg->prev;
+	while (tok_arg)
+	{
+		tmp = tok_arg;
+		if (tok_arg->value)
+			free(tok_arg->value);
+		tmp = tok_arg->next;
+		free(tok_arg);
+		tok_arg = tmp;
+	}
+}
+
 void	exit_minishell(int status, t_cmd *cmd)
 {
 	free_lexer(cmd->tok_lex, 0);
+	printf("wesh\n");
 	free_av(cmd->env, 0);
 	free_av(cmd->av, 0);
 	free_envlist(cmd->envlist);
+	free(cmd->line);
+	free_tok_arg(cmd->tok_arg);
+	free(cmd->bin);
+	if (cmd->fdpipe)
+		free(cmd->fdpipe);
+	free(cmd);
 	exit(status);
 }
 

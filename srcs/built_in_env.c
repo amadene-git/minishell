@@ -7,6 +7,7 @@ void	shlvl_plusplus(t_dlist *shlvl)
 	nb = (unsigned)ft_atoi(shlvl->data->value);
 	nb = (nb >= 0) ? nb + 1 : 0;
 	free(shlvl->data->value);
+	shlvl->data->value = NULL;
 	shlvl->data->value = ft_itoa(nb);
 }
 
@@ -17,7 +18,7 @@ void	clean_spaces(t_dlist *shlvl)
 	while (*shlvl->data->value == ' ')
 		shlvl->data->value++;
 	copy = ft_strdup(shlvl->data->value);
-	//free(shlvl->data->value);
+	free(shlvl->data->value);
 	shlvl->data->value = copy;
 } 
 

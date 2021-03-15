@@ -64,6 +64,7 @@ typedef struct	s_cmd
 	struct s_cmd	*prev;
 	struct s_cmd	*next;
 	t_tok			**tok_lex;
+	char			*line;
 }				t_cmd;
 
 enum			e_chr{

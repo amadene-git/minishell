@@ -123,16 +123,26 @@ void	free_lexer(t_tok **tok_lex, int lvl)
 		free_lexer(tok_lex, lvl + 1);
 	else
 	{
+		if (tok_lex[lvl + 1])
+		{
+			if (tok_lex[lvl + 1]->value)
+				free(tok_lex[lvl + 1]->value);
+			free(tok_lex[lvl + 1]);
+		}
 		if (tok_lex[lvl]->value)
 			free(tok_lex[lvl]->value);
 		free(tok_lex[lvl]);
+		if (!lvl)
+			free(tok_lex);
 		return;
 	}
 	if (tok_lex[lvl]->value)
 		free(tok_lex[lvl]->value);
 	free(tok_lex[lvl]);
 	if (!lvl)
+	{
 		free(tok_lex);
+	}
 }
 
 void	free_av(char **av, int lvl)
@@ -204,8 +214,12 @@ int main(int ac,const char **av, const char	**env)
 					cmd->tok_arg = NULL;
 					cmd->bin = NULL;
 					cmd->tok_lex = save_lex;
+					cmd->line = line;
 					if (tmp)
+					{
+						tmp->line = NULL;
 						tmp->next = cmd;
+					}
 					//printf ("currtok:%s->%d\n", (char*)(*tok_lex)->value, (*tok_lex)->type);
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
 					envlist = stock_env_status(status, envlist);
