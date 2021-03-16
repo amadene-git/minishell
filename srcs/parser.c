@@ -23,12 +23,32 @@ char	*get_st(char *str)
 	return (ft_strndup(str + 1, i - 2));
 }
 
+void	get_var(char *str, int *i, int *j, t_dlist *envlist)
+{
+	char	*ptr;
+	t_dlist	*elem;
+
+	(*j) = (*i) + 1;
+    while (ft_isalpha(str[(*j)]) || ft_isdigit(str[(*j)]) || str[(*j)] == '_' || str[*j] == '?')
+		(*j)++;
+	ptr = ft_strndup(str + (*i) + 1, (*j) - ((*i) + 1));
+	if ((elem = dlist_chr(envlist, ptr)) && elem->data->value && elem->data->value[0])
+	{
+        str = insert_string(str, ft_strdup(elem->data->value), (*i), (*j));
+		(*i) += ft_strlen(elem->data->value) - 1;
+	}
+	else
+	{
+          	str = insert_string(str, strdup(""), (*i), (*j));
+		(*i)--;
+	}
+	free(ptr);
+}
+
 char	*get_str(char *str, t_dlist *envlist)
 {
 	int		i;
 	int		j;
-	char	*ptr;
-	t_dlist	*elem;
 
 	if (!str)
 		return (NULL);
@@ -41,22 +61,7 @@ char	*get_str(char *str, t_dlist *envlist)
             	str = insert_string(str, strdup(""), i, i + 1);
         }
         else if (str[i] == '$')
-        {
-            j = i + 1;
-            while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_')
-                j++;
-            ptr = ft_strndup(str + i + 1, j - (i + 1));
-			if ((elem = dlist_chr(envlist, ptr)) && elem->data->value)
-			{
-            	str = insert_string(str, ft_strdup(elem->data->value), i, j);
-				i += ft_strlen(elem->data->value) - 1;
-			}
-			else
-			{
-            	str = insert_string(str, strdup(""), i, j);
-				i--;
-			}
-        }
+			get_var(str, &i, &j, envlist);
 		i++;
     }
 	return (str);
@@ -71,7 +76,7 @@ char	*str_clean_whitespaces(const char *str)
 	tab = ft_split(str, ' ');
 	i = 0;
 	if (tab && tab[i])
-		ret =ft_strdup(tab[i]);
+		ret = ft_strdup(tab[i]);
 	i = 1;
 	while (tab[i])
 	{
@@ -86,8 +91,6 @@ char	*get_word(char *str, t_dlist *envlist)
 {
 	int		i;
 	int 	j;
-	char	*ptr;
-	t_dlist	*elem;
 
 	i = 0;
 	while (str[i])
@@ -98,20 +101,7 @@ char	*get_word(char *str, t_dlist *envlist)
         }
         else if (str[i] == '$')
         {
-            j = i + 1;
-            while (ft_isalpha(str[j]) || ft_isdigit(str[j]) || str[j] == '_' || str[j] == '?')
-                j++;
-            ptr = ft_strndup(str + i + 1, j - (i + 1));
-			if ((elem = dlist_chr(envlist, ptr)) && elem->data->value && elem->data->value[0])
-			{
-            	str = insert_string(str, str_clean_whitespaces(elem->data->value), i, j);
-				i += ft_strlen(elem->data->value) - 1;
-			}
-			else
-			{
-            	str = insert_string(str, strdup(""), i, j);
-				i--;
-			}
+			get_var(str, &i, &j, envlist);
 		}
 		i++;
     }
@@ -231,6 +221,7 @@ t_tok	*get_word_tok(t_tok	*tok_lex, t_cmd	*cmd)
 			if (!var_name)
 				return (NULL);
 			elem = dlist_chr(cmd->envlist, var_name);
+			free(var_name);
 			if (!elem)
 			{
 				token = create_tok(CHR_ST, NULL);
