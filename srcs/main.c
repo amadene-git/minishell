@@ -56,6 +56,8 @@ void	refresh_last_cmd(t_dlist *envlist, char *last_cmd)
 
 void	free_lexer(t_tok **tok_lex, int lvl)
 {
+	if (!tok_lex)
+		return;
 	if (tok_lex[lvl + 1] && tok_lex[lvl + 1]->type < CHR_END)
 		free_lexer(tok_lex, lvl + 1);
 	else
@@ -84,7 +86,9 @@ void	free_lexer(t_tok **tok_lex, int lvl)
 
 void	free_av(char **av, int lvl)
 {
-	if (av[lvl + 1])
+	if (!av)
+		return;
+	if (av[lvl] && av[lvl + 1])
 		free_av(av, lvl + 1);
 	free(av[lvl]);
 	if (!lvl)
@@ -162,6 +166,7 @@ int main(int ac,const char **av, const char	**env)
 					cmd->bin = NULL;
 					cmd->tok_lex = save_lex;
 					cmd->line = line;
+					cmd->av = NULL;
 			
 					if (tmp)
 					{
@@ -179,6 +184,7 @@ int main(int ac,const char **av, const char	**env)
 						if (pipe(cmd->fdpipe) == -1)
 							ft_dprintf(2, "erreur main:%s\n", strerror(errno));
 					}
+					printf("lol\n");
 					get_ac_av(cmd->tok_arg, cmd, 0);
 					if (cmd && cmd->tok_arg && cmd->av && cmd->av[0] && !status)
 					{
@@ -200,6 +206,7 @@ int main(int ac,const char **av, const char	**env)
 			else 
 				status = 2;
 			free_lexer(save_lex, 0);
+		
 		}
 		if (ac != 1)
 			gnl = 0;
