@@ -145,6 +145,7 @@ int main(int ac,const char **av, const char	**env)
 			save_lex = tok_lex;
 			cmd = NULL;
 			if (!has_errors(tok_lex))
+			{
 				while ((*tok_lex)->type != CHR_END)
 				{
 					while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
@@ -161,6 +162,7 @@ int main(int ac,const char **av, const char	**env)
 					cmd->bin = NULL;
 					cmd->tok_lex = save_lex;
 					cmd->line = line;
+			
 					if (tmp)
 					{
 						tmp->line = NULL;
@@ -178,7 +180,7 @@ int main(int ac,const char **av, const char	**env)
 							ft_dprintf(2, "erreur main:%s\n", strerror(errno));
 					}
 					get_ac_av(cmd->tok_arg, cmd, 0);
-					if (cmd->tok_arg && cmd->av && cmd->av[0] && !status)
+					if (cmd && cmd->tok_arg && cmd->av && cmd->av[0] && !status)
 					{
 						cmd->bin = ft_strdup(cmd->av[0]);
 						prepare_cmd(cmd);
@@ -194,6 +196,7 @@ int main(int ac,const char **av, const char	**env)
 					free_tok_arg(cmd->tok_arg);
 					free(cmd->bin);
 				}
+			}
 			else 
 				status = 2;
 			free_lexer(save_lex, 0);
@@ -203,10 +206,21 @@ int main(int ac,const char **av, const char	**env)
 		free(line);
 	//	free_cmd_lst(cmd);
 	}
+			if (cmd)
+			{
+				while (cmd)
+				{
+					tmp = cmd;
+					cmd = cmd->prev;
+					if (tmp->fdpipe)
+						free(tmp->fdpipe);
+					free(tmp);
+				}
+			}
 	//if (cmd)
 	//	free_cmd(cmd);
 	free_envlist(envlist);
 	if (ac == 1)
 		ft_dprintf(1, "exit\n");
-	exit (status);
+	exit(status);
 }
