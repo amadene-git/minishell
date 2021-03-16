@@ -6,7 +6,7 @@
 #    By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/27 13:25:25 by mbouzaie          #+#    #+#              #
-#    Updated: 2021/03/16 15:47:43 by mbouzaie         ###   ########.fr        #
+#    Updated: 2021/03/16 19:29:40 by mbouzaie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRCS	=		main.c\
 				cmd.c\
 				errors.c\
 				absolute_path.c\
+				lexer.c\
 
 CFIND			= $(SRCS:%=$(SRC_DIR)%)
 OFILE			= $(SRCS:%.c=%.o)

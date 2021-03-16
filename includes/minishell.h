@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/14 23:09:02 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/16 15:57:22 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/16 19:38:41 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,6 @@ int				is_builtin(char	*cmd);
 int				exec_built_in(t_cmd *cmd);
 int				exec_bin(t_cmd *cmd);
 int				exec_no_fork(t_cmd *cmd);
-int				check_error(t_tok *actual, t_tok *prev);
 int				has_errors(t_tok **tok_lex);
 t_tok			**lexer(char *str, int *i, int lvl);
 char			*put_var_env(char *str, t_dlist *envlist);

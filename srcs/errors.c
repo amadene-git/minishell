@@ -6,13 +6,13 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/18 13:07:52 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/15 22:27:35 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/16 19:39:57 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	check_error(t_tok *actual, t_tok *prev)
+static int	check_error(t_tok *actual, t_tok *prev)
 {
 	if (actual->type == CHR_ERROR && (!ft_strcmp(actual->value, "\"") \
 		|| !ft_strcmp(actual->value, "\'")))
@@ -34,7 +34,27 @@ int	check_error(t_tok *actual, t_tok *prev)
 	return (1);
 }
 
-int	has_errors(t_tok **tok_lex)
+static int	handle_error(t_tok **tok_lex, int i, int j)
+{
+	if (tok_lex[i] && ((j == -1 && !check_error(tok_lex[i], NULL))\
+		|| (j != -1 && !check_error(tok_lex[i], tok_lex[j]))))
+	{
+		ft_dprintf(2,
+			"minishell: syntax error near unexpected token `%s'\n",
+			(char *)tok_lex[i]->value);
+		return (1);
+	}
+	else if (tok_lex[i] && check_error(tok_lex[i], NULL) == 2)
+	{
+		ft_dprintf(2,
+			"minishell: unexpected EOF while looking for matching `%s'\n",
+			(char *)tok_lex[i]->value);
+		return (1);
+	}
+	return (0);
+}
+
+int			has_errors(t_tok **tok_lex)
 {
 	int		i;
 	int		j;
@@ -45,17 +65,8 @@ int	has_errors(t_tok **tok_lex)
 	{
 		while (tok_lex[i] && tok_lex[i]->type == CHR_SP)
 			i++;
-		if (tok_lex[i] && ((j == -1 && !check_error(tok_lex[i], NULL))\
-			|| (j != -1 && !check_error(tok_lex[i], tok_lex[j]))))
-		{
-			ft_dprintf(2, "minishell: syntax error near unexpected token `%s'\n", (char *)tok_lex[i]->value);
+		if (handle_error(tok_lex, i, j))
 			return (1);
-		}
-		else if (tok_lex[i] && check_error(tok_lex[i], NULL) == 2)
-		{
-			ft_dprintf(2, "minishell: unexpected EOF while looking for matching `%s'\n", (char *)tok_lex[i]->value);
-			return (1);
-		}
 		if (tok_lex[i] && tok_lex[i]->type == CHR_END)
 			return (0);
 		j = i;

@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/16 20:17:36 by mbouzaie          #+#    #+#             */
+/*   Updated: 2021/03/16 21:47:53 by mbouzaie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-typedef void (*sighandler_t)(int);
+typedef void	(*sighandler_t)(int);
 
-void handle_signal(int signo)
+void			handle_signal(int signo)
 {
 	if (signo == SIGINT)
 		ft_putstr_fd("\n[minishell]>", 1);
@@ -10,7 +22,7 @@ void handle_signal(int signo)
 		ft_dprintf(2, "\b\b  \b\b");
 }
 
-t_dlist *stock_env_status(int status, t_dlist *envlist)
+t_dlist			*stock_env_status(int status, t_dlist *envlist)
 {
 	t_var	*var;
 	t_dlist	*elem;
@@ -29,7 +41,7 @@ t_dlist *stock_env_status(int status, t_dlist *envlist)
 	return (envlist);
 }
 
-int	has_pipe(t_tok **tok_lex)
+int				has_pipe(t_tok **tok_lex)
 {
 	int	i;
 
@@ -57,7 +69,7 @@ void	refresh_last_cmd(t_dlist *envlist, char *last_cmd)
 void	free_lexer(t_tok **tok_lex, int lvl)
 {
 	if (!tok_lex)
-		return;
+		return ;
 	if (tok_lex[lvl + 1] && tok_lex[lvl + 1]->type < CHR_END)
 		free_lexer(tok_lex, lvl + 1);
 	else
@@ -73,21 +85,19 @@ void	free_lexer(t_tok **tok_lex, int lvl)
 		free(tok_lex[lvl]);
 		if (!lvl)
 			free(tok_lex);
-		return;
+		return ;
 	}
 	if (tok_lex[lvl]->value)
 		free(tok_lex[lvl]->value);
 	free(tok_lex[lvl]);
 	if (!lvl)
-	{
 		free(tok_lex);
-	}
 }
 
 void	free_av(char **av, int lvl)
 {
 	if (!av)
-		return;
+		return ;
 	if (av[lvl] && av[lvl + 1])
 		free_av(av, lvl + 1);
 	free(av[lvl]);
@@ -100,7 +110,7 @@ void	free_cmd_lst(t_cmd *cmd)
 	t_cmd *tmp;
 
 	if (!cmd)
-		return;
+		return ;
 	while (cmd->next)
 		cmd = cmd->next;
 	while (cmd)
@@ -203,23 +213,20 @@ int main(int ac,const char **av, const char	**env)
 			else 
 				status = 2;
 			free_lexer(save_lex, 0);
-		
 		}
 		if (ac != 1)
 			gnl = 0;
 		free(line);
 	}
-			if (cmd)
-			{
-				while (cmd)
-				{
-					tmp = cmd;
-					cmd = cmd->prev;
-					if (tmp->fdpipe)
-						free(tmp->fdpipe);
-					free(tmp);
-				}
-			}
+	if (cmd)
+		while (cmd)
+		{
+			tmp = cmd;
+			cmd = cmd->prev;
+			if (tmp->fdpipe)
+				free(tmp->fdpipe);
+			free(tmp);
+		}
 	free_envlist(envlist);
 	if (ac == 1)
 		ft_dprintf(1, "exit\n");
