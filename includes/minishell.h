@@ -144,5 +144,7 @@ int				is_zero(const char *str);
 int				is_valid_name(char *str);
 void			free_av(char **av, int lvl);
 void			free_lexer(t_tok **tok_lex, int lvl);
+void			free_tok_arg(t_tok *tok_arg);
+
 
 #endif

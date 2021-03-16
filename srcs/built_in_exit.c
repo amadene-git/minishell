@@ -31,6 +31,10 @@ void	free_tok_arg(t_tok *tok_arg)
 
 void	exit_minishell(int status, t_cmd *cmd)
 {
+	t_cmd *tmp;
+
+	if (!cmd)
+		exit(status);
 	free_lexer(cmd->tok_lex, 0);
 	free_av(cmd->env, 0);
 	free_av(cmd->av, 0);
@@ -38,9 +42,14 @@ void	exit_minishell(int status, t_cmd *cmd)
 	free(cmd->line);
 	free_tok_arg(cmd->tok_arg);
 	free(cmd->bin);
-	if (cmd->fdpipe)
-		free(cmd->fdpipe);
-	free(cmd);
+	while (cmd)
+	{
+		tmp = cmd;
+		cmd = cmd->prev;
+		if (tmp->fdpipe)
+			free(tmp->fdpipe);
+		free(tmp);
+	}
 	exit(status);
 }
 

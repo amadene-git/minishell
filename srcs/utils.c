@@ -20,9 +20,9 @@ char	*ft_strjoindoublefree(char *s1, char *s2)
 	char	*cpy2;
 
 	if (!s1 && s2)
-		return (ft_strdup(s2));
+		return (s2);
 	if (!s2 && s1)
-		return (ft_strdup(s1));
+		return (s1);
 	if (!s1 && !s2)
 		return (NULL);
 	cpy = s1;

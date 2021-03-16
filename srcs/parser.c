@@ -493,7 +493,6 @@ void	get_ac_av(t_tok *tok_lst,  t_cmd *cmd, int lvl)
 			{
 				s2 = ft_strdup((char*)tok_lst->value);
 				s1 = ft_strjoindoublefree(s1, s2);
-				free(s2);
 			}
 			tok_lst = tok_lst->next;
 		}

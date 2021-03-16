@@ -91,6 +91,22 @@ void	free_av(char **av, int lvl)
 		free(av);
 }
 
+void	free_cmd_lst(t_cmd *cmd)
+{
+	t_cmd *tmp;
+
+	if (!cmd)
+		return;
+	while (cmd->next)
+		cmd = cmd->next;
+	while (cmd)
+	{
+		tmp = cmd;
+		cmd = cmd->prev;
+		free(tmp);
+	}
+}
+
 int main(int ac,const char **av, const char	**env)
 {
 	signal(SIGINT, SIG_IGN);
@@ -175,6 +191,8 @@ int main(int ac,const char **av, const char	**env)
 					envlist = stock_env_status(status, envlist);
 					free_av(cmd->env, 0);
 					free_av(cmd->av, 0);
+					free_tok_arg(cmd->tok_arg);
+					free(cmd->bin);
 				}
 			else 
 				status = 2;
@@ -183,6 +201,7 @@ int main(int ac,const char **av, const char	**env)
 		if (ac != 1)
 			gnl = 0;
 		free(line);
+	//	free_cmd_lst(cmd);
 	}
 	//if (cmd)
 	//	free_cmd(cmd);
