@@ -6,13 +6,11 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 20:17:36 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/16 21:47:53 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/17 00:41:52 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-typedef void	(*sighandler_t)(int);
 
 void			handle_signal(int signo)
 {
@@ -121,30 +119,72 @@ void	free_cmd_lst(t_cmd *cmd)
 	}
 }
 
-int main(int ac,const char **av, const char	**env)
+static void	init_signal(void)
 {
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
+}
 
+static int	prepare_execution(t_tok ***tok_lex, t_cmd *cmd, t_dlist *envlist,\
+			int status)
+{
+	t_tok **tmp_lex;
+
+	tmp_lex = *tok_lex;
+	while ((*tmp_lex)->type == CHR_SP\
+	|| (*tmp_lex)->type == CHR_OP\
+	|| (*tmp_lex)->type == CHR_PI || (*tmp_lex)->type == CHR_PV)
+		tmp_lex++;
+	*tok_lex = tmp_lex;
+	cmd->env = get_env_from_envlist(envlist, envlist, 0);
+	envlist = stock_env_status(status, envlist);
+	*tok_lex = get_tok_arg(*tok_lex, cmd);
+	status = enable_redirect(cmd);
+	if (has_pipe(*tok_lex) == 1)
+	{
+		cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
+		if (pipe(cmd->fdpipe) == -1)
+			ft_dprintf(2, "erreur main:%s\n", strerror(errno));
+	}
+	get_ac_av(cmd->tok_arg, cmd, 0);
+	return (status);
+}
+
+static int	handle_execution(t_cmd *cmd, int status)
+{
+	if (cmd && cmd->tok_arg && cmd->av && cmd->av[0] && !status)
+	{
+		cmd->bin = ft_strdup(cmd->av[0]);
+		get_absolute_path(cmd, cmd->envlist);
+		status = exec_no_fork(cmd);
+		if (status == 0)
+			status = exec_cmd(cmd);
+	}
+	return (status);
+}
+
+int	main(int ac, const char **av, const char **env)
+{
 	char	*line;
 	int		gnl;
 	int		k;
 	t_tok	**tok_lex;
 	t_tok	**save_lex;
 	t_dlist	*envlist;
-	t_cmd 	*cmd;
-	t_cmd	*tmp = NULL;
+	t_cmd	*cmd;
+	t_cmd	*tmp;
 	int		status;
 
+	init_signal();
 	status = 0;
 	gnl = 1;
+	tmp = NULL;
 	envlist = init_env(env);
-	while(gnl)
+	while (gnl)
 	{
 		line = NULL;
-		cmd = NULL;
 		if (ac == 1)
 		{
 			ft_dprintf(1, "[minishell]>");
@@ -159,49 +199,11 @@ int main(int ac,const char **av, const char	**env)
 			save_lex = tok_lex;
 			cmd = NULL;
 			if (!has_errors(tok_lex))
-			{
 				while ((*tok_lex)->type != CHR_END)
 				{
-					while ((*tok_lex)->type == CHR_SP || (*tok_lex)->type == CHR_OP\
-					|| (*tok_lex)->type == CHR_PI || (*tok_lex)->type == CHR_PV)
-						tok_lex++;
-					cmd = (t_cmd*)malloc(sizeof(t_cmd));
-					cmd->envlist = envlist;
-					cmd->fdin = -1;
-					cmd->fdout = -1;
-					cmd->fdpipe = NULL;
-					cmd->prev = (tmp) ? tmp : NULL;
-					cmd->next = NULL;
-					cmd->tok_arg = NULL;
-					cmd->bin = NULL;
-					cmd->tok_lex = save_lex;
-					cmd->line = line;
-					cmd->av = NULL;
-					if (tmp)
-					{
-						tmp->line = NULL;
-						tmp->next = cmd;
-					}
-					cmd->env = get_env_from_envlist(envlist, envlist, 0);
-					envlist = stock_env_status(status, envlist);
-					tok_lex = get_tok_arg(tok_lex, cmd);
-					status = enable_redirect(cmd);
-					if (has_pipe(tok_lex) == 1)
-					{
-						cmd->fdpipe = (int*)malloc(sizeof(int) * 2);
-						if (pipe(cmd->fdpipe) == -1)
-							ft_dprintf(2, "erreur main:%s\n", strerror(errno));
-					}
-					get_ac_av(cmd->tok_arg, cmd, 0);
-					if (cmd && cmd->tok_arg && cmd->av && cmd->av[0] && !status)
-					{
-						cmd->bin = ft_strdup(cmd->av[0]);
-						prepare_cmd(cmd);
-						status = exec_no_fork(cmd);
-						if (status == 0)
-							status = exec_cmd(cmd);
-					}
-					k = 0;
+					cmd = prepare_cmd(envlist, tmp, save_lex, line);
+					status = prepare_execution(&tok_lex, cmd, envlist, status);
+					status = handle_execution(cmd, status);
 					tmp = cmd;
 					envlist = stock_env_status(status, envlist);
 					free_av(cmd->env, 0);
@@ -209,8 +211,7 @@ int main(int ac,const char **av, const char	**env)
 					free_tok_arg(cmd->tok_arg);
 					free(cmd->bin);
 				}
-			}
-			else 
+			else
 				status = 2;
 			free_lexer(save_lex, 0);
 		}
@@ -218,15 +219,7 @@ int main(int ac,const char **av, const char	**env)
 			gnl = 0;
 		free(line);
 	}
-	if (cmd)
-		while (cmd)
-		{
-			tmp = cmd;
-			cmd = cmd->prev;
-			if (tmp->fdpipe)
-				free(tmp->fdpipe);
-			free(tmp);
-		}
+	free_cmd(cmd);
 	free_envlist(envlist);
 	if (ac == 1)
 		ft_dprintf(1, "exit\n");

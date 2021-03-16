@@ -6,39 +6,50 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 18:43:56 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/16 14:31:37 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/17 00:30:39 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void			prepare_cmd(t_cmd *cmd)
+t_cmd			*prepare_cmd(t_dlist *envlist, t_cmd *prev, t_tok **tok_lex,\
+							char *line)
 {
-	get_absolute_path(cmd, cmd->envlist);
+	t_cmd	*cmd;
+
+	cmd = (t_cmd*)malloc(sizeof(t_cmd));
+	cmd->envlist = envlist;
+	cmd->fdin = -1;
+	cmd->fdout = -1;
+	cmd->fdpipe = NULL;
+	cmd->prev = (prev) ? prev : NULL;
+	cmd->next = NULL;
+	cmd->tok_arg = NULL;
+	cmd->bin = NULL;
+	cmd->tok_lex = tok_lex;
+	cmd->line = line;
+	cmd->av = NULL;
+	if (prev)
+	{
+		prev->line = NULL;
+		prev->next = cmd;
+	}
+	return (cmd);
 }
 
 void			free_cmd(t_cmd *cmd)
 {
-	int		i;
+	t_cmd	*tmp;
 
-	while (cmd)
-	{
-		if (cmd->av)
+	if (cmd)
+		while (cmd)
 		{
-			i = -1;
-			while (cmd->av[++i])
-				ft_memdel((void **)&cmd->av[i]);
-			free(cmd->av);
+			tmp = cmd;
+			cmd = cmd->prev;
+			if (tmp->fdpipe)
+				free(tmp->fdpipe);
+			free(tmp);
 		}
-		if (cmd->fdpipe)
-			free(cmd->fdpipe);
-		if (cmd->bin)
-			ft_memdel((void **)&cmd->bin);
-		while (cmd->tok_arg)
-			cmd->tok_arg = tok_list_remove(&cmd->tok_arg, cmd->tok_arg);
-		free(cmd);
-		cmd = cmd->prev;
-	}
 }
 
 static void		handle_fd(t_cmd *cmd)

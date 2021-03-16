@@ -14,9 +14,9 @@
 
 int		lexer_one(char *str, int *i, int *j, int *type)
 {
-	if (g_get_chr[(int)str[*i]] == CHR_STR)
+	if (g_get_chr(str[*i]) == CHR_STR)
 	{
-		while (g_get_chr[(int)str[++(*j)]] != CHR_STR && str[(*j)])
+		while (g_get_chr(str[++(*j)]) != CHR_STR && str[(*j)])
 			if (str[(*j)] == '\\' && str[(*j) + 1])
 				(*j)++;
 		if (str[(*j)])
@@ -25,10 +25,10 @@ int		lexer_one(char *str, int *i, int *j, int *type)
 			*type = CHR_ERROR;
 		return (1);
 	}
-	else if (g_get_chr[(int)str[*i]] == CHR_ST)
+	else if (g_get_chr(str[*i]) == CHR_ST)
 	{
 		(*j) += 1;
-		while (g_get_chr[(int)str[(*j)]] != CHR_ST && str[(*j)])
+		while (g_get_chr(str[(*j)]) != CHR_ST && str[(*j)])
 			(*j)++;
 		if (str[(*j)])
 			(*j)++;
@@ -41,15 +41,15 @@ int		lexer_one(char *str, int *i, int *j, int *type)
 
 int		lexer_two(char *str, int *i, int *j, int *type)
 {
-	if (g_get_chr[(int)str[*i]] > CHR_SP &&\
-	g_get_chr[(int)str[*i]] < CHR_END)
+	if (g_get_chr(str[*i]) > CHR_SP &&\
+	g_get_chr(str[*i]) < CHR_END)
 	{
 		(*j)++;
-		if (g_get_chr[(int)str[*i]] == CHR_PI)
+		if (g_get_chr(str[*i]) == CHR_PI)
 			*type = CHR_PI;
-		else if (g_get_chr[(int)str[*i]] == CHR_OP)
+		else if (g_get_chr(str[*i]) == CHR_OP)
 			*type = CHR_ERROR;
-		if (g_get_chr[(int)str[*i]] == CHR_RE)
+		if (g_get_chr(str[*i]) == CHR_RE)
 		{
 			*type = CHR_RE;
 			if (!ft_strncmp(str + *i, ">>", 2) ||\
@@ -59,7 +59,7 @@ int		lexer_two(char *str, int *i, int *j, int *type)
 			!ft_strncmp(str + *i, "><", 2))
 				*type = CHR_ERROR;
 		}
-		if (g_get_chr[(int)str[*i]] == CHR_PV)
+		if (g_get_chr(str[*i]) == CHR_PV)
 			*type = CHR_PV;
 		return (1);
 	}
@@ -68,7 +68,7 @@ int		lexer_two(char *str, int *i, int *j, int *type)
 
 int		lexer_three(char *str, int *i, int *j, int *type)
 {
-	while (g_get_chr[(int)str[*i]] == g_get_chr[(int)str[(*j)]])
+	while (g_get_chr(str[*i]) == g_get_chr(str[(*j)]))
 	{
 		if (str[(*j)] == '\\' && str[(*j) + 1])
 			(*j)++;
@@ -91,14 +91,14 @@ t_tok	**lexer(char *str, int *i, int lvl)
 	type = CHR_END;
 	if (!lexer_one(str, i, &j, &type) && !lexer_two(str, i, &j, &type))
 		lexer_three(str, i, &j, &type);
-	if (g_get_chr[(int)str[*i]] != CHR_SP)
+	if (g_get_chr(str[*i]) != CHR_SP)
 		value = ft_strndup(str + *i, j - *i);
 	else
 		value = NULL;
 	if (type != CHR_ERROR)
-		type = g_get_chr[(int)str[*i]];
+		type = g_get_chr(str[*i]);
 	*i = j;
-	if (g_get_chr[(int)str[j]] != CHR_END)
+	if (g_get_chr(str[j]) != CHR_END)
 		tab = lexer(str, i, lvl + 1);
 	else
 	{

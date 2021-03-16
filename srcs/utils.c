@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/30 19:27:05 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/15 13:37:21 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/16 23:10:20 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,4 +108,15 @@ int		is_valid_name(char *str)
 		str++;
 	}
 	return (i);
+}
+
+void	clean_spaces(t_dlist *shlvl)
+{
+	char	*copy;
+
+	while (*shlvl->data->value == ' ')
+		shlvl->data->value++;
+	copy = ft_strdup(shlvl->data->value);
+	free(shlvl->data->value);
+	shlvl->data->value = copy;
 }
