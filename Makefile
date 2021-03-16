@@ -6,7 +6,7 @@
 #    By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/27 13:25:25 by mbouzaie          #+#    #+#              #
-#    Updated: 2021/03/14 13:38:24 by mbouzaie         ###   ########.fr        #
+#    Updated: 2021/03/16 14:14:46 by mbouzaie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -59,7 +59,7 @@ $(OBJ_DIR):
 
 $(EX_NAME) : $(NAME)
 				@$(CC) $(CFLAGS) $(EX_NAME) $(LIBS_DIR) -lshell $(LIBS)
-				#@rm $(NAME)
+				@rm $(NAME)
 
 $(NAME):		$(OBJS)
 				@make -C $(LIB_DIR) bonus

@@ -6,30 +6,11 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 18:43:56 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/15 22:19:59 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/16 14:31:37 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-char			**to_char_args(t_tok *tok_lst)
-{
-	int		i;
-	char	**args;
-
-	i = 0;
-	if (!(args = (char **)ft_calloc(1, sizeof(char *) *
-		(tok_list_size(tok_lst) + 1))))
-		return (NULL);
-	while (tok_lst && tok_lst->value)
-	{
-		args[i] = ft_strdup(tok_lst->value);
-		tok_lst = tok_lst->next;
-		i++;
-	}
-	args[i] = NULL;
-	return (args);
-}
 
 void			prepare_cmd(t_cmd *cmd)
 {
@@ -85,6 +66,17 @@ static void		handle_fd(t_cmd *cmd)
 	}
 }
 
+void			handle_pid_zero(t_cmd *cmd, int *status)
+{
+	handle_fd(cmd);
+	if (!ft_strcmp("exit", cmd->bin))
+		*status = 0;
+	else if (cmd->bin && !is_builtin(cmd->bin) && (*status = exec_bin(cmd)))
+		exit(*status);
+	else
+		exit(exec_built_in(cmd));
+}
+
 int				exec_cmd(t_cmd *cmd)
 {
 	int		status;
@@ -99,15 +91,7 @@ int				exec_cmd(t_cmd *cmd)
 		signal(SIGQUIT, SIG_IGN);
 	}
 	else if (cmd->pid == 0)
-	{
-		handle_fd(cmd);
-		if (!ft_strcmp("exit", cmd->bin))
-			status = 0;
-		else if (cmd->bin && !is_builtin(cmd->bin) && (status = exec_bin(cmd)))
-			exit(status);
-		else
-			exit(exec_built_in(cmd));
-	}
+		handle_pid_zero(cmd, &status);
 	if (cmd->prev && cmd->prev->fdpipe)
 	{
 		close(cmd->prev->fdpipe[0]);
