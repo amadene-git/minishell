@@ -182,7 +182,6 @@ int main(int ac,const char **av, const char	**env)
 						if (pipe(cmd->fdpipe) == -1)
 							ft_dprintf(2, "erreur main:%s\n", strerror(errno));
 					}
-					printf("lol\n");
 					get_ac_av(cmd->tok_arg, cmd, 0);
 					if (cmd && cmd->tok_arg && cmd->av && cmd->av[0] && !status)
 					{
