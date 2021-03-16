@@ -38,6 +38,8 @@ SRCS	=		main.c\
 				cmd.c\
 				errors.c\
 				absolute_path.c\
+				lexer.c\
+				get_chr.c\
 
 CFIND			= $(SRCS:%=$(SRC_DIR)%)
 OFILE			= $(SRCS:%.c=%.o)
