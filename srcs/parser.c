@@ -1,107 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/16 14:34:58 by admadene          #+#    #+#             */
+/*   Updated: 2021/03/16 14:35:06 by admadene         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
-
-unsigned int g_get_chr[255] = {
-	['!'] = CHR_WORD,
-	['#'...'%'] = CHR_WORD,
-	['*'...':'] = CHR_WORD,
-	['?'...'{'] = CHR_WORD,
-	['}'...'~']	= CHR_WORD,
-	['='] = CHR_WORD,
-	['"'] = CHR_STR,
-	['\''] = CHR_ST,
-	['\n'] = CHR_SP,
-	['\t'] = CHR_SP,
-	['\v'] = CHR_SP,
-	['\r'] = CHR_SP,
-	['\f'] = CHR_SP,
-	[' '] = CHR_SP,
-	['&'] = CHR_OP,
-	['|'] = CHR_PI,
-	['>'] = CHR_RE,
-	['<'] = CHR_RE,
-	[';'] = CHR_PV,
-	['\0'] = CHR_END
-};
-
-t_tok	**lexer(char *str, int *i, int lvl)
-{
-	t_tok	**tab;
-	char	*value;
-	int		type;
-	int		j;
-
-//	printf ("*******lexer str:%s i:%d lvl:%d*******\n", str + *i, *i, lvl);
-	
-//	while (g_token_rules[g_get_token[g_get_chr[' ']]][g_get_chr[str[*i]]])
-//		(*i)++;
-	j = *i;
-	value = NULL;
-	type = CHR_END;
-	if (g_get_chr[(int)str[*i]] == CHR_STR)
-	{
-		while (g_get_chr[(int)str[++j]] != CHR_STR && str[j])
-			if (str[j] == '\\' && str[j + 1])
-				j++;
-		if (str[j])
-			j++;
-		else
-			type = CHR_ERROR;
-	}
-	else if (g_get_chr[(int)str[*i]] == CHR_ST)
-	{
-		while (g_get_chr[(int)str[++j]] != CHR_ST && str[j]);
-		if (str[j])
-			j++;
-		else
-			type = CHR_ERROR;
-		
-	}
-	else if (g_get_chr[(int)str[*i]] > CHR_SP && g_get_chr[(int)str[*i]] < CHR_END)
-	{
-		j++;
-		if (g_get_chr[(int)str[*i]] == CHR_PI)
-			type = CHR_PI;
-		else if (g_get_chr[(int)str[*i]] == CHR_OP)
-			type = CHR_ERROR;
-		if (g_get_chr[(int)str[*i]] == CHR_RE)
-		{
-			type = CHR_RE;
-			if (!ft_strncmp(str + *i, ">>", 2)  || !ft_strncmp(str + *i, "<<", 2))
-				j++;
-			else if (!ft_strncmp(str + *i, "<>", 2) || !ft_strncmp(str + *i, "><", 2))
-				type = CHR_ERROR;
-		}
-		if (g_get_chr[(int)str[*i]] == CHR_PV)
-			type = CHR_PV;
-	}
-	else
-		while (g_get_chr[(int)str[*i]] == g_get_chr[(int)str[j]])
-		{
-			if (str[j]== '\\' && str[j + 1])
-				j++;
-			if (str[j])
-				j++;
-			else
-				type = CHR_ERROR;
-		}
-	if (g_get_chr[(int)str[*i]] != CHR_SP)
-		value = ft_strndup(str + *i, j - *i);
-	else
-		value = NULL;
-	if (type != CHR_ERROR)
-		type = g_get_chr[(int)str[*i]];
-	*i = j;
-	if (g_get_chr[(int)str[j]] != CHR_END)
-		tab = lexer(str, i, lvl + 1);
-	else
-	{
-		tab = (t_tok**)malloc(sizeof(t_tok*) * (lvl + 2));
-		tab[lvl + 1] = create_tok(CHR_END, ft_strdup("newline"));
-	}	
-	tab[lvl] = create_tok(type, value);	
-	return (tab);
-}
-
 
 char	*get_st(char *str)
 {
@@ -117,7 +26,7 @@ char	*get_st(char *str)
 char	*get_str(char *str, t_dlist *envlist)
 {
 	int		i;
-	int 	j;
+	int		j;
 	char	*ptr;
 	t_dlist	*elem;
 
@@ -287,7 +196,6 @@ t_tok	*get_word_tok(t_tok	*tok_lex, t_cmd	*cmd)
 	int		k;
 
 	str = ft_strndup(tok_lex->value, ft_strlen((char*)tok_lex->value));
-	// printf("get_word str->%s\n", str);
 	if (!str)
 		return (NULL);
 	i = 0;
@@ -333,21 +241,9 @@ t_tok	*get_word_tok(t_tok	*tok_lex, t_cmd	*cmd)
 			}
 			else
 			{
-				// printf("elem ->%p\n", elem);
-				// printf("data ->%p\n", elem->data);
-				// printf("value ->%p\n", elem->data->value);
 				token = get_env_var_tok((char*)elem->data->value);
-				// printf("wesh\n");
 				if (!token)
 					return (NULL);
-				//tmp = token;
-				// printf("*********************** get env var tok ****************************\n");
-				// while (tmp)
-				// {
-				// 	printf ("value->%s; type->%d\n", tmp->value, tmp->type);
-				// 	tmp = tmp->next;
-				// }
-				// printf("@@@@@@@@@@@@@@@@@@@@@@@ get env var tok @@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 				if (!token_push_back(&tok_word, token))
 					return (NULL);
 			}
@@ -356,12 +252,9 @@ t_tok	*get_word_tok(t_tok	*tok_lex, t_cmd	*cmd)
 		}
 		i++;
 	}
-	// printf("end tok_word str->%s\n", str);
 	if (i - k > 0)
 	{
 		token = create_tok(CHR_ST, ft_strndup(str + k, i - k));
-		// if (token)
-		// 	printf("tok_word created ->%s\n", token->value);
 		if (!token)
 			return (NULL);
 		if (!token_push_back(&tok_word, token))
@@ -380,7 +273,6 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 		return (NULL);
 	while ((*tok_lex)->type > CHR_ERROR && (*tok_lex)->type < CHR_PV && (*tok_lex)->type != CHR_PI)
 		{
-			// printf("tok_lex:%s\n", (*tok_lex)->value);
 			if ((*tok_lex)->type == CHR_SP)
 			{
 				token = create_tok(CHR_SP, NULL);
@@ -394,11 +286,6 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 			}
 			else if ((*tok_lex)->type == CHR_ST)
 			{
-				// if (ft_strlen((*tok_lex)->value) <= 2)
-				// {
-				// 	tok_lex++;
-				// 	continue;
-				// }
 				str = ft_strndup((*tok_lex)->value + 1, ft_strlen((*tok_lex)->value) - 2);
 				if (str)
 				{
@@ -414,20 +301,9 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 			}
 			else if ((*tok_lex)->type == CHR_STR)
 			{
-				// if (ft_strlen((*tok_lex)->value) <= 2)
-				// {
-				// 	tok_lex++;
-				// 	continue;
-				// }
 				str = get_str(ft_strndup((*tok_lex)->value + 1, ft_strlen((*tok_lex)->value) - 2), cmd->envlist);
 				if (str)
 				{
-					// if (!*str)
-					// {
-					// 	free(str);
-					// 	tok_lex++;
-					// 	continue;
-					// }
 					token = create_tok(CHR_ST, str);
 					if (token)
 						token_push_back(&cmd->tok_arg, token);
@@ -435,26 +311,11 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 						return (NULL);
 				}
 				else
-				{
-					return (NULL);
-				}
-				
+					return (NULL);				
 			}
 			else if ((*tok_lex)->type == CHR_WORD)
 			{
 				token = get_word_tok(*tok_lex, cmd);
-				// if (token)
-				// {
-				// 	printf("tok_arg token->%s\n", token->value);
-				// }
-				// tmp = token;
-				// printf("*************************************** get word tok ****************************\n");
-				// while (tmp)
-				// {
-				// 	printf ("value->%s; type->%d\n", tmp->value, tmp->type);
-				// 	tmp = tmp->next;
-				// }
-				// printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get word tok @@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 				if (token)
 					token_push_back(&cmd->tok_arg, token);
 				else
@@ -468,12 +329,11 @@ t_tok	**get_tok_arg(t_tok **tok_lex, t_cmd *cmd)
 				else
 					return (NULL);
 				
-			}
-			
+			}			
 			tok_lex++;
 		}
-		token_push_back(&cmd->tok_arg, create_tok(CHR_END, ft_strdup("newline")));
-		return (tok_lex);
+	token_push_back(&cmd->tok_arg, create_tok(CHR_END, ft_strdup("newline")));
+	return (tok_lex);
 }
 
 void	get_ac_av(t_tok *tok_lst,  t_cmd *cmd, int lvl)
