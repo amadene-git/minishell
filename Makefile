@@ -6,7 +6,7 @@
 #    By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/27 13:25:25 by mbouzaie          #+#    #+#              #
-#    Updated: 2021/03/16 15:16:15 by mbouzaie         ###   ########.fr        #
+#    Updated: 2021/03/16 15:47:43 by mbouzaie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRCS	=		main.c\
 				built_in_env.c\
 				built_in_exit.c\
 				dlist.c\
+				dlist_suite.c\
 				exec_bin.c\
 				exec_builtin.c\
 				utils.c\
