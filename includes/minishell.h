@@ -80,6 +80,29 @@ enum			e_chr{
 	CHR_END
 };
 
+static unsigned int g_get_chr[255] = {
+	['!'] = CHR_WORD,
+	['#'...'%'] = CHR_WORD,
+	['*'...':'] = CHR_WORD,
+	['?'...'{'] = CHR_WORD,
+	['}'...'~']	= CHR_WORD,
+	['='] = CHR_WORD,
+	['"'] = CHR_STR,
+	['\''] = CHR_ST,
+	['\n'] = CHR_SP,
+	['\t'] = CHR_SP,
+	['\v'] = CHR_SP,
+	['\r'] = CHR_SP,
+	['\f'] = CHR_SP,
+	[' '] = CHR_SP,
+	['&'] = CHR_OP,
+	['|'] = CHR_PI,
+	['>'] = CHR_RE,
+	['<'] = CHR_RE,
+	[';'] = CHR_PV,
+	['\0'] = CHR_END
+   };
+
 typedef struct	s_minishell
 {
 	char	*line;
