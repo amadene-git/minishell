@@ -6,7 +6,7 @@
 #    By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/27 13:25:25 by mbouzaie          #+#    #+#              #
-#    Updated: 2021/03/14 13:38:24 by mbouzaie         ###   ########.fr        #
+#    Updated: 2021/03/16 15:47:43 by mbouzaie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,12 +29,15 @@ SRCS	=		main.c\
 				built_in_env.c\
 				built_in_exit.c\
 				dlist.c\
-				exec.c\
+				dlist_suite.c\
+				exec_bin.c\
+				exec_builtin.c\
 				utils.c\
 				redirect.c\
 				token.c\
 				cmd.c\
 				errors.c\
+				absolute_path.c\
 
 CFIND			= $(SRCS:%=$(SRC_DIR)%)
 OFILE			= $(SRCS:%.c=%.o)
@@ -59,7 +62,7 @@ $(OBJ_DIR):
 
 $(EX_NAME) : $(NAME)
 				@$(CC) $(CFLAGS) $(EX_NAME) $(LIBS_DIR) -lshell $(LIBS)
-				#@rm $(NAME)
+				@rm $(NAME)
 
 $(NAME):		$(OBJS)
 				@make -C $(LIB_DIR) bonus

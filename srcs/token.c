@@ -6,13 +6,13 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 23:55:26 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/15 15:31:15 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/16 15:53:21 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_tok	*create_tok(int type, void *value)
+t_tok		*create_tok(int type, void *value)
 {
 	t_tok	*tok;
 
@@ -24,7 +24,7 @@ t_tok	*create_tok(int type, void *value)
 	return (tok);
 }
 
-int		tok_list_size(t_tok *tok_lst)
+int			tok_list_size(t_tok *tok_lst)
 {
 	int		i;
 
@@ -37,7 +37,28 @@ int		tok_list_size(t_tok *tok_lst)
 	return (i);
 }
 
-t_tok	*tok_list_remove(t_tok **begin, t_tok *tok)
+static void	handle_iterations(t_tok **begin, t_tok *temp)
+{
+	if (temp->next == NULL)
+	{
+		if (temp->prev == NULL)
+			*begin = NULL;
+		else
+			temp->prev->next = NULL;
+	}
+	else if (temp->prev == NULL)
+	{
+		temp->next->prev = NULL;
+		*begin = temp->next;
+	}
+	else
+	{
+		temp->next->prev = temp->prev;
+		temp->prev->next = temp->next;
+	}
+}
+
+t_tok		*tok_list_remove(t_tok **begin, t_tok *tok)
 {
 	t_tok	*temp;
 
@@ -45,23 +66,7 @@ t_tok	*tok_list_remove(t_tok **begin, t_tok *tok)
 	while (temp != NULL)
 		if (temp == tok)
 		{
-			if (temp->next == NULL)
-			{
-				if (temp->prev == NULL)
-					*begin = NULL;
-				else
-					temp->prev->next = NULL;
-			}
-			else if (temp->prev == NULL)
-			{
-				temp->next->prev = NULL;
-				*begin = temp->next;
-			}
-			else
-			{
-				temp->next->prev = temp->prev;
-				temp->prev->next = temp->next;
-			}
+			handle_iterations(begin, temp);
 			ft_memdel((void **)&tok->value);
 			free(tok);
 			return (temp->next);

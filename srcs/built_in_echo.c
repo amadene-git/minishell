@@ -6,13 +6,13 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/14 20:47:44 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/14 20:51:59 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/16 15:56:59 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int		built_in_echo(int ac, char **av, int fd)
+void		built_in_echo(int ac, char **av, int fd)
 {
 	int	i;
 	int	n;
@@ -38,7 +38,5 @@ int		built_in_echo(int ac, char **av, int fd)
 		if (i < ac - 1 && i > n)
 			ft_putchar_fd(' ', fd);
 	}
-	if (!n)
-		ft_putchar_fd('\n', fd);
-	return (0);
+	!n ? ft_putchar_fd('\n', fd) : 0;
 }

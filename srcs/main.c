@@ -167,13 +167,11 @@ int main(int ac,const char **av, const char	**env)
 					cmd->tok_lex = save_lex;
 					cmd->line = line;
 					cmd->av = NULL;
-			
 					if (tmp)
 					{
 						tmp->line = NULL;
 						tmp->next = cmd;
 					}
-					
 					cmd->env = get_env_from_envlist(envlist, envlist, 0);
 					envlist = stock_env_status(status, envlist);
 					tok_lex = get_tok_arg(tok_lex, cmd);
@@ -184,7 +182,6 @@ int main(int ac,const char **av, const char	**env)
 						if (pipe(cmd->fdpipe) == -1)
 							ft_dprintf(2, "erreur main:%s\n", strerror(errno));
 					}
-					printf("lol\n");
 					get_ac_av(cmd->tok_arg, cmd, 0);
 					if (cmd && cmd->tok_arg && cmd->av && cmd->av[0] && !status)
 					{
@@ -211,7 +208,6 @@ int main(int ac,const char **av, const char	**env)
 		if (ac != 1)
 			gnl = 0;
 		free(line);
-	//	free_cmd_lst(cmd);
 	}
 			if (cmd)
 			{
@@ -224,8 +220,6 @@ int main(int ac,const char **av, const char	**env)
 					free(tmp);
 				}
 			}
-	//if (cmd)
-	//	free_cmd(cmd);
 	free_envlist(envlist);
 	if (ac == 1)
 		ft_dprintf(1, "exit\n");

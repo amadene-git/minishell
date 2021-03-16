@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/14 23:09:02 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/15 22:04:56 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/16 15:57:22 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ typedef struct	s_minishell
 	t_cmd	*cmd_lst;
 }				t_minishell;
 
-int				built_in_echo(int ac, char **av, int fd);
+void			built_in_echo(int ac, char **av, int fd);
 void			refresh_pwd(char *newpwd, t_dlist *envlist);
 int				built_in_cd(int ac, char **av, t_dlist *envlist);
 int				built_in_pwd(int ac, char **av);
@@ -155,7 +155,6 @@ int				enable_redirect(t_cmd *cmd);
 t_tok			*create_tok(int type, void *value);
 int				tok_list_size(t_tok *tok_lst);
 t_tok			*tok_list_remove(t_tok **begin, t_tok *tok);
-char			**to_char_args(t_tok *tok_lst);
 void			prepare_cmd(t_cmd *cmd);
 void			free_cmd(t_cmd *cmd);
 char			*insert_string(char *str, char *to_insert, int start, int end);
@@ -168,6 +167,4 @@ int				is_valid_name(char *str);
 void			free_av(char **av, int lvl);
 void			free_lexer(t_tok **tok_lex, int lvl);
 void			free_tok_arg(t_tok *tok_arg);
-
-
 #endif
