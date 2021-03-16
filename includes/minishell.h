@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/14 23:09:02 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/16 14:31:58 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/16 15:57:22 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ typedef struct	s_minishell
 	t_cmd	*cmd_lst;
 }				t_minishell;
 
-int				built_in_echo(int ac, char **av, int fd);
+void			built_in_echo(int ac, char **av, int fd);
 void			refresh_pwd(char *newpwd, t_dlist *envlist);
 int				built_in_cd(int ac, char **av, t_dlist *envlist);
 int				built_in_pwd(int ac, char **av);

@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 14:47:55 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/16 14:52:13 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/16 15:57:44 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int		exec_built_in(t_cmd *cmd)
 	status = 0;
 	if (!ft_strcmp("echo", cmd->bin))
 	{
-		status = built_in_echo(cmd->ac, cmd->av, 1);
+		built_in_echo(cmd->ac, cmd->av, 1);
 	}
 	else if (!ft_strcmp("pwd", cmd->bin))
 	{
