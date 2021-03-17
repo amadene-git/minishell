@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/14 23:09:02 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/16 23:10:58 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/17 14:44:08 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,9 +111,10 @@ int				exec_bin(t_cmd *cmd);
 int				exec_no_fork(t_cmd *cmd);
 int				has_errors(t_tok **tok_lex);
 t_tok			**lexer(char *str, int *i, int lvl);
-char			*put_var_env(char *str, t_dlist *envlist);
+char			*get_var(char *str,int *i, int *j, t_dlist *envlist);
 char			*get_st(char *str);
 char			*get_str(char *str, t_dlist *envlist);
+int				token_push_back(t_tok **begin, t_tok *token);
 t_tok			**get_cmd(t_tok **tok_lex, t_cmd *cmd, int lvl);
 int				exec_cmd(t_cmd *cmd);
 void			handle_signal(int signo);

@@ -6,7 +6,7 @@
 #    By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/27 13:25:25 by mbouzaie          #+#    #+#              #
-#    Updated: 2021/03/16 23:23:14 by mbouzaie         ###   ########.fr        #
+#    Updated: 2021/03/17 14:44:34 by admadene         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,7 @@ SRCS	=		main.c\
 				absolute_path.c\
 				lexer.c\
 				get_chr.c\
+				parser_one.c\
 
 CFIND			= $(SRCS:%=$(SRC_DIR)%)
 OFILE			= $(SRCS:%.c=%.o)
