@@ -121,6 +121,7 @@ void			handle_signal(int signo);
 char			*get_word(char *str, t_dlist *envlist);
 void			get_ac_av(t_tok *tok_lst, t_cmd *cmd, int lvl);
 t_tok			**get_tok_arg(t_tok **tok_lex, t_cmd *cmd);
+t_tok			*get_env_var_tok(const char *value);
 t_dlist			*dlist_create_elem(void *data);
 t_var			*create_var(const char *str);
 t_dlist			*dlist_strchr_first(t_dlist *begin);
