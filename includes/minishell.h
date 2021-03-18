@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/14 23:09:02 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/17 14:44:08 by admadene         ###   ########.fr       */
+/*   Updated: 2021/03/18 11:11:19 by mbouzaie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,12 @@ enum			e_chr{
 
 typedef struct	s_minishell
 {
+	int		gnl;
+	int		status;
 	char	*line;
-	int		index;
-	t_cmd	*cmd_lst;
+	t_cmd	*cmd;
+	t_tok	**tok_lex;
+	t_dlist	*envlist;
 }				t_minishell;
 
 typedef void	(*sighandler_t)(int);
@@ -111,7 +114,7 @@ int				exec_bin(t_cmd *cmd);
 int				exec_no_fork(t_cmd *cmd);
 int				has_errors(t_tok **tok_lex);
 t_tok			**lexer(char *str, int *i, int lvl);
-char			*get_var(char *str,int *i, int *j, t_dlist *envlist);
+char			*get_var(char *str, int *i, int *j, t_dlist *envlist);
 char			*get_st(char *str);
 char			*get_str(char *str, t_dlist *envlist);
 int				token_push_back(t_tok **begin, t_tok *token);
@@ -150,5 +153,8 @@ void			free_tok_arg(t_tok *tok_arg);
 char			g_get_chr(char c);
 t_tok			**lexer(char *str, int *i, int lvl);
 void			clean_spaces(t_dlist *shlvl);
+void			init_signal(void);
+int				has_pipe(t_tok **tok_lex);
+t_dlist			*stock_env_status(int status, t_dlist *envlist);
 
 #endif
