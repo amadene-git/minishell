@@ -6,7 +6,7 @@
 /*   By: admadene <admadene@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/17 17:47:42 by admadene          #+#    #+#             */
-/*   Updated: 2021/03/17 17:49:00 by admadene         ###   ########.fr       */
+/*   Updated: 2021/03/18 09:55:45 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,3 +65,33 @@ t_tok	*get_env_var_tok(const char *value)
 	}
 	return (tok_var);
 }
+
+t_tok	*get_word_tok(t_tok *tok_lex, t_cmd *cmd)
+{
+	char	*str;
+	t_tok	*tok_word;
+
+	if (!(str = gwt_five(tok_lex, cmd)))
+		return (NULL);
+	tok_word = NULL;
+	while (str[cmd->i])
+	{
+		if (str[cmd->i] == '\\')
+		{
+			if (!(str = insert_string(str, strdup(""), cmd->i, cmd->i + 1)))
+				return (NULL);
+		}
+		else if (str[cmd->i] == '$')
+		{
+			if (!gwt_three(str, &cmd->j, &cmd->i))
+				continue;
+			if (!gwt_one(str, cmd, &tok_word) || !gwt_two(cmd, &tok_word))
+				return (NULL);
+		}
+		cmd->i++;
+	}
+	if (!gwt_four(str, &tok_word, cmd->i, cmd->k))
+		return (NULL);
+	return (tok_word);
+}
+
