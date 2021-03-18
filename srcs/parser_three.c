@@ -6,7 +6,7 @@
 /*   By: admadene <admadene@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/17 17:50:40 by admadene          #+#    #+#             */
-/*   Updated: 2021/03/18 09:57:40 by admadene         ###   ########.fr       */
+/*   Updated: 2021/03/18 11:56:23 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,3 @@ char	*gwt_five(t_tok *tok_lex, t_cmd *cmd)
 	cmd->k = 0;
 	return (str);
 }
-

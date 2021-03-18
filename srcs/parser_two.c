@@ -6,7 +6,7 @@
 /*   By: admadene <admadene@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/17 17:47:42 by admadene          #+#    #+#             */
-/*   Updated: 2021/03/18 09:55:45 by admadene         ###   ########.fr       */
+/*   Updated: 2021/03/18 11:57:05 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,3 @@ t_tok	*get_word_tok(t_tok *tok_lex, t_cmd *cmd)
 		return (NULL);
 	return (tok_word);
 }
-

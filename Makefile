@@ -46,6 +46,7 @@ SRCS	=		main.c\
 				main_utils.c\
 				parser_two.c\
 				parser_three.c\
+				parser_four.c\
 
 CFIND			= $(SRCS:%=$(SRC_DIR)%)
 OFILE			= $(SRCS:%.c=%.o)
