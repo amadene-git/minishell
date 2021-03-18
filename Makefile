@@ -6,7 +6,7 @@
 #    By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/27 13:25:25 by mbouzaie          #+#    #+#              #
-#    Updated: 2021/03/18 11:03:55 by mbouzaie         ###   ########.fr        #
+#    Updated: 2021/03/18 11:17:53 by mbouzaie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,8 @@ SRCS	=		main.c\
 				parser_one.c\
 				free.c\
 				main_utils.c\
+				parser_two.c\
+				parser_three.c\
 
 CFIND			= $(SRCS:%=$(SRC_DIR)%)
 OFILE			= $(SRCS:%.c=%.o)

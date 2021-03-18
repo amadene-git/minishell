@@ -65,6 +65,10 @@ typedef struct	s_cmd
 	struct s_cmd	*next;
 	t_tok			**tok_lex;
 	char			*line;
+	void			*tmp;
+	int				i;
+	int				j;
+	int				k;
 }				t_cmd;
 
 enum			e_chr{
@@ -124,6 +128,14 @@ void			handle_signal(int signo);
 char			*get_word(char *str, t_dlist *envlist);
 void			get_ac_av(t_tok *tok_lst, t_cmd *cmd, int lvl);
 t_tok			**get_tok_arg(t_tok **tok_lex, t_cmd *cmd);
+t_tok			*get_env_var_tok(const char *value);
+int		gevt_one(const char *value, t_tok **tok_var, int *i, int *j);
+t_tok			*get_word_tok(t_tok *tok_lex, t_cmd *cmd);
+int				gwt_three(const char *str, int *j, int *i);
+int				gwt_one(const char *str, t_cmd *cmd, t_tok **tok_word);
+int				gwt_two(t_cmd *cmd, t_tok **tok_word);
+int				gwt_four(char *str, t_tok **tok_word, int i, int k);
+char			*gwt_five(t_tok *tok_lex, t_cmd *cmd);
 t_dlist			*dlist_create_elem(void *data);
 t_var			*create_var(const char *str);
 t_dlist			*dlist_strchr_first(t_dlist *begin);
