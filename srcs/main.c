@@ -24,7 +24,7 @@ static int	prepare_execution(t_tok ***tok_lex, t_cmd *cmd, t_dlist *envlist,\
 		tmp_lex++;
 	*tok_lex = tmp_lex;
 	cmd->env = get_env_from_envlist(envlist, envlist, 0);
-	envlist = stock_env_status(status, envlist);
+	envlist = stock_env_status(status, envlist, NULL);
 	*tok_lex = get_tok_arg(*tok_lex, cmd);
 	status = enable_redirect(cmd);
 	if (has_pipe(*tok_lex) == 1)
@@ -58,7 +58,6 @@ static void	process_minishell(t_minishell *shell, t_tok ***save_lex,\
 	k = 0;
 	shell->tok_lex = lexer(shell->line, &k, 0);
 	*save_lex = shell->tok_lex;
-	shell->cmd = NULL;
 	if (!has_errors(shell->tok_lex))
 		while ((*(shell->tok_lex))->type != CHR_END)
 		{
@@ -68,15 +67,16 @@ static void	process_minishell(t_minishell *shell, t_tok ***save_lex,\
 												shell->envlist, shell->status);
 			shell->status = handle_execution(shell->cmd, shell->status);
 			pre_cmd = shell->cmd;
-			shell->envlist = stock_env_status(shell->status, shell->envlist);
-			free_av(shell->cmd->env, 0);
-			free_av(shell->cmd->av, 0);
-			free_tok_arg(shell->cmd->tok_arg);
-			free(shell->cmd->bin);
+			if (shell->cmd->ac)
+				shell->envlist = stock_env_status(shell->status,\
+			shell->envlist, shell->cmd->av[shell->cmd->ac - 1]);
+			free_process(shell);
 		}
 	else
 		shell->status = 2;
 	free_lexer(*save_lex, 0);
+	free_cmd(shell->cmd);
+	shell->cmd = NULL;
 }
 
 static void	init_minishell(t_minishell *shell, const char **env, t_cmd **cmd)

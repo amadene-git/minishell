@@ -20,7 +20,7 @@ void	handle_signal(int signo)
 		ft_dprintf(2, "\b\b  \b\b");
 }
 
-t_dlist	*stock_env_status(int status, t_dlist *envlist)
+t_dlist	*stock_env_status(int status, t_dlist *envlist, char *lastcmd)
 {
 	t_var	*var;
 	t_dlist	*elem;
@@ -36,6 +36,8 @@ t_dlist	*stock_env_status(int status, t_dlist *envlist)
 	}
 	else
 		envlist = insert_var(envlist, var);
+	if (lastcmd && *lastcmd)
+		ses(envlist, lastcmd);
 	return (envlist);
 }
 

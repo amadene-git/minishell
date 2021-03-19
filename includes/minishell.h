@@ -167,11 +167,13 @@ t_tok			**lexer(char *str, int *i, int lvl);
 void			clean_spaces(t_dlist *shlvl);
 void			init_signal(void);
 int				has_pipe(t_tok **tok_lex);
-t_dlist			*stock_env_status(int status, t_dlist *envlist);
+t_dlist			*stock_env_status(int status, t_dlist *envlist, char *lastcmd);
 int				gta_one(t_cmd *cmd);
 int				gta_two(t_tok *tok_lex, t_cmd *cmd);
 int				gta_three(t_tok *tok_lex, t_cmd *cmd);
 int				gta_four(t_tok **tok_lex, t_cmd *cmd);
 int				gta_five(t_tok **tok_lex, t_cmd *cmd);
+void			ses(t_dlist *envlist, char *lastcmd);
+void			free_process(t_minishell *shell);
 
 #endif

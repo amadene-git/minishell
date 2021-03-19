@@ -41,19 +41,25 @@ char	**get_env_from_envlist(t_dlist *begin, t_dlist *elem, int lvl)
 
 	if (elem->next != begin)
 	{
-		if (elem->data->value)
+		if (elem->data->value && ft_strcmp(elem->data->name, "?"))
 			env = get_env_from_envlist(begin, elem->next, lvl + 1);
 		else
 			env = get_env_from_envlist(begin, elem->next, lvl);
 	}
-	else
+	else if (ft_strcmp(elem->data->name, "?"))
 	{
 		env = (char**)malloc(sizeof(char*) * (lvl + 2));
 		env[lvl + 1] = NULL;
 		env[lvl] = get_var_str(elem->data);
 		return (env);
 	}
-	if (elem->data->value)
+	else
+	{
+		env = (char**)malloc(sizeof(char*) * (lvl + 1));
+		env[lvl] = NULL;
+		return (env);
+	}
+	if (elem->data->value && ft_strcmp(elem->data->name, "?"))
 		env[lvl] = get_var_str(elem->data);
 	return (env);
 }
