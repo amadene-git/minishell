@@ -6,7 +6,7 @@
 /*   By: mbouzaie <mbouzaie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/14 23:09:02 by mbouzaie          #+#    #+#             */
-/*   Updated: 2021/03/18 11:11:19 by mbouzaie         ###   ########.fr       */
+/*   Updated: 2021/03/19 11:45:32 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 # ifndef PATHSIZE
 #  define PATHSIZE 32000
 # endif
+
+typedef void	(*t_sighandler_t)(int);
 
 typedef struct	s_var
 {
@@ -94,8 +96,6 @@ typedef struct	s_minishell
 	t_dlist	*envlist;
 }				t_minishell;
 
-typedef void	(*sighandler_t)(int);
-
 void			built_in_echo(int ac, char **av, int fd);
 void			refresh_pwd(char *newpwd, t_dlist *envlist);
 int				built_in_cd(int ac, char **av, t_dlist *envlist);
@@ -129,7 +129,7 @@ char			*get_word(char *str, t_dlist *envlist);
 void			get_ac_av(t_tok *tok_lst, t_cmd *cmd, int lvl);
 t_tok			**get_tok_arg(t_tok **tok_lex, t_cmd *cmd);
 t_tok			*get_env_var_tok(const char *value);
-int		gevt_one(const char *value, t_tok **tok_var, int *i, int *j);
+int				gevt_one(const char *value, t_tok **tok_var, int *i, int *j);
 t_tok			*get_word_tok(t_tok *tok_lex, t_cmd *cmd);
 int				gwt_three(const char *str, int *j, int *i);
 int				gwt_one(const char *str, t_cmd *cmd, t_tok **tok_word);
@@ -173,6 +173,5 @@ int				gta_two(t_tok *tok_lex, t_cmd *cmd);
 int				gta_three(t_tok *tok_lex, t_cmd *cmd);
 int				gta_four(t_tok **tok_lex, t_cmd *cmd);
 int				gta_five(t_tok **tok_lex, t_cmd *cmd);
-
 
 #endif
