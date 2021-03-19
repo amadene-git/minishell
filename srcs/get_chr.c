@@ -6,7 +6,7 @@
 /*   By: admadene <admadene@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 21:04:15 by admadene          #+#    #+#             */
-/*   Updated: 2021/03/16 21:05:11 by admadene         ###   ########.fr       */
+/*   Updated: 2021/03/19 11:34:45 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,25 @@
 
 char	g_get_chr(char c)
 {
-	char get_chr[255] = {
-		['!'] = CHR_WORD,
-		['#'...'%'] = CHR_WORD,
-		['*'...':'] = CHR_WORD,
-		['?'...'{'] = CHR_WORD,
-		['}'...'~']	= CHR_WORD,
-		['='] = CHR_WORD,
-		['"'] = CHR_STR,
-		['\''] = CHR_ST,
-		['\n'] = CHR_SP,
-		['\t'] = CHR_SP,
-		['\v'] = CHR_SP,
-		['\r'] = CHR_SP,
-		['\f'] = CHR_SP,
-		[' '] = CHR_SP,
-		['&'] = CHR_OP,
-		['|'] = CHR_PI,
-		['>'] = CHR_RE,
-		['<'] = CHR_RE,
-		[';'] = CHR_PV,
-		['\0'] = CHR_END
-	};
-	return (get_chr[(int)c]);
+	if (c == '!' || (c >= '#' && c <= '%') || (c >= '*' && c <= ':') ||\
+	(c >= '?' && c <= '{') || (c >= '}' && c <= '~') || c == '=')
+		return (CHR_WORD);
+	if (c == '"')
+		return (CHR_STR);
+	if (c == '\'')
+		return (CHR_ST);
+	if (c == '\n' || c == '\v' || c == '\t' || c == '\r' || c == '\f' ||\
+	c == ' ')
+		return (CHR_SP);
+	if (c == '&')
+		return (CHR_OP);
+	if (c == '|')
+		return (CHR_PI);
+	if (c == '>' || c == '<')
+		return (CHR_RE);
+	if (c == ';')
+		return (CHR_PV);
+	if (c == '\0')
+		return (CHR_END);
+	return (CHR_ERROR);
 }
